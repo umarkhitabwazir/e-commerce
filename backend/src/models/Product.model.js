@@ -31,12 +31,10 @@ let productSchema = new Schema({
     },
     rating: {
         type: Number,
-        required: [true, "rating is required"],
         trim: true,
     },
     numReviews: {
         type: Number,
-        required: [true, "numReviews is required"],
         trim: true,
     },
     countInStock: {

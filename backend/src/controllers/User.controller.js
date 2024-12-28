@@ -4,7 +4,11 @@ import { ApiError } from "../utils/apiError.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { body, validationResult } from "express-validator";
 import nodemailer from "nodemailer";
-import jwt from "jsonwebtoken"
+import axios from "axios"
+import dotenv from "dotenv"
+dotenv.config({
+    path:".env"
+})
 
 let generateAccessAndRefereshTokens = async (userid) => {
     try {
@@ -56,6 +60,21 @@ let sendEmail = async (email, emailVerificationCode) => {
 };
 
 
+// this is for email varification and workable ,but out of credits not able to check
+
+// const verifyEmailWithZeroBounce = async (email) => {
+//     const apiKey = process.env.ZEROBOUNCE_API_KEY;
+//     console.log("apiKey",apiKey)
+//     const url = `https://api.zerobounce.net/v2/validate?api_key=${apiKey}&email=${email}`;
+//     try {
+//         const response = await axios.get(url);
+//         console.log("response.data",response.data)
+//         return response.data.status === "valid"; // Returns true if valid, false otherwise
+//     } catch (error) {
+//         console.error("Error validating email:", error);
+//         throw new ApiError(500, "Failed to validate email.");
+//     }
+// };
 
 let createUser = asyncHandler(async (req, res) => {
     let { username, email, fullName, role, address, phone, password } = req.body
@@ -74,6 +93,8 @@ let createUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Role must be user or admin")
 
     }
+    // await verifyEmailWithZeroBounce(email);
+
 
     let exitUser = await User.findOne({
         $or: [{ username: username }, { email: email }]
@@ -110,12 +131,61 @@ let createUser = asyncHandler(async (req, res) => {
     res.
         cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options).
-        status(201).json(new ApiResponse(201, null, "User created successfully")
+        status(201).json(new ApiResponse(201, null, "User created successfully, Please verify your email.")
         )
 
 
 
 
+})
+
+let loginUser = asyncHandler(async (req, res) => {
+    let { email, password } = req.body
+    if (!email || !password) {
+        throw new ApiError(400, "Email and password are required")
+    }
+    let user = await User.findOne({ email: email })
+    if (!user) {
+        throw new ApiError(404, "User not found")
+    }
+    
+    let isMatch = await user.comparePassword(password)
+    if (!isMatch) {
+        throw new ApiError(400, "Invalid password")
+    }
+    let isVerified = user.isVerified
+    if (!isVerified) {
+        const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
+        await sendEmail(email,emailVerificationCode)
+        user.emailVerificationCode = emailVerificationCode
+        await user.save()
+        throw new ApiError(401, "Email is not verified, Verification code sent to your email")
+    }
+    
+    let options = {
+        httponly: true,
+        secure: true,
+    }
+    let { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
+    res.
+        cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options).
+        status(200).json(new ApiResponse(200, null, "User logged in successfully")
+        )
+
+})
+
+let logoutUser = asyncHandler(async (req, res) => {
+    let userId = req.user
+    let user = await User.findById(userId)
+    if (!user) {
+        throw new ApiError(404, "User not found")
+    }
+    user.refreshToken = ""
+    await user.save({ validateBeforeSave: false })
+    res.clearCookie("accessToken")
+    res.clearCookie("refreshToken")
+    res.status(200).json(new ApiResponse(200, null, "User logged out successfully"))
 })
 
 let verifyEmail = asyncHandler(async (req, res) => {
@@ -147,9 +217,9 @@ let verifyEmail = asyncHandler(async (req, res) => {
     user.emailVerificationCode = null; // Clear the code after verification
     await user.save();
 
-    const tokens = await generateAccessAndRefereshTokens(user._id);
+     await generateAccessAndRefereshTokens(user._id);
 
     res.status(200).json(new ApiResponse(200, user.isVerified, "Email verified successfully."));
 });
 
-export { createUser, verifyEmail }
+export { createUser, verifyEmail, loginUser,logoutUser }
