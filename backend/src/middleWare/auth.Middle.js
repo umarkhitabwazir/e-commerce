@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { User } from "../models/User.model.js";
+import { ApiError } from "../utils/apiError.js";
 dotenv.config({
     path: ".env"
 })
@@ -15,13 +16,15 @@ let authMiddleware = async (req, res, next) => {
             throw new ApiError(401, "Unauthorized. Invalid token.");
         }
         let user = await decoded.id;
-        req.user = user;
+        let userExists = await User.findById(user);
+        req.user = userExists;
         next();
     } catch (error) {
         if (error.name === "TokenExpiredError") {
             return res.status(401).json({ error: "Access token expired. Please refresh your token." });
         }
         next(error)
+
     }
 };
 export { authMiddleware };

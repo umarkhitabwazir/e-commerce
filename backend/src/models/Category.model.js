@@ -1,18 +1,20 @@
+import mongoose,{Schema} from "mongoose";
 
 let categorySchema = new Schema(
     {
-    name:{
+    categoryName:{
         type:String,
         required:[true,"name is required"],
         trim:true,
+        unique: true,
         index:true,
     },
-    description:{
+    categoryDescription:{
         type:String,
         required:[true,"description is required"],
         trim:true,
     },
-    image:{
+    categoryImage:{
         type:String,
         required:[true,"image is required"],
         trim:true,
@@ -26,3 +28,4 @@ let categorySchema = new Schema(
 
 }
 );
+export let Category=mongoose.model("Category",categorySchema)

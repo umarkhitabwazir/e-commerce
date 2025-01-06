@@ -33,6 +33,7 @@ let userSchema = new Schema(
             type: String,
             required: [true,"role is required"],
             trim: true, 
+            enum: ["user", "admin", "superadmin"],
             default: "user"
         },
         password: {

@@ -6,23 +6,28 @@ import { body, validationResult } from "express-validator";
 import nodemailer from "nodemailer";
 import axios from "axios"
 import dotenv from "dotenv"
+import { MoneyTransfer } from "../models/moneyTranser.model.js";
+import { Product } from "../models/Product.model.js";
+import { Cart } from "../models/Cart.model.js";
+import { Order } from "../models/Order.model.js";
+import { Review } from "../models/Review.model.js";
+import { Category } from "../models/Category.model.js";
 dotenv.config({
-    path:".env"
+    path: ".env"
 })
 
-let generateAccessAndRefereshTokens = async (userid) => {
+let generateAccessAndRefereshTokens = async (userId) => {
     try {
-        let user = await User.findById(userid)
-console.log("user",user)
+        let user = await User.findById(userId)
         if (!user) {
             throw new ApiError(404, "User not found")
         }
-        let accessToken =await user.generateAccessToken()
-        let refreshToken =await user.generateRefreshToken()
-console.log("accessToken,refreshToken",accessToken,refreshToken)
- user.refreshToken = refreshToken
+        let accessToken = await user.generateAccessToken()
+        let refreshToken = await user.generateRefreshToken()
+        console.log("accessToken,refreshToken", accessToken, refreshToken)
+        user.refreshToken = refreshToken
 
-await user.save({ validateBeforeSave: false })
+        await user.save({ validateBeforeSave: false })
         return { accessToken, refreshToken }
 
     } catch (error) {
@@ -88,13 +93,14 @@ let createUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, errors.array()[0].msg);
     }
 
-
-    if (role !== "user" && role !== "admin") {
+if (!["user", "admin", "superadmin"].includes(role)) {
         throw new ApiError(400, "Role must be user or admin")
 
     }
-    // await verifyEmailWithZeroBounce(email);
-
+    
+if (role==="superadmin") {
+throw new ApiError(400, "you only create user and admin role! ") 
+}
 
     let exitUser = await User.findOne({
         $or: [{ username: username }, { email: email }]
@@ -104,9 +110,9 @@ let createUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "User username or email already exists")
     }
     const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
-    await sendEmail(email,emailVerificationCode)
+    await sendEmail(email, emailVerificationCode)
 
-   
+
     let user = new User({
         username,
         email,
@@ -116,8 +122,8 @@ let createUser = asyncHandler(async (req, res) => {
         phone,
         password,
         emailVerificationCode,
-        
-       
+
+
     })
 
     await user.save()
@@ -127,7 +133,7 @@ let createUser = asyncHandler(async (req, res) => {
     }
     let { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
 
-    
+
     res.
         cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options).
@@ -139,6 +145,97 @@ let createUser = asyncHandler(async (req, res) => {
 
 })
 
+let updateUser = asyncHandler(async (req, res) => {
+    let user = req.user
+    let { fullName, address, phone } = req.body
+    if (!user.id) {
+        throw new ApiError(401, "Unauthorized. Please log in first.")
+    }
+    if ([fullName, address, phone].some((field) => field?.trim() === "")) {
+        throw new ApiError(400, "All fields are required")
+    }
+  
+    user.fullName = fullName
+    user.address = address
+    user.phone = phone
+    await user.save()
+    res.status(201).json(new ApiResponse(201, user, "User updated successfully"))
+})
+
+let listAllUser = asyncHandler(async (req, res) => {
+    let user = req.user
+    const users = await User.find({ role: { $ne: "superadmin" } }).select("-password")
+   console.log("users",users)
+    if (!users) {
+        throw new ApiError(404, "Users not found")
+    }
+    let listAllUsers = users.map((user) => {
+        return {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            
+        }
+    })
+    res.status(200).json(new ApiResponse(200, listAllUsers, "All users fetched successfully"))
+
+    // if (!user) {
+    //     throw new ApiError(401, "Unauthorized. Please log in first.")
+    // }
+
+    // if (user.role === "superadmin") {
+    //     throw new ApiError(401, "you can't delete superadmin account")
+    // }
+
+
+    
+    
+    // let isVerified = user.isVerified
+    // if (!isVerified) {
+    //     throw new ApiError(401, "delete account after email verification")
+    // }
+    // let isUser = user.role === "user"
+    // if (isUser) {
+    //     throw new ApiError(401, "only Admin  can delete account")
+
+    // }
+    
+    // let findProduct = await Product.find({ user: user.id })
+    
+    // if (findProduct) {
+    //     await Product.deleteMany({ user: user.id })
+    // }
+    // let findCategory = await Category.find({ user: user.id })
+    // if (findCategory) {
+    //     await Category.deleteMany({ user: user.id })
+    // }
+   
+    // let findCart = await Cart.find({ user: user.id })
+    // if (findCart) {
+    //     await Cart.deleteMany({ user: user.id })
+    // }
+    // let findOrder = await Order.find({ user: user.id })
+    // if (findOrder) {
+    //     await Order.deleteMany({ user: user.id })
+    // }
+    // let findReview = await Review.find({ user: user.id })
+    // if (findReview) {
+    //     await Review.deleteMany({ user: user.id })
+    // }
+    // let findMoneyTransfer = await MoneyTransfer.find({ user: user.id })
+    // if (findMoneyTransfer) {
+    //     await MoneyTransfer.deleteMany({ user: user.id })
+
+    // }
+
+    // let deleteUser = await User.findOneAndDelete(user.id)
+    // if (!deleteUser) {
+    //     throw new ApiError(404, "User not found")
+    // }
+    
+    res.status(200).json(new ApiResponse(200, deleteUser, "User deleted successfully"))
+})
+
 let loginUser = asyncHandler(async (req, res) => {
     let { email, password } = req.body
     if (!email || !password) {
@@ -148,7 +245,6 @@ let loginUser = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(404, "User not found")
     }
-    
     let isMatch = await user.comparePassword(password)
     if (!isMatch) {
         throw new ApiError(400, "Invalid password")
@@ -156,12 +252,12 @@ let loginUser = asyncHandler(async (req, res) => {
     let isVerified = user.isVerified
     if (!isVerified) {
         const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
-        await sendEmail(email,emailVerificationCode)
+        await sendEmail(email, emailVerificationCode)
         user.emailVerificationCode = emailVerificationCode
         await user.save()
         throw new ApiError(401, "Email is not verified, Verification code sent to your email")
     }
-    
+
     let options = {
         httponly: true,
         secure: true,
@@ -176,10 +272,10 @@ let loginUser = asyncHandler(async (req, res) => {
 })
 
 let logoutUser = asyncHandler(async (req, res) => {
-    let userId = req.user
-    let user = await User.findById(userId)
+    let user = req.user
+    
     if (!user) {
-        throw new ApiError(404, "User not found")
+        throw new ApiError(404, "User not not logged in")
     }
     user.refreshToken = ""
     await user.save({ validateBeforeSave: false })
@@ -194,16 +290,13 @@ let verifyEmail = asyncHandler(async (req, res) => {
     if (!emailVerificationCode) {
         throw new ApiError(400, "Verification code is required.");
     }
- 
-    let userId = req.user;
-    if (!userId) {
+
+    let user = req.user;
+    if (!user) {
         throw new ApiError(401, "Unauthorized. Please log in first.");
     }
 
-    let user = await User.findById(userId);
-    if (!user) {
-        throw new ApiError(404, "User not found.");
-    }
+    
 
     if (user.isVerified) {
         throw new ApiError(400, "Email is already verified.");
@@ -214,12 +307,40 @@ let verifyEmail = asyncHandler(async (req, res) => {
     }
 
     user.isVerified = true;
-    user.emailVerificationCode = null; // Clear the code after verification
+    user.emailVerificationCode = null;
     await user.save();
 
-     await generateAccessAndRefereshTokens(user._id);
+    await generateAccessAndRefereshTokens(user._id);
 
     res.status(200).json(new ApiResponse(200, user.isVerified, "Email verified successfully."));
 });
+let resendEmailVerificationCode = asyncHandler(async (req, res) => {
+    let user = req.user;
+    if (!user) {
+        throw new ApiError(401, "Unauthorized. Please log in first.");
+    }
 
-export { createUser, verifyEmail, loginUser,logoutUser }
+   
+
+    if (user.isVerified) {
+        throw new ApiError(400, "Email is already verified.");
+    }
+
+    const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
+    await sendEmail(user.email, emailVerificationCode);
+
+    user.emailVerificationCode = emailVerificationCode;
+    await user.save();
+
+    res.status(200).json(new ApiResponse(200, null, "Verification code sent successfully."));
+})
+
+export {
+    createUser,
+    verifyEmail,
+    loginUser,
+    logoutUser,
+    updateUser,
+    listAllUser,
+    resendEmailVerificationCode
+}

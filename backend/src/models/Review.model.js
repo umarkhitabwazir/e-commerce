@@ -16,7 +16,7 @@ let reviewSchema = new Schema(
             type: Number,
             required: [true, "rating is required"],
         },
-        review: {
+        reviewMessage: {
             type: String,
             required: [true, "review is required"],
         },
