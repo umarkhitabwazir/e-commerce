@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { createUser, loginUser, logoutUser, verifyEmail,updateUser,
   listAllUser,resendEmailVerificationCode } from "../controllers/User.controller.js";
-import { createProductsWithCategory,updateProductWithCategory,deleteProductWithCategory } from "../controllers/Product.controller.js";
+import { createProductsWithCategory,getAllProducts,updateProductWithCategory,deleteProductWithCategory } from "../controllers/Product.controller.js";
 import { categoryList } from "../controllers/CategoryList.controller.js";
 import { createCart } from "../controllers/Cart.controller.js";
 import { createOrder, updateOrder,deleteOder } from "../controllers/Order.controller.js";
 import { transferMoney } from "../controllers/MoneyTransfer.controller.js";
 import {reviewController,updateReview,deleteReview} from "../controllers/Review.controller.js";
+import { sortPriceLowToHigh,sortPriceHighToLower, sortNewest } from "../controllers/SortBy.js";
 import { body, validationResult } from "express-validator";
 import { ApiError } from "../utils/apiError.js";
 import twilio from "twilio";
@@ -41,6 +42,10 @@ router.route("/user/logout").post(authMiddleware, logoutUser)
 router.route("/updateUser").patch(authMiddleware, updateUser)
 router.route("/listAllUser").get(authMiddleware,authorizeRoles("superadmin"), listAllUser)
 router.route("/product/create").post(authMiddleware,authorizeRoles("superadmin","admin"),upload.single("productImg"), createProductsWithCategory)
+router.route("/priceLowHigh").get(sortPriceLowToHigh)
+router.route("/priceHighLow").get(sortPriceHighToLower)
+router.route("/newest").get(sortNewest)
+router.route("/get-products").get(getAllProducts)
 router.route("/product/update/:productid").patch(authMiddleware,authorizeRoles("superadmin","admin"),upload.single("productImg"), updateProductWithCategory)
 router.route("/categoryList").post(categoryList)
 router.route("/product/delete/:productid").delete(authMiddleware,authorizeRoles("superadmin","admin"),deleteProductWithCategory)
