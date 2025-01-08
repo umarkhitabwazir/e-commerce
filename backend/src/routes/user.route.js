@@ -6,7 +6,7 @@ import { categoryList } from "../controllers/CategoryList.controller.js";
 import { createCart } from "../controllers/Cart.controller.js";
 import { createOrder, updateOrder,deleteOder } from "../controllers/Order.controller.js";
 import { transferMoney } from "../controllers/MoneyTransfer.controller.js";
-import {reviewController} from "../controllers/Review.controller.js";
+import {reviewController,updateReview,deleteReview} from "../controllers/Review.controller.js";
 import { body, validationResult } from "express-validator";
 import { ApiError } from "../utils/apiError.js";
 import twilio from "twilio";
@@ -48,7 +48,9 @@ router.route("/order").post(authMiddleware,createOrder)
 router.route("/order/update/:orderId").patch(authMiddleware,updateOrder)
 router.route("/order/delete/:orderId").delete(authMiddleware,deleteOder)
 router.route("/createCart").post(authMiddleware,createCart)
-router.route("/review").post(authMiddleware,reviewController)
+router.route("/review/:productId").post(authMiddleware,reviewController)
+router.route("/update/:productId").patch(authMiddleware,updateReview)
+router.route("/delete/:productId").delete(authMiddleware,deleteReview)
 router.route("/transferMoney").post(authMiddleware,transferMoney)
 
 router.route("/verify-email").post(authMiddleware, verifyEmail);

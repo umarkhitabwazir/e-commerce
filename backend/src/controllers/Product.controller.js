@@ -177,7 +177,7 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
     
       await cloudinary.uploader.destroy(cloudImgPath)
     
-    let findCategoryProduct = await Product.find({ category: product.category })
+    let findProductCategory = await Product.find({ category: product.category })
 
     let category = await Category.findById(product.category)
     if (!category) {
@@ -188,7 +188,7 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
     if (!checkUserRole) {
         throw new ApiError(400, "You are not authorized to delete this product")
     }
-    if (findCategoryProduct.length === 1) {
+    if (findProductCategory.length === 1) {
         await category.deleteOne()
     }
     await product.deleteOne()
