@@ -31,7 +31,6 @@ let userSchema = new Schema(
         },
         role:{
             type: String,
-            required: [true,"role is required"],
             trim: true, 
             enum: ["user", "admin", "superadmin"],
             default: "user"
@@ -43,8 +42,7 @@ let userSchema = new Schema(
         },
         address:{
             type: String,
-            required: [true,"address is required"],
-            trim: true,
+             trim: true,
         },
         phone:{
             type:Number,

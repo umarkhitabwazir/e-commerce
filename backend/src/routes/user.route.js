@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { createUser, loginUser, logoutUser, verifyEmail,updateUser,
-  listAllUser,resendEmailVerificationCode } from "../controllers/User.controller.js";
+  listAllUser,resendEmailVerificationCode, 
+  getLoginUserData} from "../controllers/User.controller.js";
 import { createProductsWithCategory,getAllProducts,updateProductWithCategory,deleteProductWithCategory } from "../controllers/Product.controller.js";
 import { categoryList } from "../controllers/CategoryList.controller.js";
 import { createCart } from "../controllers/Cart.controller.js";
@@ -41,6 +42,7 @@ router.route("/resendVerificationCode").post(authMiddleware, resendEmailVerifica
 router.route("/user/logout").post(authMiddleware, logoutUser)
 router.route("/updateUser").patch(authMiddleware, updateUser)
 router.route("/listAllUser").get(authMiddleware,authorizeRoles("superadmin"), listAllUser)
+router.route("/get-logined-user").get(authMiddleware,getLoginUserData)
 router.route("/product/create").post(authMiddleware,authorizeRoles("superadmin","admin"),upload.single("productImg"), createProductsWithCategory)
 router.route("/priceLowHigh").get(sortPriceLowToHigh)
 router.route("/priceHighLow").get(sortPriceHighToLower)

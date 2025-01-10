@@ -24,7 +24,7 @@ let generateAccessAndRefereshTokens = async (userId) => {
         }
         let accessToken = await user.generateAccessToken()
         let refreshToken = await user.generateRefreshToken()
-        console.log("accessToken,refreshToken", accessToken, refreshToken)
+        
         user.refreshToken = refreshToken
 
         await user.save({ validateBeforeSave: false })
@@ -85,7 +85,7 @@ let createUser = asyncHandler(async (req, res) => {
     let { username, email, fullName, role, address, phone, password } = req.body
 
 
-    if ([username, email, fullName, role, address, phone, password].some((field) => field?.trim() === "")) {
+    if ([username, email, fullName,  phone, password].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "All fields are required")
     }
     const errors = validationResult(req);
@@ -93,10 +93,10 @@ let createUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, errors.array()[0].msg);
     }
 
-if (!["user", "admin", "superadmin"].includes(role)) {
-        throw new ApiError(400, "Role must be user or admin")
+// if (!["user", "admin", "superadmin"].includes(role)) {
+//         throw new ApiError(400, "Role must be user or admin")
 
-    }
+//     }
     
 if (role==="superadmin") {
 throw new ApiError(400, "you only create user and admin role! ") 
@@ -137,7 +137,7 @@ throw new ApiError(400, "you only create user and admin role! ")
     res.
         cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options).
-        status(201).json(new ApiResponse(201, null, "User created successfully, Please verify your email.")
+        status(201).json(new ApiResponse(201, user, "User created successfully, Please verify your email.")
         )
 
 
@@ -255,7 +255,7 @@ let loginUser = asyncHandler(async (req, res) => {
         await sendEmail(email, emailVerificationCode)
         user.emailVerificationCode = emailVerificationCode
         await user.save()
-        throw new ApiError(401, "Email is not verified, Verification code sent to your email")
+        
     }
 
     let options = {
@@ -266,7 +266,7 @@ let loginUser = asyncHandler(async (req, res) => {
     res.
         cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options).
-        status(200).json(new ApiResponse(200, null, "User logged in successfully")
+        status(200).json(new ApiResponse(200, null, "Email is not verified. Verification code has been sent to your email.",false)
         )
 
 })
@@ -286,6 +286,7 @@ let logoutUser = asyncHandler(async (req, res) => {
 
 let verifyEmail = asyncHandler(async (req, res) => {
     const { emailVerificationCode } = req.body;
+    console.log("emailVerificationCode",emailVerificationCode)
 
     if (!emailVerificationCode) {
         throw new ApiError(400, "Verification code is required.");
@@ -308,14 +309,16 @@ let verifyEmail = asyncHandler(async (req, res) => {
 
     user.isVerified = true;
     user.emailVerificationCode = null;
-    await user.save();
 
     await generateAccessAndRefereshTokens(user._id);
+    await user.save();
 
-    res.status(200).json(new ApiResponse(200, user.isVerified, "Email verified successfully."));
+
+    res.status(200).json(new ApiResponse(200, user, "Email verified successfully."));
 });
 let resendEmailVerificationCode = asyncHandler(async (req, res) => {
     let user = req.user;
+    console.log("user",user)
     if (!user) {
         throw new ApiError(401, "Unauthorized. Please log in first.");
     }
@@ -330,9 +333,19 @@ let resendEmailVerificationCode = asyncHandler(async (req, res) => {
     await sendEmail(user.email, emailVerificationCode);
 
     user.emailVerificationCode = emailVerificationCode;
+
+    await generateAccessAndRefereshTokens(user._id);
+
     await user.save();
 
     res.status(200).json(new ApiResponse(200, null, "Verification code sent successfully."));
+})
+let getLoginUserData=asyncHandler(async(req,res)=>{
+    let user=req.user
+    if (!user) {
+    throw new ApiError(400,"user not logined!")
+    }
+    res.status(200).json(200,new ApiResponse(200,user,"user founded"))
 })
 
 export {
@@ -342,5 +355,6 @@ export {
     logoutUser,
     updateUser,
     listAllUser,
-    resendEmailVerificationCode
+    resendEmailVerificationCode,
+    getLoginUserData
 }

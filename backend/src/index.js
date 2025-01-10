@@ -6,11 +6,11 @@ import { ApiError } from "./utils/apiError.js";
 dotenv.config({
     path: ".env",
 });
-
+let PORT=process.env.PORT
 connectDb().then(() => {
 
-    app.listen(3000, () => {
-        console.log("Server running on port 3000");
+    app.listen(PORT, () => {
+        console.log("Server running on port ",PORT);
     });
 }).catch((error) => {
 

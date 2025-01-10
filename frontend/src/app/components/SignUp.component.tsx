@@ -1,0 +1,211 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+
+// Define Zod schema for form validation
+const SignupSchema = z.object({
+    username: z.string().min(3, 'Username must be at least 3 characters long'),
+    fullName: z.string().min(5, 'Full name must be at least 5 characters long'),
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(6, 'Password must be at least 6 characters long'),
+    address: z.string().optional(),
+    phone: z.string().regex(/^(\+\d{1,3}[- ]?)?\d{10}$/, 'Invalid phone number'),
+});
+
+// TypeScript type for the form fields
+type SignupFormData = z.infer<typeof SignupSchema>;
+
+const SignupComponent = () => {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<SignupFormData>({
+        resolver: zodResolver(SignupSchema),
+    });
+
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
+    const [error, setError] = useState<string | undefined>(undefined);
+    const [loading, setLoading] = useState<boolean>(false); // Track loading state
+    const router = useRouter()
+
+
+    // Form submit handler
+    const onSubmit = async (data: SignupFormData) => {
+
+        setLoading(true); // Start loading
+        setError(undefined); // Clear previous error
+        try {
+
+            const response = await axios.post(`${API_URL}/user/signup`, data, { withCredentials: true });
+            const created = response.statusText === 'Created'
+            if (created) {
+                const maskEmail = (email: string) => {
+                    const [name, domain] = email.split('@');
+                    let firstTwo = name.slice(0, 2);
+                    let lastTwo = name.slice(-2);
+
+                    console.log(`${firstTwo}****${lastTwo}@${domain}`);
+
+                    return `${firstTwo}****${lastTwo}@${domain}`
+                };
+                let maskedEmail = maskEmail(data.email)
+                router.push(`${LOCAL_HOST}/verify-email?email=${maskedEmail}`)
+
+            }
+
+            setLoading(false); // Stop loading
+
+        } catch (err: any) {
+
+            setLoading(false); // Stop loading
+
+            if (err.response) {
+                setError(err.response.data.error); // Set error message from backend
+            } else {
+                setError('An unknown error occurred.');
+            }
+        }
+    };
+
+    return (
+        <>
+
+
+            <div className="flex justify-center items-center min-h-screen bg-gray-100">
+                <div className="w-full max-w-4xl bg-white p-8 rounded-lg shadow-lg">
+                    <h2 className="text-3xl font-bold text-gray-600 text-center mb-8">Sign Up</h2>
+                    <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {/* Username Field */}
+                        <div className="flex flex-col">
+                            <label className="block text-sm font-medium text-black mb-1">Username</label>
+                            <input
+                                {...register('username')}
+                                className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.username ? 'border-red-500' : 'border-gray-300'
+                                    }`}
+                                placeholder="Enter your username"
+                            />
+                            {errors.username && (
+                                <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
+                            )}
+                        </div>
+
+                        {/* Full Name Field */}
+                        <div className="flex flex-col">
+                            <label className="block text-sm font-medium text-black mb-1">Full Name</label>
+                            <input
+                                {...register('fullName')}
+                                className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.fullName ? 'border-red-500' : 'border-gray-300'
+                                    }`}
+                                placeholder="Enter your full name"
+                            />
+                            {errors.fullName && (
+                                <p className="text-red-500 text-sm mt-1">{errors.fullName.message}</p>
+                            )}
+                        </div>
+
+                        {/* Email Field */}
+                        <div className="flex flex-col">
+                            <label className="block text-sm font-medium text-black mb-1">Email</label>
+                            <input
+                                {...register('email')}
+                                type="email"
+                                className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.email ? 'border-red-500' : 'border-gray-300'
+                                    }`}
+                                placeholder="Enter your email"
+                            />
+                            {errors.email && (
+                                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                            )}
+                        </div>
+
+                        {/* Password Field */}
+                        <div className="flex flex-col">
+                            <label className="block text-sm font-medium text-black mb-1">Password</label>
+                            <input
+                                {...register('password')}
+                                type="password"
+                                className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.password ? 'border-red-500' : 'border-gray-300'
+                                    }`}
+                                placeholder="Enter your password"
+                            />
+                            {errors.password && (
+                                <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                            )}
+                        </div>
+
+                        {/* Address Field */}
+                        <div className="flex flex-col col-span-2">
+                            <label className="block text-sm font-medium text-black mb-1">Address</label>
+                            <textarea
+                                {...register('address')}
+                                className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.address ? 'border-red-500' : 'border-gray-300'
+                                    }`}
+                                placeholder="Enter your address"
+                            />
+                            {errors.address && (
+                                <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>
+                            )}
+                        </div>
+
+                        {/* Phone Field */}
+                        <div className="flex flex-col">
+                            <label className="block text-sm font-medium text-black mb-1">Phone</label>
+                            <input
+                                {...register('phone')}
+                                className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.phone ? 'border-red-500' : 'border-gray-300'
+                                    }`}
+                                placeholder="Enter your phone number"
+                            />
+                            {errors.phone && (
+                                <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+                            )}
+                        </div>
+
+                        {/* Submit Button */}
+                        <div className="col-span-4">
+                            <button
+                                type="submit"
+                                className={`w-full py-3 rounded-lg transition duration-200 ${loading
+                                    ? 'bg-gray-400 cursor-not-allowed'
+                                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                                    }`}
+                                disabled={loading}
+                            >
+                                {loading ? 'Submitting...' : 'Sign Up'}
+                            </button>
+                            {error && (
+                                <p className="text-red-600 font-light flex justify-center items-center mt-4">
+                                    {error.split(' at ')[0]}
+                                </p>
+                            )}
+                        </div>
+                    </form>
+                    <div className='flex items-center justify-center flex-col'>
+
+                        <h4 className="text-center text-gray-500 text-sm">
+                            or
+                        </h4>
+                        <Link
+                            href="/login"
+                            className="text-blue-500 hover:text-blue-700 underline text-sm font-thin"
+                        >
+                            Login
+                        </Link>
+                    </div>
+
+                </div>
+            </div>
+
+        </>
+    );
+};
+
+export default SignupComponent;

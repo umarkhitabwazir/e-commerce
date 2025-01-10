@@ -1,5 +1,5 @@
 import React from 'react'
-import Products from './components/Products'
+import Products from './components/Products.component'
 const homePage = ({ searchParams }: {
   searchParams: { [key: string]: string }
 
@@ -8,7 +8,7 @@ const homePage = ({ searchParams }: {
 
   return (
     <div>
-      <Products searchParams={searchParams}/>
+      <Products />
     </div>
   )
 }

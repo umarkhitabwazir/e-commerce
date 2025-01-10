@@ -2,55 +2,72 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import {usePathname, useSearchParams } from 'next/navigation';
 
-const Products = ({ searchParams }: { searchParams: { [key: string]: string } }) => {
+const Products = () => {
   const [sort, setSort] = useState<string | null>(null); // Sort state
   const [products, setProducts] = useState([]); // Product data state
   const [error, setError] = useState<string | null>(null); // Error state
+  const router = useRouter()
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
+const routePath=usePathname()
+const routes=["/"]
+const productPath=routes.includes(routePath)
+  let searchParams = useSearchParams()
+  let value = searchParams.get("sort")
+
+
+
   let [loading, setLoading] = useState(false)
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // Set loading to true before starting the task
+      setLoading(true);
       try {
-        // Simulate an async task (e.g., API call)
+
         await new Promise((resolve) => setTimeout(resolve, 2000));
         console.log("Data fetched successfully!");
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        setLoading(false); // Set loading to false after the task is completed
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, []);
 
-  // Parse `searchParams` and set the `sort` state
+
   useEffect(() => {
-    const { value } = searchParams;
-    if (value && typeof value === 'string') {
-      try {
-        const parsedValue = JSON.parse(value);
-        if (parsedValue.sort) {
-          setSort(parsedValue.sort);
-        } else {
-          setSort(null); // Clear sort if not provided
+
+
+    try {
+
+      if (value) {
+        setSort(value);
+        if (!productPath) {
+          router.push("/")
         }
-      } catch (err) {
-        console.error('Error parsing searchParams:', err);
-        setSort(null); // Clear sort in case of invalid JSON
+      } else {
+        setSort(null); // Clear sort if not provided
       }
+    } catch (err) {
+      console.error('Error  searchParams:', err);
+      setSort(null); // Clear sort in case of invalid JSON
     }
+
   }, [searchParams]);
 
   // Fetch products based on the `sort` state
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const endpoint = sort ? `http://localhost:3000/api/v2/${sort}` : `http://localhost:3000/api/v2/get-products`;
+        const endpoint = sort ? `${API_URL}/${sort}` : `${API_URL}/get-products`;
+        console.log("endpoint", endpoint)
         const response = await axios.get(endpoint);
-        setProducts(response.data.data); // Assuming `response.data.data` contains the products
-        setError(null); // Clear any previous error
+        setProducts(response.data.data);
+        setError(null);
       } catch (err: any) {
         console.error('Error fetching products:', err?.message);
         setError(err?.message || 'An error occurred while fetching products.');
@@ -60,9 +77,15 @@ const Products = ({ searchParams }: { searchParams: { [key: string]: string } })
     fetchProducts();
   }, [sort]); // Run whenever `sort` changes
 
+  // productHandlers
+  let productHandlers = (product: { _id: string }) => {
+
+    router.push(`${LOCAL_HOST}/order?productId=${product._id}`)
+    console.log("product._id",product._id)
+  }
+
   return (
-    <div className="bg-gray-100 min-h-screen p-10">
-      <h1 className="text-4xl font-bold text-center mb-10 ">Our Products</h1>
+    <div className="bg-gray-400 min-h-screen p-20">
 
       {error ? (
         <p className="text-red-500 text-center">{error}</p>
@@ -83,8 +106,8 @@ const Products = ({ searchParams }: { searchParams: { [key: string]: string } })
                 brand: string;
               }) => (
                 <div
-                
                   key={product._id}
+                  onClick={() => productHandlers(product)}
                   className="bg-white shadow-md rounded-lg cursor-pointer overflow-hidden transition-transform transform hover:scale-105"
                 >
                   <img

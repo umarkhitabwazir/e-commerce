@@ -9,7 +9,7 @@ let authMiddleware = async (req, res, next) => {
     // let token = req.headers.authorization;
 
     let token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
-
+console.log("token",token)
     try {
         let decoded = jwt.verify(token, process.env.JWT_SECRET);
         if (!decoded || !decoded.id) {
@@ -21,9 +21,17 @@ let authMiddleware = async (req, res, next) => {
         next();
     } catch (error) {
         if (error.name === "TokenExpiredError") {
-            return res.status(401).json({ error: "Access token expired. Please refresh your token." });
+            return next(new ApiError(401, "Access token expired. Please refresh your token."));
+
+
         }
+        if (error.name === "JsonWebTokenError") {
+            return next(new ApiError(401, "Invalid token. Please log in again."));
+
+        }
+
         next(error)
+
 
     }
 };

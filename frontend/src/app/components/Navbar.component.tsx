@@ -1,26 +1,34 @@
 "use client"
 import React, { useState } from 'react';
 import axios from 'axios';
-import Products from './Products';
+import Products from './Products.component';
 import { useRouter } from "next/navigation";
-
+import { usePathname } from 'next/navigation';
 const Navbar = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortOption, setSortOption] = useState('');
-    let router = useRouter()
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
+  const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
+  
+  let router = useRouter()
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
     };
-
+    
     const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        // setSortOption(e.target.value);
-        // Products({sort:e.target.value})
-        router.push(`http://localhost:3001?sort=${e.target.value}`);
-
+        
+        router.push(`${LOCAL_HOST}?sort=${e.target.value}`);
+        
     };
-
+    let handleSignup=()=>{
+        router.push(`${LOCAL_HOST}/sign-up`)
+    }
+    
+    let pathName=usePathname()
+    let routes = ["/sign-up", "/verify-email","/login"];
+let isSignUp = routes.includes(pathName);
+ 
     return (
-        <nav className="bg-gray-800 text-white fixed top-0 w-full z-50 shadow-md">
+        <nav className={`${isSignUp? "hidden" : ""} bg-gray-800 text-white fixed top-0 w-full z-50 shadow-md`}>
             <div className="container mx-auto flex items-center justify-between p-4">
                 {/* Logo */}
                 <div className="text-2xl font-bold">Shop</div>
@@ -63,7 +71,9 @@ const Navbar = () => {
                 </div>
 
                 {/* Sign Up Button */}
-                <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold">
+                <button 
+                onClick={handleSignup}
+                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold">
                     Sign Up
                 </button>
             </div>
