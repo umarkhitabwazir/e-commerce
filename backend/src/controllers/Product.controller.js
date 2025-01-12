@@ -142,14 +142,14 @@ let updateProductWithCategory = asyncHandler(async (req, res) => {
             throw new ApiError(402, "image uploading falid!")
         }
 
-        
-            let cloudImgPath = `ecommerce/products-img/${publicId}`
-            let result = await cloudinary.uploader.destroy(cloudImgPath)
-            if (result.result !== "ok") {
-                throw new ApiError(500, "Failed to delete the existing image from Cloudinary");
-            }
-            console.log("result", result)
-      
+
+        let cloudImgPath = `ecommerce/products-img/${publicId}`
+        let result = await cloudinary.uploader.destroy(cloudImgPath)
+        if (result.result !== "ok") {
+            throw new ApiError(500, "Failed to delete the existing image from Cloudinary");
+        }
+        console.log("result", result)
+
 
         product.image = productImg.url
     }
@@ -174,9 +174,9 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
     let publicIdWithExtension = existimgUrl.split("/").pop()
     let publicId = publicIdWithExtension.split(".")[0]
     let cloudImgPath = `ecommerce/products-img/${publicId}`
-    
-      await cloudinary.uploader.destroy(cloudImgPath)
-    
+
+    await cloudinary.uploader.destroy(cloudImgPath)
+
     let findProductCategory = await Product.find({ category: product.category })
 
     let category = await Category.findById(product.category)
@@ -195,11 +195,30 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
 
     res.status(200).json(new ApiResponse(200, product, "Product deleted successfully"))
 })
-let getAllProducts=asyncHandler(async(req,res)=>{
-    let product=await Product.find()
+let getAllProducts = asyncHandler(async (req, res) => {
+    let product = await Product.find()
     console.log(product)
     res.status(200).json(
-        new ApiResponse(200,product,"fetch all product successfully!")
+        new ApiResponse(200, product, "fetch all product successfully!")
+    )
+})
+
+let getSingleProduct = asyncHandler(async (req, res) => {
+    let user = req.user
+    if (!user) {
+        throw new ApiError(401, "user not loged in")
+    }
+    let productId = req.params.productId
+    if (!productId) {
+        throw new ApiError(400, "productId is required!")
+    }
+    let product = await Product.findById(productId)
+    if (!product) {
+        throw new ApiError(400,"product not found")
+    }
+    
+    res.status(200).json(
+        new ApiResponse(200,product,"product founded")
     )
 })
 
@@ -207,6 +226,7 @@ let getAllProducts=asyncHandler(async(req,res)=>{
 export {
     createProductsWithCategory,
     getAllProducts,
+    getSingleProduct,
     updateProductWithCategory,
     deleteProductWithCategory
 

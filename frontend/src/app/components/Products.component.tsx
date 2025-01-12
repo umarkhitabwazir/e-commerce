@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import {usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 const Products = () => {
   const [sort, setSort] = useState<string | null>(null); // Sort state
@@ -12,9 +12,9 @@ const Products = () => {
   const router = useRouter()
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
-const routePath=usePathname()
-const routes=["/"]
-const productPath=routes.includes(routePath)
+  const routePath = usePathname()
+  const routes = ["/"]
+  const productPath = routes.includes(routePath)
   let searchParams = useSearchParams()
   let value = searchParams.get("sort")
 
@@ -79,9 +79,9 @@ const productPath=routes.includes(routePath)
 
   // productHandlers
   let productHandlers = (product: { _id: string }) => {
-
+setLoading(true)
     router.push(`${LOCAL_HOST}/order?productId=${product._id}`)
-    console.log("product._id",product._id)
+    console.log("product._id", product._id)
   }
 
   return (

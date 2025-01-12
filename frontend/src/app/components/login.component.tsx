@@ -2,21 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { LoginSchema,LoginFormData } from '../utils/formSchemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-// Define Zod schema for form validation
-const LoginSchema = z.object({
+import { useSearchParams } from 'next/navigation';
 
-    email: z.string().email('Invalid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters long'),
-
-});
-
-// TypeScript type for the form fields
-type LoginFormData = z.infer<typeof LoginSchema>;
 
 const LoginComponent = () => {
     const {
@@ -32,6 +24,8 @@ const LoginComponent = () => {
     const [error, setError] = useState<string | undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(false); // Track loading state
     const router = useRouter()
+    const searchParams=useSearchParams()
+  const trackedPath=searchParams.get("track")
 
     // Form submit handler
     const onSubmit = async (data: LoginFormData) => {
@@ -58,8 +52,11 @@ const LoginComponent = () => {
 
             }
             let resdata = response
-            console.log(resdata)
+            console.log("resdata",resdata)
             setLoading(false); // Stop loading
+            if (resdata.data.statusCode===200 ) {
+                router.push(`${LOCAL_HOST}/${trackedPath || "/"}`)
+            }
 
         } catch (err: any) {
 
@@ -70,10 +67,11 @@ const LoginComponent = () => {
             } else {
                 setError('An unknown error occurred.');
             }
+            console.log('err',err)
             // if email not verified
-            if (err.status === 401) {
-                router.push(`${LOCAL_HOST}/verify-email`)
-            }
+            // if (err.status === 401) {
+            //     router.push(`${LOCAL_HOST}/verify-email`)
+            // }
         }
     };
 

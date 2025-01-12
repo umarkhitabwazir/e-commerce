@@ -1,5 +1,5 @@
 import express from "express"
-import {router } from "./routes/user.route.js";
+import {router } from "./routes/All.routes.js";
 import bodyParser from "body-parser";
 import nodemailer from 'nodemailer';  
 import cookieParser from "cookie-parser";

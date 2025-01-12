@@ -2,24 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { SignupSchema,SignupFormData } from '../utils/formSchemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 // Define Zod schema for form validation
-const SignupSchema = z.object({
-    username: z.string().min(3, 'Username must be at least 3 characters long'),
-    fullName: z.string().min(5, 'Full name must be at least 5 characters long'),
-    email: z.string().email('Invalid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters long'),
-    address: z.string().optional(),
-    phone: z.string().regex(/^(\+\d{1,3}[- ]?)?\d{10}$/, 'Invalid phone number'),
-});
 
-// TypeScript type for the form fields
-type SignupFormData = z.infer<typeof SignupSchema>;
 
 const SignupComponent = () => {
     const {

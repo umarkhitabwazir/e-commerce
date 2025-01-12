@@ -24,7 +24,7 @@ let generateAccessAndRefereshTokens = async (userId) => {
         }
         let accessToken = await user.generateAccessToken()
         let refreshToken = await user.generateRefreshToken()
-        
+
         user.refreshToken = refreshToken
 
         await user.save({ validateBeforeSave: false })
@@ -85,7 +85,7 @@ let createUser = asyncHandler(async (req, res) => {
     let { username, email, fullName, role, address, phone, password } = req.body
 
 
-    if ([username, email, fullName,  phone, password].some((field) => field?.trim() === "")) {
+    if ([username, email, fullName, phone, password].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "All fields are required")
     }
     const errors = validationResult(req);
@@ -93,14 +93,14 @@ let createUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, errors.array()[0].msg);
     }
 
-// if (!["user", "admin", "superadmin"].includes(role)) {
-//         throw new ApiError(400, "Role must be user or admin")
+    // if (!["user", "admin", "superadmin"].includes(role)) {
+    //         throw new ApiError(400, "Role must be user or admin")
 
-//     }
-    
-if (role==="superadmin") {
-throw new ApiError(400, "you only create user and admin role! ") 
-}
+    //     }
+
+    if (role === "superadmin") {
+        throw new ApiError(400, "you only create user and admin role! ")
+    }
 
     let exitUser = await User.findOne({
         $or: [{ username: username }, { email: email }]
@@ -154,7 +154,7 @@ let updateUser = asyncHandler(async (req, res) => {
     if ([fullName, address, phone].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "All fields are required")
     }
-  
+
     user.fullName = fullName
     user.address = address
     user.phone = phone
@@ -165,7 +165,7 @@ let updateUser = asyncHandler(async (req, res) => {
 let listAllUser = asyncHandler(async (req, res) => {
     let user = req.user
     const users = await User.find({ role: { $ne: "superadmin" } }).select("-password")
-   console.log("users",users)
+    console.log("users", users)
     if (!users) {
         throw new ApiError(404, "Users not found")
     }
@@ -174,7 +174,7 @@ let listAllUser = asyncHandler(async (req, res) => {
             id: user.id,
             username: user.username,
             email: user.email,
-            
+
         }
     })
     res.status(200).json(new ApiResponse(200, listAllUsers, "All users fetched successfully"))
@@ -188,8 +188,8 @@ let listAllUser = asyncHandler(async (req, res) => {
     // }
 
 
-    
-    
+
+
     // let isVerified = user.isVerified
     // if (!isVerified) {
     //     throw new ApiError(401, "delete account after email verification")
@@ -199,9 +199,9 @@ let listAllUser = asyncHandler(async (req, res) => {
     //     throw new ApiError(401, "only Admin  can delete account")
 
     // }
-    
+
     // let findProduct = await Product.find({ user: user.id })
-    
+
     // if (findProduct) {
     //     await Product.deleteMany({ user: user.id })
     // }
@@ -209,7 +209,7 @@ let listAllUser = asyncHandler(async (req, res) => {
     // if (findCategory) {
     //     await Category.deleteMany({ user: user.id })
     // }
-   
+
     // let findCart = await Cart.find({ user: user.id })
     // if (findCart) {
     //     await Cart.deleteMany({ user: user.id })
@@ -232,7 +232,7 @@ let listAllUser = asyncHandler(async (req, res) => {
     // if (!deleteUser) {
     //     throw new ApiError(404, "User not found")
     // }
-    
+
     res.status(200).json(new ApiResponse(200, deleteUser, "User deleted successfully"))
 })
 
@@ -242,6 +242,11 @@ let loginUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Email and password are required")
     }
     let user = await User.findOne({ email: email })
+    let options = {
+        httponly: true,
+        secure: true,
+    }
+    let { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
     if (!user) {
         throw new ApiError(404, "User not found")
     }
@@ -255,25 +260,28 @@ let loginUser = asyncHandler(async (req, res) => {
         await sendEmail(email, emailVerificationCode)
         user.emailVerificationCode = emailVerificationCode
         await user.save()
-        
+
+        res.
+            cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options).
+            status(200).json(new ApiResponse(200, null, "Email is not verified. Verification code has been sent to your email.", false)
+            )
     }
 
-    let options = {
-        httponly: true,
-        secure: true,
-    }
-    let { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
+if (isVerified) {
     res.
         cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options).
-        status(200).json(new ApiResponse(200, null, "Email is not verified. Verification code has been sent to your email.",false)
+        status(200).json(new ApiResponse(200, user, "user loged in successfully!", true)
         )
+}
+    
 
 })
 
 let logoutUser = asyncHandler(async (req, res) => {
     let user = req.user
-    
+
     if (!user) {
         throw new ApiError(404, "User not not logged in")
     }
@@ -286,7 +294,7 @@ let logoutUser = asyncHandler(async (req, res) => {
 
 let verifyEmail = asyncHandler(async (req, res) => {
     const { emailVerificationCode } = req.body;
-    console.log("emailVerificationCode",emailVerificationCode)
+    console.log("emailVerificationCode", emailVerificationCode)
 
     if (!emailVerificationCode) {
         throw new ApiError(400, "Verification code is required.");
@@ -297,7 +305,7 @@ let verifyEmail = asyncHandler(async (req, res) => {
         throw new ApiError(401, "Unauthorized. Please log in first.");
     }
 
-    
+
 
     if (user.isVerified) {
         throw new ApiError(400, "Email is already verified.");
@@ -318,12 +326,11 @@ let verifyEmail = asyncHandler(async (req, res) => {
 });
 let resendEmailVerificationCode = asyncHandler(async (req, res) => {
     let user = req.user;
-    console.log("user",user)
     if (!user) {
         throw new ApiError(401, "Unauthorized. Please log in first.");
     }
 
-   
+
 
     if (user.isVerified) {
         throw new ApiError(400, "Email is already verified.");
@@ -340,12 +347,12 @@ let resendEmailVerificationCode = asyncHandler(async (req, res) => {
 
     res.status(200).json(new ApiResponse(200, null, "Verification code sent successfully."));
 })
-let getLoginUserData=asyncHandler(async(req,res)=>{
-    let user=req.user
+let getLoginUserData = asyncHandler(async (req, res) => {
+    let user = req.user
     if (!user) {
-    throw new ApiError(400,"user not logined!")
+        throw new ApiError(400, "user not logined!")
     }
-    res.status(200).json(200,new ApiResponse(200,user,"user founded"))
+    res.status(200).json(200, new ApiResponse(200, user, "user founded"))
 })
 
 export {
