@@ -27,7 +27,7 @@ const Products = () => {
       try {
 
         await new Promise((resolve) => setTimeout(resolve, 2000));
-        console.log("Data fetched successfully!");
+        
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -64,8 +64,8 @@ const Products = () => {
     const fetchProducts = async () => {
       try {
         const endpoint = sort ? `${API_URL}/${sort}` : `${API_URL}/get-products`;
-        console.log("endpoint", endpoint)
         const response = await axios.get(endpoint);
+        
         setProducts(response.data.data);
         setError(null);
       } catch (err: any) {
@@ -80,8 +80,7 @@ const Products = () => {
   // productHandlers
   let productHandlers = (product: { _id: string }) => {
 setLoading(true)
-    router.push(`${LOCAL_HOST}/order?productId=${product._id}`)
-    console.log("product._id", product._id)
+    router.push(`${LOCAL_HOST}/order?product=${product._id}`)
   }
 
   return (

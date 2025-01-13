@@ -11,8 +11,8 @@ let createOrder = asyncHandler(async (req, res) => {
     if (!userId) {
         throw new ApiError(400, "User not logged in");
     }
-    if (!products || !Array.isArray(products) || products.length === 0 || !paymentMethod) {
-        throw new ApiError(400, "Products and payment method are required");
+    if (!products || !Array.isArray(products) || products.length === 0) {
+        throw new ApiError(400, "Products  are required");
     }
     // Validate and process products
     const validatedProducts = [];
@@ -104,6 +104,30 @@ let updateOrder = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, order, "Order updated successfully"));
 });
 
+let getOrder = asyncHandler(async (req, res) => {
+    let user = req.user
+    if (!user) {
+        throw new ApiError(400, "user must be loged in!")
+    }
+    let productId = req.params.productId
+    if (!productId) {
+        throw new ApiError(400, "product id is required!")
+
+    }
+    let order = await Order.find({ products: { $elemMatch: { productId: productId } } });
+    console.log('order',order)
+    if (!order) {
+        throw new ApiError(400, "order not founded!")
+    }
+    let logedInUser = order.map((i)=>i.userId.toString())
+
+    if (logedInUser.includes(user.id)===false) {
+        throw new ApiError(400, "you can't access to the other user order!")
+
+    }
+    res.status(200).json(new ApiResponse(200, order, "order founded successfully!", true))
+})
+
 let deleteOder = asyncHandler(async (req, res) => {
     let orderId = req.params.orderId
     let user = req.user
@@ -134,5 +158,6 @@ let deleteOder = asyncHandler(async (req, res) => {
 export {
     createOrder,
     updateOrder,
+    getOrder,
     deleteOder
 };

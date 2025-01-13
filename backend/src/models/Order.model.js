@@ -24,7 +24,7 @@ let orderSchema = new Schema({
     ],
     paymentMethod: {
         type: String,
-        required: [true, "paymentMethod is required"],
+        required:false,
         trim: true,
     },
     paymentResult: {

@@ -4,7 +4,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import withAuth from "../utils/withAuth";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
-
+import SingleProductComponent from "./SingleProduct.component";
 type Product = {
   title: string;
   price: number;
@@ -55,53 +55,53 @@ const OrderPage: React.FC<OrderPageProps> = ({ user }) => {
   const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
   const [loading, setLoading] = useState<boolean>(false)
   const searchParams = useSearchParams();
-  const productId = searchParams.get("productId");
-  
+  const productId = searchParams.get("product");
+  console.log("productId",productId)
   const router = useRouter()
   
-  useEffect(() => {
-    let fetchData = async () => {
-     
-      setLoading(true)
-      try {
-        await new Promise(resolve => setTimeout(resolve, 2000))
-      } catch (error) {
-        console.log(error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchData()
-  })
 
-  useEffect(() => {
-    const getSingleProduct = async () => {
-      try {
-        if (!productId) {
-          return router.push("/")
-        }
-        const res = await axios.get(`${API_URL}/get-single-product/${productId}`, { withCredentials: true });
-        console.log("Product fetched:", res.data.data);
-        setProduct(res.data.data);
-      } catch (error) {
-        console.error("Error fetching product:", error);
-      }
-    };
 
-    getSingleProduct();
-  }, [API_URL, productId]);
-
+ 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    console.log("Form Data:", data);
     if (product.countInStock < data.quantity) {
 
       setError("quantity", { type: "manual", message: "Quantity is out of stock" });
       return;
     }
-    router.push(`${LOCAL_HOST}/buying?q=${data.quantity}&product=${productId}`)
+    
+
+      let formdata={
+        "products":[{
+          "productId": productId,
+          "quantity":data.quantity
+           },
+          ],
+          
+   
+      }
+      try {
+        let res=await axios.post(`${API_URL}/order`,formdata,{withCredentials:true})
+        console.log("res",res)
+        console.log("res",'res')
+        let fetchData = async () => {
+     
+          try {
+            setLoading(true)
+            await new Promise(resolve => setTimeout(resolve, 2000))
+          } catch (error) {
+            console.log(error)
+          } finally {
+            setLoading(false)
+          }
+        }
+        fetchData()
+        router.push(`${LOCAL_HOST}/buying?product=${productId}`)
+      } catch (error) {
+        console.log("buyingComponenterror",error)
+      }
+    
 
 
-    // Perform further actions like sending the data to the API
   };
 
   return (
@@ -113,31 +113,7 @@ const OrderPage: React.FC<OrderPageProps> = ({ user }) => {
         </div> :
           <div className="flex flex-row lg:flex-row  bg-gray-100 min-h-screen w-screen   p-20">
             {/* Product Details */}
-            <div className="bg-white shadow-lg rounded-lg p-6 max-w-lg w-full min-h-screen lg:mb-0 lg:mr-10">
-              {product.image ? (
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  width={100}
-                  height={100}
-                  className="rounded-md"
-                />
-              ) : (
-                <p>No image available</p>
-              )}
-              <p className="text-gray-600 mb-4">{product.description}</p>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                price:{product.price.toFixed(2)}
-              </h2>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                brand:{product.brand}
-              </h2>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                rating:{product.rating || "no rate"}
-              </h2>
-
-
-            </div>
+            <SingleProductComponent productId={productId}/>
 
             {/* Order Form */}
             <div className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full min-h-screen">

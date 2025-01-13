@@ -7,7 +7,7 @@ import {
 import { createProductsWithCategory, getAllProducts, getSingleProduct, updateProductWithCategory, deleteProductWithCategory } from "../controllers/Product.controller.js";
 import { categoryList } from "../controllers/CategoryList.controller.js";
 import { createCart } from "../controllers/Cart.controller.js";
-import { createOrder, updateOrder, deleteOder } from "../controllers/Order.controller.js";
+import { createOrder, updateOrder,getOrder, deleteOder } from "../controllers/Order.controller.js";
 import { transferMoney } from "../controllers/MoneyTransfer.controller.js";
 import { reviewController, updateReview, deleteReview } from "../controllers/Review.controller.js";
 import { sortPriceLowToHigh, sortPriceHighToLower, sortNewest } from "../controllers/SortBy.js";
@@ -98,6 +98,7 @@ router.route("/product/delete/:productid").delete(
 // Order Routes
 router.route("/order").post(authMiddleware, createOrder); // Create an order
 router.route("/order/update/:orderId").patch(authMiddleware, updateOrder); // Update an order
+router.route("/get-order/:productId").get(authMiddleware,getOrder); // get  an product  order
 router.route("/order/delete/:orderId").delete(authMiddleware, deleteOder); // Delete an order
 
 // Address Routes

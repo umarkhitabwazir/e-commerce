@@ -19,7 +19,7 @@ let authMiddleware = async (req, res, next) => {
         req.user = userExists;
         next();
     } catch (error) {
-        console.log("error",error)
+        console.log("error",error.name)
         if (error.name === "TokenExpiredError") {
             return next(new ApiError(401, "Access token expired. Please refresh your token."));
 

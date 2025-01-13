@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import axios from "axios";
 
 interface WithAuthProps {
@@ -17,16 +17,22 @@ interface WithAuthProps {
 
 const withAuth = <P extends WithAuthProps>(WrappedComponent: React.ComponentType<P>) => {
     const AuthenticatedComponent = (props: Omit<P, "user">) => {
-        
+
         const router = useRouter();
         const [user, setUser] = useState<any | null>(null);
         const API_URL = process.env.NEXT_PUBLIC_API_URL
+
+        const trackPath = usePathname()
+        const searchParams=useSearchParams()
+        const quantity=searchParams.get('q')
+        const product=searchParams.get('product')
+        const isQuantity=quantity? quantity : ""
+        const isProduct=product? product : ""
+        // console.log("product",product)
         useEffect(() => {
             const checkAuth = async () => {
-                const trackPath=window.location.href.split('/').pop()
-                
                 try {
-                 
+
                     const response = await axios.get(`${API_URL}/get-logined-user`, {
                         withCredentials: true,
                     });
@@ -38,12 +44,12 @@ const withAuth = <P extends WithAuthProps>(WrappedComponent: React.ComponentType
                     setUser(response.data.data); // Set user data
                 } catch (error) {
 
-                    router.push(`/login?track=$o{trackPath}`);
+                    router.push(`/login?track=${trackPath || "/"}&q=${isQuantity}&product=${isProduct} `);
                 }
             };
 
             checkAuth();
-        }, [API_URL, router]);
+        }, [API_URL, router, trackPath]);
 
         // Show a loading spinner or fallback UI while user data is loading
         if (!user) return <div>Loading...</div>;

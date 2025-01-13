@@ -28,7 +28,7 @@ const Navbar = () => {
 let isSignUp = routes.includes(pathName);
  
     return (
-        <nav className={`${isSignUp? "hidden" : ""} bg-gray-800 text-white fixed top-0 w-full z-50 shadow-md`}>
+        <nav className={`${isSignUp? "hidden" : ""} bg-gray-800  text-white fixed top-0 w-full z-50 shadow-md`}>
             <div className="container mx-auto flex items-center justify-between p-4">
                 {/* Logo */}
                 <div className="text-2xl font-bold">Shop</div>

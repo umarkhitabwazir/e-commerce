@@ -350,7 +350,7 @@ let resendEmailVerificationCode = asyncHandler(async (req, res) => {
 let getLoginUserData = asyncHandler(async (req, res) => {
     let user = req.user
     if (!user) {
-        throw new ApiError(400, "user not logined!")
+        throw new ApiError(400,null, "user not logined!",false)
     }
     res.status(200).json(200, new ApiResponse(200, user, "user founded"))
 })

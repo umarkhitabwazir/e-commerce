@@ -26,6 +26,10 @@ const LoginComponent = () => {
     const router = useRouter()
     const searchParams=useSearchParams()
   const trackedPath=searchParams.get("track")
+           const quantity=searchParams.get('q')
+          const product=searchParams.get('product')
+          const isQuantity=quantity? quantity : ""
+          const isProduct=product? product : ""
 
     // Form submit handler
     const onSubmit = async (data: LoginFormData) => {
@@ -55,7 +59,8 @@ const LoginComponent = () => {
             console.log("resdata",resdata)
             setLoading(false); // Stop loading
             if (resdata.data.statusCode===200 ) {
-                router.push(`${LOCAL_HOST}/${trackedPath || "/"}`)
+                router.push(`${trackedPath || "/"}?q=${isQuantity}&product=${isProduct} `);
+
             }
 
         } catch (err: any) {
