@@ -27,7 +27,9 @@ const withAuth = <P extends WithAuthProps>(WrappedComponent: React.ComponentType
         const quantity=searchParams.get('q')
         const product=searchParams.get('product')
         const isQuantity=quantity? quantity : ""
+        const productPrice=searchParams.get('p')
         const isProduct=product? product : ""
+        const isProductPrice=productPrice?productPrice:""
         // console.log("product",product)
         useEffect(() => {
             const checkAuth = async () => {
@@ -41,10 +43,10 @@ const withAuth = <P extends WithAuthProps>(WrappedComponent: React.ComponentType
                         throw new Error("User not logged in");
                     }
 
-                    setUser(response.data.data); // Set user data
+                    setUser(response.data.data); 
                 } catch (error) {
-
-                    router.push(`/login?track=${trackPath || "/"}&q=${isQuantity}&product=${isProduct} `);
+console.log("error",error)
+                    router.push(`/login?track=${trackPath || "/"}&q=${isQuantity}&product=${isProduct}&p=${isProductPrice} `);
                 }
             };
 

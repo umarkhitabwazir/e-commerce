@@ -65,7 +65,6 @@ const Products = () => {
       try {
         const endpoint = sort ? `${API_URL}/${sort}` : `${API_URL}/get-products`;
         const response = await axios.get(endpoint);
-        
         setProducts(response.data.data);
         setError(null);
       } catch (err: any) {
@@ -78,9 +77,9 @@ const Products = () => {
   }, [sort]); // Run whenever `sort` changes
 
   // productHandlers
-  let productHandlers = (product: { _id: string }) => {
+  let productHandlers = (product: { _id: string,price:number,countInStock:number }) => {
 setLoading(true)
-    router.push(`${LOCAL_HOST}/order?product=${product._id}`)
+    router.push(`${LOCAL_HOST}/order?product=${product._id}&p=${product.price}&stock=${product.countInStock}`)
   }
 
   return (

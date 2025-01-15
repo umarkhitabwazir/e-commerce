@@ -7,28 +7,32 @@ import { usePathname } from 'next/navigation';
 const Navbar = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortOption, setSortOption] = useState('');
-  const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
-  
-  let router = useRouter()
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(e.target.value);
+    const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
+
+    let router = useRouter()
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
     };
-    
+
     const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        
+
         router.push(`${LOCAL_HOST}?sort=${e.target.value}`);
-        
+
     };
-    let handleSignup=()=>{
-        router.push(`${LOCAL_HOST}/sign-up`)
+    const handleSitting = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        console.log('object', e.target.value)
+
+        router.push(`${LOCAL_HOST}/${e.target.value}`)
+
     }
-    
-    let pathName=usePathname()
-    let routes = ["/sign-up", "/verify-email","/login"];
-let isSignUp = routes.includes(pathName);
- 
+
+   
+
+    let pathName = usePathname()
+    let authRoutes = ["/sign-up", "/verify-email", "/login", "/log-out"];
+    let isAuthRoute = authRoutes.includes(pathName);
     return (
-        <nav className={`${isSignUp? "hidden" : ""} bg-gray-800  text-white fixed top-0 w-full z-50 shadow-md`}>
+        <nav className={`${isAuthRoute ? "hidden" : ""} bg-gray-800  text-white fixed  top-0 w-full z-50 shadow-md`}>
             <div className="container mx-auto flex items-center justify-between p-4">
                 {/* Logo */}
                 <div className="text-2xl font-bold">Shop</div>
@@ -37,7 +41,6 @@ let isSignUp = routes.includes(pathName);
                 <div className="relative w-1/3 hidden sm:block">
                     <input
                         type="text"
-                        value={searchQuery}
                         onChange={handleSearch}
                         placeholder="Search products..."
                         className="w-full p-2 rounded-lg text-gray-900"
@@ -70,12 +73,25 @@ let isSignUp = routes.includes(pathName);
                     </select>
                 </div>
 
-                {/* Sign Up Button */}
-                <button 
-                onClick={handleSignup}
-                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold">
-                    Sign Up
-                </button>
+                <div className="relative w-48">
+                    <select
+                        id="userActions"
+                        name="userActions"
+                        value={sortOption}
+                        onChange={handleSitting}
+                        className="block w-full px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg shadow-md focus:ring focus:ring-blue-300 focus:outline-none transition duration-200 cursor-pointer hover:bg-gray-600"
+                    >
+                        <option className='cursor-pointer' value="">Sitting</option>
+                        <option className='cursor-pointer' value="sign-up">Sign Up</option>
+                        <option className='cursor-pointer' value="log-out">Log Out</option>
+                        <option className='cursor-pointer' value="profile">Profile</option>
+                        <option className='cursor-pointer' value="login">Login</option>
+                    </select>
+                </div>
+
+              
+               
+                
             </div>
 
             {/* Mobile Search Bar */}

@@ -132,8 +132,7 @@ let createUser = asyncHandler(async (req, res) => {
         secure: true,
     }
     let { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
-
-
+   
     res.
         cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options).
@@ -352,7 +351,7 @@ let getLoginUserData = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(400,null, "user not logined!",false)
     }
-    res.status(200).json(200, new ApiResponse(200, user, "user founded"))
+    res.status(200).json( {status:200,data: user,message: "user founded"})
 })
 
 export {

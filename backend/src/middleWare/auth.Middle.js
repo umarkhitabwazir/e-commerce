@@ -8,24 +8,36 @@ dotenv.config({
 let authMiddleware = async (req, res, next) => {
     // let token = req.headers.authorization;
 
-    let token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
+    let accessToken = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
+    let refreshToken = req.cookies?.refreshToken || req.header("Authorization")?.replace("Bearer ", "")
+    if (!accessToken) {
+        next(new ApiError(401, "Unauthorized"))
+    }
     try {
-        let decoded = jwt.verify(token, process.env.JWT_SECRET);
+        let decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_TOKEN_SECRET);
         if (!decoded || !decoded.id) {
             throw new ApiError(401, "Unauthorized. Invalid token.");
         }
-        let user = await decoded.id;
+        let user = decoded.id;
         let userExists = await User.findById(user);
+
+        if (!userExists) {
+            throw new ApiError(401, "user not founded!")
+        }
+       
+
         req.user = userExists;
         next();
     } catch (error) {
-        console.log("error",error.name)
+
         if (error.name === "TokenExpiredError") {
+
             return next(new ApiError(401, "Access token expired. Please refresh your token."));
 
 
         }
         if (error.name === "JsonWebTokenError") {
+
             return next(new ApiError(401, "Invalid token. Please log in again."));
 
         }

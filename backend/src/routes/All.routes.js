@@ -7,7 +7,7 @@ import {
 import { createProductsWithCategory, getAllProducts, getSingleProduct, updateProductWithCategory, deleteProductWithCategory } from "../controllers/Product.controller.js";
 import { categoryList } from "../controllers/CategoryList.controller.js";
 import { createCart } from "../controllers/Cart.controller.js";
-import { createOrder, updateOrder,getOrder, deleteOder } from "../controllers/Order.controller.js";
+import {previewOrder, updateOrder,getOrder, deleteOder } from "../controllers/Order.controller.js";
 import { transferMoney } from "../controllers/MoneyTransfer.controller.js";
 import { reviewController, updateReview, deleteReview } from "../controllers/Review.controller.js";
 import { sortPriceLowToHigh, sortPriceHighToLower, sortNewest } from "../controllers/SortBy.js";
@@ -75,7 +75,7 @@ router.route("/newest").get(sortNewest); // Sort products by newest first
 router.route("/get-products").get(getAllProducts); // Retrieve all products
 
 // Get Single Product
-router.route("/get-single-product/:productId").get(authMiddleware, getSingleProduct); // Fetch details of a single product by ID
+router.route("/get-single-product/:productId").get( getSingleProduct); // Fetch details of a single product by ID
 
 // Update Product
 router.route("/product/update/:productid").patch(
@@ -96,7 +96,7 @@ router.route("/product/delete/:productid").delete(
 ); // Delete a product (Admin/Superadmin only)
 
 // Order Routes
-router.route("/order").post(authMiddleware, createOrder); // Create an order
+router.route("/preview-order").post(previewOrder); // Create an order
 router.route("/order/update/:orderId").patch(authMiddleware, updateOrder); // Update an order
 router.route("/get-order/:productId").get(authMiddleware,getOrder); // get  an product  order
 router.route("/order/delete/:orderId").delete(authMiddleware, deleteOder); // Delete an order

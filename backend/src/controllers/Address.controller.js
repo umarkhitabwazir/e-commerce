@@ -5,7 +5,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 let addressController = asyncHandler(async (req, res) => {
     const { fullName, Province, City, phone, Building, HouseNo, Floor, Street } = req.body;
-    let requiredFiels = [fullName, Province, City, phone, Building, HouseNo, Floor, Street]
+    let requiredFiels = [fullName, Province, City, phone,  HouseNo ]
     let user=req.user
     if (!user) {
        throw new ApiError(400,"user must be loged in!") 
@@ -31,12 +31,13 @@ let addressController = asyncHandler(async (req, res) => {
 })
 let findAddress=asyncHandler(async(req,res)=>{
     let user=req.user
+
     if (!user) {
         throw new ApiError(400,"user must be loged in",false)
     }
     let address=await Address.findOne({user:user.id})
     if (!address) {
-        throw new ApiError(400,null,"address not founded",false)
+        throw new ApiError(404,null,"address not founded",false)
     }
     res.status(200).json(new ApiResponse(200,address,"address founded",true))
 })

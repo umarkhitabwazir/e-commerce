@@ -76,14 +76,14 @@ userSchema.methods.comparePassword =async function(plainPassword){
 }
 userSchema.methods.generateAccessToken =async function(){
     return jwt.sign({id:this._id},
-        process.env.JWT_SECRET,
-        {expiresIn:process.env.JWT_EXPIRES_IN})
+        process.env.JWT_ACCESS_TOKEN_SECRET,
+        {expiresIn:process.env.JWT_ACCESS_TOKEN_EXPIRES_IN})
 
 }
 userSchema.methods.generateRefreshToken =async function(){
     return jwt.sign({id:this._id},
-        process.env.JWT_SECRET,
-        {expiresIn:process.env.JWT_REFRESH_EXPIRES_IN})
+        process.env.JWT_REFRESH_TOKEN_SECRET,
+        {expiresIn:process.env.JWT_REFRESH_TOKEN_EXPIRES_IN})
 }
 
 export let User = mongoose.model( "User", userSchema)

@@ -4,59 +4,73 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-let createOrder = asyncHandler(async (req, res) => {
-    const { products, paymentMethod } = req.body;
-    const userId = req.user;
 
-    if (!userId) {
-        throw new ApiError(400, "User not logged in");
-    }
+
+const TAX_RATE = parseFloat(process.env.TAX_RATE); 
+const SHIPPING_COST = parseFloat(process.env.SHIPPING_COST); 
+
+let previewOrder = asyncHandler(async (req, res) => {
+    const { products } = req.body;
+    
+
+   
     if (!products || !Array.isArray(products) || products.length === 0) {
-        throw new ApiError(400, "Products  are required");
+        throw new ApiError(400, "Products are required");
     }
-    // Validate and process products
-    const validatedProducts = [];
+
+    // Validate products
+    const productIds = products.map((item) => item.productId);
+    
+    const dbProducts = await Product.find({ _id: { $in: productIds } });
+   
+
+    if (dbProducts.length !== products.length) {
+        throw new ApiError(404, "One or more products not found");
+    }
+
     let productTotalPrice = 0;
-
-    for (const item of products) {
-        // Validate product fields
-        if (!item.productId || !item.quantity || item.quantity <= 0) {
-            throw new ApiError(400, `Each product must have a valid productId and quantity > 0`);
-        }
-
-        const product = await Product.findById(item.productId);
+    const validatedProducts = products.map((item) => {
+        const product = dbProducts.find((p) => p._id.toString() === item.productId);
         if (!product) {
             throw new ApiError(404, `Product with ID ${item.productId} not found`);
         }
 
-        // Accumulate total price
         productTotalPrice += product.price * item.quantity;
-
-        // Prepare product data for the order
-        validatedProducts.push({
+        return {
             productId: product._id,
             quantity: item.quantity,
-        });
-    }
+            price: product.price,
+        };
+    });
+    let productquantities = validatedProducts.map((i) => i.quantity).flat().reduce((acc, quantity) => acc + quantity, 0)
+    
 
     // Calculate prices
-    const taxPrice = (2 / 100) * productTotalPrice;
-    const shippingPrice = 210; // Fixed shipping price
+    const taxPrice = TAX_RATE * productTotalPrice;
+    const shippingPrice = SHIPPING_COST;
     const totalPrice = productTotalPrice + taxPrice + shippingPrice;
 
-    // Create the order
-    const order = await Order.create({
-        userId,
-        products: validatedProducts,
-        paymentMethod,
-        taxPrice,
-        shippingPrice,
-        totalPrice,
-    });
 
-    // Respond with the created order
-    res.status(201).json(new ApiResponse(201, order, "Order created successfully"));
+    // Create the order
+    try {
+        const previewOrder= {
+            
+            products: validatedProducts,
+            items:productquantities,
+            taxPrice,
+            shippingPrice,
+            totalPrice,
+        }
+console.log("previewOrder",previewOrder)
+        res.status(201).json(
+            new ApiResponse( 201,previewOrder,"previewOrder created successfully")
+        );
+    } catch (error) {
+        console.log(error)
+        throw new ApiError(500, "Failed to create previewOrder", error);
+    }
 });
+
 
 let updateOrder = asyncHandler(async (req, res) => {
     const orderId = req.params.orderId;
@@ -115,13 +129,13 @@ let getOrder = asyncHandler(async (req, res) => {
 
     }
     let order = await Order.find({ products: { $elemMatch: { productId: productId } } });
-    console.log('order',order)
+    console.log('order', order)
     if (!order) {
         throw new ApiError(400, "order not founded!")
     }
-    let logedInUser = order.map((i)=>i.userId.toString())
+    let logedInUser = order.map((i) => i.userId.toString())
 
-    if (logedInUser.includes(user.id)===false) {
+    if (logedInUser.includes(user.id) === false) {
         throw new ApiError(400, "you can't access to the other user order!")
 
     }
@@ -156,7 +170,7 @@ let deleteOder = asyncHandler(async (req, res) => {
 })
 
 export {
-    createOrder,
+    previewOrder,
     updateOrder,
     getOrder,
     deleteOder

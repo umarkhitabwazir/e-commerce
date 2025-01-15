@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { LoginSchema,LoginFormData } from '../utils/formSchemas';
+import { LoginSchema, LoginFormData } from '../utils/formSchemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -24,12 +24,14 @@ const LoginComponent = () => {
     const [error, setError] = useState<string | undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(false); // Track loading state
     const router = useRouter()
-    const searchParams=useSearchParams()
-  const trackedPath=searchParams.get("track")
-           const quantity=searchParams.get('q')
-          const product=searchParams.get('product')
-          const isQuantity=quantity? quantity : ""
-          const isProduct=product? product : ""
+    const searchParams = useSearchParams()
+    const trackedPath = searchParams.get("track")
+    const quantity = searchParams.get('q')
+    const product = searchParams.get('product')
+    const productPrice = searchParams.get('p')
+    const isQuantity = quantity ? quantity : ""
+    const isProduct = product ? product : ""
+    const isProductPrice = productPrice ? productPrice : ""
 
     // Form submit handler
     const onSubmit = async (data: LoginFormData) => {
@@ -56,10 +58,10 @@ const LoginComponent = () => {
 
             }
             let resdata = response
-            console.log("resdata",resdata)
+            console.log("resdata", resdata)
             setLoading(false); // Stop loading
-            if (resdata.data.statusCode===200 ) {
-                router.push(`${trackedPath || "/"}?q=${isQuantity}&product=${isProduct} `);
+            if (resdata.data.statusCode === 200) {
+                router.push(`${trackedPath || "/"}?q=${isQuantity}&product=${isProduct}&p=${isProductPrice} `);
 
             }
 
@@ -72,7 +74,7 @@ const LoginComponent = () => {
             } else {
                 setError('An unknown error occurred.');
             }
-            console.log('err',err)
+            console.log('err', err)
             // if email not verified
             // if (err.status === 401) {
             //     router.push(`${LOCAL_HOST}/verify-email`)

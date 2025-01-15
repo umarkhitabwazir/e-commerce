@@ -204,10 +204,7 @@ let getAllProducts = asyncHandler(async (req, res) => {
 })
 
 let getSingleProduct = asyncHandler(async (req, res) => {
-    let user = req.user
-    if (!user) {
-        throw new ApiError(401, "user not loged in")
-    }
+   
     let productId = req.params.productId
     if (!productId) {
         throw new ApiError(400, "productId is required!")
