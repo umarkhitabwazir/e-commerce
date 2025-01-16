@@ -132,7 +132,7 @@ let createUser = asyncHandler(async (req, res) => {
         secure: true,
     }
     let { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
-   
+
     res.
         cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options).
@@ -150,14 +150,14 @@ let updateUser = asyncHandler(async (req, res) => {
     if (!user.id) {
         throw new ApiError(401, "Unauthorized. Please log in first.")
     }
-    if ([fullName, address, phone].some((field) => field?.trim() === "")) {
-        throw new ApiError(400, "All fields are required")
+    if (fullName, address, phone) {
+
+        user.fullName = fullName
+        user.address = address
+        user.phone = phone
+        await user.save()
     }
 
-    user.fullName = fullName
-    user.address = address
-    user.phone = phone
-    await user.save()
     res.status(201).json(new ApiResponse(201, user, "User updated successfully"))
 })
 
@@ -267,14 +267,14 @@ let loginUser = asyncHandler(async (req, res) => {
             )
     }
 
-if (isVerified) {
-    res.
-        cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options).
-        status(200).json(new ApiResponse(200, user, "user loged in successfully!", true)
-        )
-}
-    
+    if (isVerified) {
+        res.
+            cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options).
+            status(200).json(new ApiResponse(200, user, "user loged in successfully!", true)
+            )
+    }
+
 
 })
 
@@ -349,9 +349,9 @@ let resendEmailVerificationCode = asyncHandler(async (req, res) => {
 let getLoginUserData = asyncHandler(async (req, res) => {
     let user = req.user
     if (!user) {
-        throw new ApiError(400,null, "user not logined!",false)
+        throw new ApiError(400, null, "user not logined!", false)
     }
-    res.status(200).json( {status:200,data: user,message: "user founded"})
+    res.status(200).json({ status: 200, data: user, message: "user founded" })
 })
 
 export {

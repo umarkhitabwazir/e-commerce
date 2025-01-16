@@ -51,7 +51,7 @@ const BuyingComponent = () => {
   let fetchData = async () => {
     setLoading(true)
     try {
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise(resolve => setTimeout(resolve, 400))
     } catch (error) {
       console.log("promise error", error)
     } finally {
@@ -172,7 +172,7 @@ const BuyingComponent = () => {
 
         <button
           onClick={handleFormToggle}
-          className={`${savedAddress ? "hidden" : ""} bg-blue-700  text-white z-1 px-6 py-3 mt-10 rounded-lg flex justify-center items-center hover:bg-blue-800 active:scale-95 transition-all duration-200`}
+          className={`${savedAddress ? "hidden" : ""} bg-blue-700  text-white z-1 px-6 py-3 mt-10 relative left-3 rounded-lg flex justify-center items-center hover:bg-blue-800 active:scale-95 transition-all duration-200`}
         >
           Add Delivery Address
         </button>
@@ -182,10 +182,11 @@ const BuyingComponent = () => {
 
           <form
             onSubmit={handleSubmit(onSubmit, onError)}
-            className={`${formToggle ? "block" : savedAddress ? "hidden" : "hidden"} bg-white  shadow-md rounded-lg p-10 w-full max-w-md`}
+            className={`${formToggle ? "block" : savedAddress ? "hidden" : "hidden"} bg-white absolute top-0 z-50 shadow-md rounded-lg p-6 m-4 w-full max-w-screen-md`}
           >
+            <img onClick={handleFormToggle} className="absolute top-2 right-2 cursor-pointer hover:h-7 hover:w-7" src="/cross.jpg" alt="img" width={30} height={30} />
             <h1 className="text-xl font-semibold text-gray-900 border-b pb-2 mb-4">
-              Delivery Address
+              Add Delivery Address
             </h1>
 
             <div className="grid grid-cols-1 gap-2 mb-2">
