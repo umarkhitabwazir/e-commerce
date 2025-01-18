@@ -8,7 +8,7 @@ const ProfileComponent = ({ user }: { user: any }) => {
 
     return (
         <>
-            <div className="max-w-2xl mx-auto mt-10 bg-white shadow-md absolute top-10 rounded-lg p-6">
+            <div className="max-w-2xl mx-auto bg-white shadow-md absolute  rounded-lg p-6">
                 <h1 className="text-2xl font-semibold text-gray-800 border-b pb-2 mb-6">
                     {edit ? "Update User Profile" : "User Profile"}
                 </h1>

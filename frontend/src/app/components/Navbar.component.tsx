@@ -29,7 +29,7 @@ const Navbar = () => {
    
 
     let pathName = usePathname()
-    let authRoutes = ["/sign-up", "/verify-email", "/login", "/log-out"];
+    let authRoutes = ["/sign-up", "/verify-email", "/login", "/log-out","/create-product"];
     let isAuthRoute = authRoutes.includes(pathName);
     return (
         <nav className={`${isAuthRoute ? "hidden" : ""} bg-gray-800  text-white fixed  top-0 w-full z-50 shadow-md`}>

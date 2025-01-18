@@ -17,24 +17,14 @@ type Product = {
   user: string;
 };
 
-interface OrderPageProps {
-  user: {
-    username: string;
-    email: string;
-    fullName: string;
-    role: string;
-    password: string;
-    address: string;
-    phone: number;
-  };
-}
+
 
 interface FormData {
 
   quantity: number;
 }
 
-const OrderPage: React.FC<OrderPageProps> = ({ user }) => {
+const OrderPage = () => {
 
   const { register, handleSubmit, formState: { errors }, setError, clearErrors } = useForm<FormData>();
 

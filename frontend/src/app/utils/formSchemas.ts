@@ -28,6 +28,23 @@ type LoginFormData = z.infer<typeof LoginSchema>;
 export { LoginSchema }
 export type { LoginFormData }
 
+// creatProduct form schema
+const CreateProductSchema = z.object({
+    productImg: z
+    .custom((val) => val instanceof FileList && val.length > 0, {
+      message: 'Product image is required and must be a file',
+    }),
+  categoryName: z.string().min(1, 'Category name is required'),
+  title: z.string().min(1, 'Title is required'),
+  price:z.coerce.number().min(1, {message:'price is required'}),
+  description: z.string().min(1, 'Description is required'),
+  countInStock: z.coerce.number().min(1, {message:'Stock count is required'}),
+  brand: z.string().min(1, 'Brand is required'),
+});
+type CreateProductFormData = z.infer<typeof CreateProductSchema>
+export {CreateProductSchema}
+export type {CreateProductFormData}
+
 // address form schema 
 const AddressSchema = z.object({
     fullName: z

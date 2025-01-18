@@ -1,9 +1,10 @@
+import AdminDashboardComponent from '@/app/components/AdminDashboard.component'
 import React from 'react'
-import ProfileComponent from '@/app/components/Profile.component'
+
 const page = () => {
   return (
     <div className='mt-20'>
-      <ProfileComponent/>
+      <AdminDashboardComponent/>
     </div>
   )
 }

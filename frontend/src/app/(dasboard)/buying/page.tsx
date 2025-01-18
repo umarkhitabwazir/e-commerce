@@ -2,7 +2,7 @@ import React from 'react'
 import BuyingComponent from '@/app/components/Buying.component'
 const buying = () => {
   return (
-    <div>
+    <div  className='mt-20'>
       <BuyingComponent/>
     </div>
   )

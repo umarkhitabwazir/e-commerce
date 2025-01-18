@@ -4,7 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/User.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
-import { upload } from "../middleWare/cloudinary.middle.js";
+import { upload } from "../middleWare/multer.middle.js";
 
 import cloudinary from "cloudinary"
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
@@ -17,25 +17,28 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 
 let createProductsWithCategory = asyncHandler(async (req, res) => {
-    let { categoryName, categoryDescription, categoryImage, title, price, description, countInStock, brand } = req.body
+    let { categoryName, title, price, description, countInStock, brand } = req.body
     let userId = req.user
+    console.log(
+        categoryName, title, price, description, countInStock, brand
+    )
     if (!userId) {
         throw new ApiError(400, "user not login")
     }
     let user = await User.findById(userId)
 
 
-    if (!user.role === "admin") {
+    if (!user.role === "admin" || !user.role === "superadmin") {
         throw new ApiError(400, "only admin can create products")
     }
-    if (!categoryName || !categoryDescription || !categoryImage ||
+    if (!categoryName ||
         !title || !price || !description || !countInStock
         || !brand) {
         throw new ApiError(400, "All fields are required")
     }
     let category = await Category.findOne({ categoryName: categoryName })
     const localFilePath = req.file.path;
-
+    console.log("localFilePath", localFilePath)
 
     if (!localFilePath) {
         throw new ApiError(402, "image path not found!")
@@ -52,8 +55,7 @@ let createProductsWithCategory = asyncHandler(async (req, res) => {
     if (!category) {
         category = await Category.create({
             categoryName,
-            categoryDescription,
-            categoryImage,
+
             user: userId
         })
     }
@@ -75,17 +77,16 @@ let createProductsWithCategory = asyncHandler(async (req, res) => {
 })
 
 let updateProductWithCategory = asyncHandler(async (req, res) => {
-    let { categoryName, categoryDescription, categoryImage, title, price, description, countInStock, brand } = req.body
+    let { categoryName,  title, price, description, countInStock, brand } = req.body
 
     let user = req.user
     if (!user) {
-        throw new ApiError(400, "user not login")
+        throw new ApiError(400, "user not logged in")
     }
     if (!user.role === "admin" | "superadmin") {
-        throw new ApiError(400, "only admin can create products")
+        throw new ApiError(400, "only admin can update products")
     }
-    console.log(categoryName, categoryDescription, categoryImage, title, price, description, countInStock, brand)
-    if (!categoryName || !categoryDescription || !categoryImage ||
+    if (!categoryName ||
         !title || !price || !description || !countInStock
         || !brand) {
         throw new ApiError(400, "All fields are required")
@@ -103,8 +104,7 @@ let updateProductWithCategory = asyncHandler(async (req, res) => {
             product.category,
             {
                 categoryName,
-                categoryDescription,
-                categoryImage,
+
                 user: user.id
             })
     }
@@ -204,18 +204,18 @@ let getAllProducts = asyncHandler(async (req, res) => {
 })
 
 let getSingleProduct = asyncHandler(async (req, res) => {
-   
+
     let productId = req.params.productId
     if (!productId) {
         throw new ApiError(400, "productId is required!")
     }
     let product = await Product.findById(productId)
     if (!product) {
-        throw new ApiError(400,"product not found")
+        throw new ApiError(400, "product not found")
     }
-    
+
     res.status(200).json(
-        new ApiResponse(200,product,"product founded")
+        new ApiResponse(200, product, "product founded")
     )
 })
 

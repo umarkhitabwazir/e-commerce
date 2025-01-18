@@ -158,7 +158,7 @@ const BuyingComponent = () => {
   }
   return (
     <>
-      <div className="pt-12 bg-gray-50 h-screen ">
+      <div className=" bg-gray-50 h-screen ">
 
 
         {
