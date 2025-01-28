@@ -23,18 +23,7 @@ let adminProducts = asyncHandler(async (req, res) => {
     }
     res.status(200).json(new ApiResponse(200, product, "product founded", true))
 })
-let updateProduct = asyncHandler(async (req, res) => {
-    let user = req.user
-    if (!user) {
-        throw new ApiError(401, "user must be loged")
-    }
-    let productId = req.params.productId
-    if (!productId) {
-        throw new ApiError(400, "product id is required")
 
-    }
-
-})
 export { 
 
     adminProducts,

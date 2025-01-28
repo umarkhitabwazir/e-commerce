@@ -12,7 +12,9 @@ const Products = () => {
   const router = useRouter()
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
+  const isSuperAdmin = ["superadmin", "admin"]
   const routePath = usePathname()
+  const isrole = isSuperAdmin.includes(routePath)
   const routes = ["/"]
   const productPath = routes.includes(routePath)
   let searchParams = useSearchParams()
@@ -21,13 +23,14 @@ const Products = () => {
 
 
   let [loading, setLoading] = useState(false)
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
 
         await new Promise((resolve) => setTimeout(resolve, 2000));
-        
+
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -77,22 +80,19 @@ const Products = () => {
   }, [sort]); // Run whenever `sort` changes
 
   // productHandlers
-  let productHandlers = (product: { _id: string,price:number,countInStock:number }) => {
-setLoading(true)
+  let productHandlers = (product: { _id: string, price: number, countInStock: number }) => {
+    setLoading(true)
     router.push(`${LOCAL_HOST}/order?product=${product._id}&p=${product.price}&stock=${product.countInStock}`)
   }
 
   return (
-    <div className="bg-gray-400 min-h-screen p-20">
+    <div className="bg-bgGray min-h-screen   p-10">
 
       {error ? (
         <p className="text-red-500 text-center">{error}</p>
-      ) : loading ? <div className="fixed top-0 left-0 w-full h-full bg-white bg-opacity-80 flex flex-col justify-center items-center z-50">
-        <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-700 border-b-blue-500 rounded-full animate-spin"></div>
-        <p className="text-black text-lg mt-4 border-t-black ">loading...</p>
-      </div>
+      ) : loading ? <div></div>
         : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className={` grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8`}>
             {products.map(
               (product: {
                 _id: string;

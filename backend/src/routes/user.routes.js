@@ -7,7 +7,7 @@ import {
 import { getAllProducts, getSingleProduct, } from "../controllers/Product.controller.js";
 import { categoryList } from "../controllers/CategoryList.controller.js";
 import { createCart } from "../controllers/Cart.controller.js";
-import {previewOrder, updateOrder,getOrder, deleteOder } from "../controllers/Order.controller.js";
+import {previewOrder,createOrder, updateOrder,getOrder, deleteOder, singleUserOrder, findOrderedProducts, cancelOrder } from "../controllers/Order.controller.js";
 import { transferMoney } from "../controllers/MoneyTransfer.controller.js";
 import { reviewController, updateReview, deleteReview } from "../controllers/Review.controller.js";
 import { sortPriceLowToHigh, sortPriceHighToLower, sortNewest } from "../controllers/SortBy.js";
@@ -76,7 +76,11 @@ userRouter.route("/categoryList").post(categoryList); // Create a category list
 
 
 // Order Routes
-userRouter.route("/preview-order").post(previewOrder); // Create an order
+userRouter.route("/preview-order").post(previewOrder); // preview an order
+userRouter.route("/create-order").post(authMiddleware,createOrder); // Create an order
+userRouter.route("/user-order").get(authMiddleware,singleUserOrder); // get single user orders
+userRouter.route("/cancel-order/:orderId").post(authMiddleware,cancelOrder); // cancel an order
+userRouter.route("/find-ordered-products").post(authMiddleware,findOrderedProducts); //find Ordered Products
 userRouter.route("/order/update/:orderId").patch(authMiddleware, updateOrder); // Update an order
 userRouter.route("/get-order/:productId").get(authMiddleware,getOrder); // get  an product  order
 userRouter.route("/order/delete/:orderId").delete(authMiddleware, deleteOder); // Delete an order

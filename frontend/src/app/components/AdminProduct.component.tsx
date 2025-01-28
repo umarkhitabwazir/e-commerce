@@ -48,9 +48,9 @@ const AdminProductComponent = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-gray-100">
-      <div className="flex justify-center items-center">
-        <h1 className="text-3xl font-bold text-blue-600 mb-6">
+    <div className="absolute w-4/5 max-sm:w-1/2 max-sm:p-10 max-md:w-3/5  right-5 p-6 bg-gray-100">
+      <div className="flex justify-center flex-wrap items-center">
+        <h1 className="font-bold max-sm:font-medium text-blue-600 mb-6">
           Admin Products Dashboard
         </h1>
       </div>

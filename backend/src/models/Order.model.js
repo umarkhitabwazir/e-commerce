@@ -24,7 +24,7 @@ let orderSchema = new Schema({
     ],
     paymentMethod: {
         type: String,
-        required:false,
+        required: false,
         trim: true,
     },
     paymentResult: {
@@ -56,6 +56,10 @@ let orderSchema = new Schema({
     },
     paidAt: {
         type: Date,
+    },
+    cancelled: {
+        type: Boolean,
+        default: false,
     },
     isDelivered: {
         type: Boolean,

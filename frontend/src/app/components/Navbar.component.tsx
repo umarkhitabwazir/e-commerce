@@ -1,108 +1,147 @@
-"use client"
-import React, { useState } from 'react';
-import axios from 'axios';
-import Products from './Products.component';
-import { useRouter } from "next/navigation";
-import { usePathname } from 'next/navigation';
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import OrdersIconComponent from "./OrdersIcon.component";
+
 const Navbar = () => {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [sortOption, setSortOption] = useState('');
+    const [searchQuery, setSearchQuery] = useState("");
+    const [sortOption, setSortOption] = useState("");
+    const [isMenuOpen, setIsMenuOpen] = useState(false); // Added for toggle menu
     const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
 
-    let router = useRouter()
+    const router = useRouter();
+    const pathName = usePathname();
+    const authRoutes = ["/sign-up", "/verify-email", "/login", "/log-out"];
+    const isAuthRoute = authRoutes.includes(pathName);
+
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
     };
 
     const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
-
         router.push(`${LOCAL_HOST}?sort=${e.target.value}`);
-
     };
+
     const handleSitting = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log('object', e.target.value)
+        router.push(`${LOCAL_HOST}/${e.target.value}`);
+    };
 
-        router.push(`${LOCAL_HOST}/${e.target.value}`)
+    const handleMenuToggle = () => {
+        setIsMenuOpen((prev) => !prev);
+    };
 
-    }
+    const [isFixed, setIsFixed] = useState(false);
 
-   
+    useEffect(() => {
+      const handleScroll = () => {
+        const scrollTop = window.scrollY;
+        if (scrollTop > 50  ) {
+          setIsFixed(true);
+        } else {
+          setIsFixed(false);
+        }
+      };
+  
+      window.addEventListener("scroll", handleScroll);
+  
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }, []);
 
-    let pathName = usePathname()
-    let authRoutes = ["/sign-up", "/verify-email", "/login", "/log-out","/create-product"];
-    let isAuthRoute = authRoutes.includes(pathName);
     return (
-        <nav className={`${isAuthRoute ? "hidden" : ""} bg-gray-800  text-white fixed  top-0 w-full z-50 shadow-md`}>
-            <div className="container mx-auto flex items-center justify-between p-4">
+        <nav
+            className={`${isAuthRoute ? "hidden" :isFixed?"fixed": "sticky"} bg-gray-800 text-white transition-all duration-1000 top-0 w-full z-50 shadow-md`}
+        >
+            <div className="container mx-auto  lg:flex items-center justify-between p-4">
                 {/* Logo */}
-                <div className="text-2xl font-bold">Shop</div>
+                <div
+                    className="text-2xl font-bold cursor-pointer"
+                    onClick={() => router.push("/")}
+                >
+                    Shop
+                </div>
 
-                {/* Search Bar */}
-                <div className="relative w-1/3 hidden sm:block">
-                    <input
-                        type="text"
-                        onChange={handleSearch}
-                        placeholder="Search products..."
-                        className="w-full p-2 rounded-lg text-gray-900"
-                    />
+                {/* Hamburger Menu for Mobile */}
+                <div className="md:hidden ">
                     <button
-                        onClick={() => console.log('Search submitted')} // Replace with actual functionality
-                        className="absolute right-2 top-2 text-gray-600 hover:text-gray-900"
+                        className="text-white focus:outline-none"
+                        onClick={handleMenuToggle}
                     >
-                        🔍
+                        {isMenuOpen ? "✖" : "☰"}
                     </button>
                 </div>
 
-                {/* Sort Dropdown */}
-                <div className="hidden sm:block">
-                    <select
-                        value={sortOption}
-                        onChange={handleSort}
-                        className="p-2 rounded-lg bg-gray-700 cursor-pointer text-white"
-                    >
-                        <option value="" disabled>
-                            Sort By
-                        </option>
-                        <option value="priceLowHigh">
-                            Price: Low to High
+                {/* Navbar Content */}
+                <div
+                    className={`${isMenuOpen ? "block" : "hidden"
+                        } md:flex flex-col md:flex-row md:items-center md:w-auto w-full space-y-4 md:space-y-0 md:space-x-4`}
+                >
+                    {/* Search Bar */}
+                    <div className="relative w-full md:w-1/3">
+                        <input
+                            type="text"
+                            onChange={handleSearch}
+                            placeholder="Search products..."
+                            className="w-full p-2 rounded-lg text-gray-900"
+                        />
+                        <button
+                            onClick={() => console.log("Search submitted")}
+                            className="absolute right-2 top-2 text-gray-600 hover:text-gray-900"
+                        >
+                            🔍
+                        </button>
+                    </div>
 
-                        </option>
-                        <option value="priceHighLow">Price: High to Low</option>
-                        <option value="rating">Rating</option>
-                        <option value="newest">Newest</option>
-                    </select>
+                    {/* Sort Dropdown */}
+                    <div>
+                        <select
+                            value={sortOption}
+                            onChange={handleSort}
+                            className="p-2 rounded-lg bg-gray-700 cursor-pointer text-white"
+                        >
+                            <option value="" disabled>
+                                Sort By
+                            </option>
+                            <option value="priceLowHigh">Price: Low to High</option>
+                            <option value="priceHighLow">Price: High to Low</option>
+                            <option value="rating">Rating</option>
+                            <option value="newest">Newest</option>
+                        </select>
+                    </div>
+
+                    {/* User Actions Dropdown */}
+                    <div className="w-48">
+                        <select
+                            id="userActions"
+                            name="userActions"
+                            value={sortOption}
+                            onChange={handleSitting}
+                            className="block w-full py-2 bg-gray-700 text-white font-semibold rounded-lg shadow-md focus:ring focus:ring-blue-300 focus:outline-none transition duration-200 cursor-pointer hover:bg-gray-600"
+                        >
+                            <option className="cursor-pointer" value="">
+                                Sitting
+                            </option>
+                            <option className="cursor-pointer" value="sign-up">
+                                Sign Up
+                            </option>
+                            <option className="cursor-pointer" value="log-out">
+                                Log Out
+                            </option>
+                            <option className="cursor-pointer" value="profile">
+                                Profile
+                            </option>
+                            <option className="cursor-pointer" value="login">
+                                Login
+                            </option>
+                        </select>
+                    </div>
+
+                    {/* Order Button */}
+                    <OrdersIconComponent/>
+
                 </div>
-
-                <div className="relative w-48">
-                    <select
-                        id="userActions"
-                        name="userActions"
-                        value={sortOption}
-                        onChange={handleSitting}
-                        className="block w-full px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg shadow-md focus:ring focus:ring-blue-300 focus:outline-none transition duration-200 cursor-pointer hover:bg-gray-600"
-                    >
-                        <option className='cursor-pointer' value="">Sitting</option>
-                        <option className='cursor-pointer' value="sign-up">Sign Up</option>
-                        <option className='cursor-pointer' value="log-out">Log Out</option>
-                        <option className='cursor-pointer' value="profile">Profile</option>
-                        <option className='cursor-pointer' value="login">Login</option>
-                    </select>
-                </div>
-
-              
-               
-                
-            </div>
-
-            {/* Mobile Search Bar */}
-            <div className="sm:hidden px-4 py-2">
-                <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    placeholder="Search products..."
-                    className="w-full p-2 rounded-lg text-gray-900"
-                />
             </div>
         </nav>
     );

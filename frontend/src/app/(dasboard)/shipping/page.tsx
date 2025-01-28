@@ -1,8 +1,8 @@
 import React from 'react'
-import BuyingComponent from '@/app/components/Buying.component'
+import BuyingComponent from '@/app/components/OrderSummery.component'
 const buying = () => {
   return (
-    <div  className='mt-20'>
+    <div  className=''>
       <BuyingComponent/>
     </div>
   )

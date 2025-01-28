@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import NoInternetComponent from './NoInternet.component';
 
 
 const LoginComponent = () => {
@@ -32,7 +33,7 @@ const LoginComponent = () => {
     const isQuantity = quantity ? quantity : ""
     const isProduct = product ? product : ""
     const isProductPrice = productPrice ? productPrice : ""
-
+const [networkError,setNetworkError]=useState(false)
     // Form submit handler
     const onSubmit = async (data: LoginFormData) => {
 
@@ -61,6 +62,7 @@ const LoginComponent = () => {
             console.log("resdata", resdata)
             setLoading(false); // Stop loading
             if (resdata.data.statusCode === 200) {
+                
                 router.push(`${trackedPath || "/"}?q=${isQuantity}&product=${isProduct}&p=${isProductPrice} `);
 
             }
@@ -68,20 +70,28 @@ const LoginComponent = () => {
         } catch (err: any) {
 
             setLoading(false); // Stop loading
+            console.log('err', err)
 
+if (err.status=== 500) {
+   setNetworkError(true)
+}
             if (err.response) {
                 setError(err.response.data.error); // Set error message from backend
             } else {
                 setError('An unknown error occurred.');
             }
-            console.log('err', err)
+            if (err.code==="ERR_NETWORK") {
+                setLoading(true)
+            }
             // if email not verified
             // if (err.status === 401) {
             //     router.push(`${LOCAL_HOST}/verify-email`)
             // }
         }
     };
-
+{
+    networkError&&   <NoInternetComponent/>
+}
     return (
         <>
 

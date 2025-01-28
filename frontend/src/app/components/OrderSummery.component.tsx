@@ -10,7 +10,7 @@ import withAuth from "../utils/withAuth";
 import SingleProductComponent from "./SingleProduct.component";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const BuyingComponent = () => {
+const ShippingComponent = () => {
   const addressStructure = {
     fullName: "",
     Province: "",
@@ -82,7 +82,7 @@ const BuyingComponent = () => {
     let formdata = {
       "products": [{
         "productId": productId,
-        "quantity": quantity
+        "quantity":  quantity 
       },
       ],
 
@@ -156,9 +156,14 @@ const BuyingComponent = () => {
   let handleFormToggle = () => {
     setFormToggle((prev) => !prev)
   }
+
+
+  let handleProceedPay = async () => {
+   router.push(`${LOCAL_HOST}/payment-cashier?product=${productId}&q=${quantity}&p=${productPrice}`)
+  }
   return (
     <>
-      <div className=" bg-gray-50 h-screen ">
+      <div className=" bg-gray-50 h-full absolute ">
 
 
         {
@@ -172,13 +177,12 @@ const BuyingComponent = () => {
 
         <button
           onClick={handleFormToggle}
-          className={`${savedAddress ? "hidden" : ""} bg-blue-700  text-white z-1 px-6 py-3 mt-10 relative left-3 rounded-lg flex justify-center items-center hover:bg-blue-800 active:scale-95 transition-all duration-200`}
+          className={`${savedAddress ? "hidden" : "bg-blue-700  text-white z-1 px-6 py-3 mt-10 relative left-3 rounded-lg flex justify-center items-center hover:bg-blue-800 active:scale-95 transition-all duration-200"} `}
         >
           Add Delivery Address
         </button>
-        <div className="flex justify-around items-center flex-wrap">
+        <div className="flex justify-evenly  flex-wrap">
 
-          <AddressComponent savedAddress={savedAddress} address={address} />
 
           <form
             onSubmit={handleSubmit(onSubmit, onError)}
@@ -379,6 +383,9 @@ const BuyingComponent = () => {
             <h1 className="text-xl font-semibold text-gray-900 border-b pb-2 mb-4">
               Order Summary
             </h1>
+            <p className="text-sm text-gray-600 mb-4">
+              order cancelling is not allowed after 30 minutes of placing order
+            </p>
             <div className="space-y-3">
               <h2 className="flex justify-between text-sm font-medium">
                 <span>Items Total ({orderSummary.items}):</span>
@@ -397,10 +404,12 @@ const BuyingComponent = () => {
                 <span>${orderSummary.totalPrice}</span>
               </h2>
             </div>
-            <button className="mt-6 w-full bg-blue-600 text-white font-medium py-2 rounded-md hover:bg-blue-700 transition-all">
+            <button onClick={handleProceedPay} className="mt-6 w-full bg-blue-600 text-white font-medium py-2 rounded-md hover:bg-blue-700 transition-all">
               Proceed to Pay
             </button>
           </div>
+          <AddressComponent savedAddress={savedAddress} address={address} />
+
         </div>
       </div>
 
@@ -410,4 +419,4 @@ const BuyingComponent = () => {
 
 };
 
-export default withAuth(BuyingComponent);
+export default withAuth(ShippingComponent);

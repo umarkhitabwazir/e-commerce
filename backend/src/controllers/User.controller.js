@@ -165,42 +165,46 @@ let updateUser = asyncHandler(async (req, res) => {
 
 let loginUser = asyncHandler(async (req, res) => {
     let { email, password } = req.body
-    if (!email || !password) {
-        throw new ApiError(400, "Email and password are required")
-    }
-    let user = await User.findOne({ email: email })
-    let options = {
-        httponly: true,
-        secure: true,
-    }
-    let { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
-    if (!user) {
-        throw new ApiError(404, "User not found")
-    }
-    let isMatch = await user.comparePassword(password)
-    if (!isMatch) {
-        throw new ApiError(400, "Invalid password")
-    }
-    let isVerified = user.isVerified
-    if (!isVerified) {
-        const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
-        await sendEmail(email, emailVerificationCode)
-        user.emailVerificationCode = emailVerificationCode
-        await user.save()
-
-        res.
-            cookie("accessToken", accessToken, options)
-            .cookie("refreshToken", refreshToken, options).
-            status(200).json(new ApiResponse(200, null, "Email is not verified. Verification code has been sent to your email.", false)
-            )
-    }
-
-    if (isVerified) {
-        res.
-            cookie("accessToken", accessToken, options)
-            .cookie("refreshToken", refreshToken, options).
-            status(200).json(new ApiResponse(200, user, "user loged in successfully!", true)
-            )
+    try {
+        if (!email || !password) {
+            throw new ApiError(400, "Email and password are required")
+        }
+        let user = await User.findOne({ email: email })
+        let options = {
+            httponly: true,
+            secure: true,
+        }
+        let { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
+        if (!user) {
+            throw new ApiError(404, "User not found")
+        }
+        let isMatch = await user.comparePassword(password)
+        if (!isMatch) {
+            throw new ApiError(400, "Invalid password")
+        }
+        let isVerified = user.isVerified
+        if (!isVerified) {
+            const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
+            await sendEmail(email, emailVerificationCode)
+            user.emailVerificationCode = emailVerificationCode
+            await user.save()
+    
+            res.
+                cookie("accessToken", accessToken, options)
+                .cookie("refreshToken", refreshToken, options).
+                status(200).json(new ApiResponse(200, null, "Email is not verified. Verification code has been sent to your email.", false)
+                )
+        }
+    
+        if (isVerified) {
+            res.
+                cookie("accessToken", accessToken, options)
+                .cookie("refreshToken", refreshToken, options).
+                status(200).json(new ApiResponse(200, user, "user loged in successfully!", true)
+                )
+        }
+    } catch (error) {
+        console.log("error",error)
     }
 
 
