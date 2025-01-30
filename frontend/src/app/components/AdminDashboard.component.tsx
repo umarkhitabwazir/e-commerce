@@ -14,10 +14,9 @@ type user= {
 
 }
 const AdminDashboardComponent = ({ user }: { user:user }) => {
-  console.log("user", user)
   let role = ["admin", "superadmin"]
   let pathName = usePathname()
-  let route = ["/login","/log-out"]
+  let route = ["/login","/log-out","/sign-up"]
   let auth = route.includes(pathName)
   console.log("pathName",auth)
   let roleAuth = role.includes(user.role)

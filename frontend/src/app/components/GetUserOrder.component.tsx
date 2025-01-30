@@ -6,6 +6,8 @@ import withAuth from "../utils/withAuth";
 import Loading from "./Loading.component";
 import PendingOrderComponent from "./PendingOrder.component";
 import DeleveredOrderComponent from "./DeleveredOrder.component";
+import ProductReviewComponent from "./ProductReview.component";
+import { useSearchParams } from "next/navigation";
 
 interface Order {
   _id: string;
@@ -34,7 +36,9 @@ const GetUserOrderComponent = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [remainingMinutes, setRemainingMinutes] = useState<{ [key: string]: number }>({});
-  console.log('remainingMinutes', remainingMinutes)
+  const searchParams=useSearchParams();
+  const productId = searchParams.get("product");
+  
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -134,6 +138,8 @@ const GetUserOrderComponent = () => {
           <DeleveredOrderComponent deleveredOders={deleveredOders} products={products} />
         </div>
       }
+        <ProductReviewComponent productId={productId}/>
+
     </div>
   );
 };

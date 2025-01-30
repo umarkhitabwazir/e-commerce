@@ -197,7 +197,7 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
 })
 let getAllProducts = asyncHandler(async (req, res) => {
     let product = await Product.find()
-    console.log(product)
+   
     res.status(200).json(
         new ApiResponse(200, product, "fetch all product successfully!")
     )

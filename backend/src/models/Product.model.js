@@ -1,4 +1,4 @@
-import  mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 let productSchema = new Schema({
     title: {
@@ -32,11 +32,8 @@ let productSchema = new Schema({
     rating: {
         type: Number,
         trim: true,
-    },
-    numReviews: {
-        type: Number,
-        trim: true,
-    },
+    }
+    ,
     countInStock: {
         type: Number,
         required: [true, "countInStock is required"],

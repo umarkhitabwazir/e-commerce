@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Review } from "../models/Review.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
@@ -29,6 +30,20 @@ let reviewController = asyncHandler(async (req, res) => {
     res.status(200).json(
         new ApiResponse(201, review, "Review created successfully")
     )
+});
+let getAllReviews = asyncHandler(async (req, res) => {  
+    let productIdsArr = req.params.productIdsArr
+    
+    if (!productIdsArr || Array.isArray(productIdsArr) || productIdsArr.length === 0) {
+        throw new ApiError(404, "product Id not found")
+    }
+    let idsArr=productIdsArr.split(",")
+    let objectIds =idsArr.map(id => new mongoose.Types.ObjectId(id));
+
+  
+    let reviews = await Review.find({ product: { $in: objectIds } }).populate("user", "fullName email");
+
+    res.status(200).json(new ApiResponse(200, reviews, "All reviews fetched successfully"));
 });
 
 let updateReview = asyncHandler(async (req, res) => {
@@ -83,6 +98,7 @@ let deleteReview = asyncHandler(async (req, res) => {
 
 export {
     reviewController,
+    getAllReviews,
     updateReview,
     deleteReview
 };

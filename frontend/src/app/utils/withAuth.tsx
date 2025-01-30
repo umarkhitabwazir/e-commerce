@@ -72,11 +72,13 @@ const withAuth = <P extends WithAuthProps>(
                     }
 
                     const redirectPath = isAuthRoutes ? "/" : trackPath;
+                  if (!authRoutes) {
                     router.push(
                         `/login?track=${
                             redirectPath || "/"
                         }&q=${isQuantity}&product=${isProduct}&p=${isProductPrice}`
                     );
+                  }
                 } finally {
                     setLoading(false);
                 }

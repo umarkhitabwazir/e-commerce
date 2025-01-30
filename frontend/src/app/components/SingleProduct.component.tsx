@@ -64,11 +64,24 @@ const SingleProductComponent = ({productId}:{productId:string | null }) => {
       <h2 className="text-base font-semibold">
         Brand: <span className="text-gray-700">{product.brand || "Unknown"}</span>
       </h2>
-      <h2 className="text-base font-semibold">
-        Rating: <span className="text-yellow-500">{product.rating || "No rating"}</span>
-      </h2>
+      
     </div>
+    <div className="flex items-center justify-center space-x-1 mt-1">
+                      <span className='text-gray-700'>4.1</span>
+
+                      {[1, 2, 3, 4, 5].map((num) => (
+                        <span
+                          key={num}
+                          className={`cursor-pointer text-2xl ${"text-gray-300"}`}
+                        // onClick={() => setRating(num)}
+                        >
+                          ★
+                        </span>
+                      ))}
+                      <span className='text-gray-700'>(15)</span>
+                    </div>
   </div>
+  
 </div>
 
  </>

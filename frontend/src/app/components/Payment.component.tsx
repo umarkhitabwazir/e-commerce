@@ -36,7 +36,7 @@ const PaymentComponent = () => {
                 }, { withCredentials: true });
                 let data = res.data;
                 console.log("data", data)
-                router.push('/your-orders')
+                router.push(`/your-orders?product=${productId}`)
             } catch (error) {
                 setLoading(false)
 

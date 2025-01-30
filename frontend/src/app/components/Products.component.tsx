@@ -17,8 +17,11 @@ const Products = () => {
   const isrole = isSuperAdmin.includes(routePath)
   const routes = ["/"]
   const productPath = routes.includes(routePath)
+  const [prodcutsIds, setProdcutsIds] = useState([])
   let searchParams = useSearchParams()
   let value = searchParams.get("sort")
+  const [reviews, setReviews] = useState([])
+  console.log("reviews", reviews)
 
 
 
@@ -68,6 +71,9 @@ const Products = () => {
       try {
         const endpoint = sort ? `${API_URL}/${sort}` : `${API_URL}/get-products`;
         const response = await axios.get(endpoint);
+        const productsIdArr = response.data.data.map((product: { _id: string; }) => product._id)
+        console.log("productsIdArr", productsIdArr)
+        setProdcutsIds(productsIdArr)
         setProducts(response.data.data);
         setError(null);
       } catch (err: any) {
@@ -77,7 +83,26 @@ const Products = () => {
     };
 
     fetchProducts();
-  }, [sort]); // Run whenever `sort` changes
+  }, [API_URL, sort]); // Run whenever `sort` changes
+
+
+  const productIdsArr = prodcutsIds
+  useEffect(() => {
+    setLoading(true);
+    const fetchAllReviews = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/get-all-reviews/${productIdsArr}`);
+        console.log("res", res)
+        let reviews = res.data.data
+        setReviews(reviews);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchAllReviews();
+  }, [API_URL, prodcutsIds])
 
   // productHandlers
   let productHandlers = (product: { _id: string, price: number, countInStock: number }) => {
@@ -124,6 +149,29 @@ const Products = () => {
                       ) : (
                         <span className="text-sm text-red-500">Out of Stock</span>
                       )}
+
+                    </div>
+                    <div className="flex items-center justify-center space-x-1 mt-1">
+                      {/* <span className='text-gray-700'>4.1</span> */}
+                      {
+                    reviews.map((reviews: { product: string, rating: number }) => (reviews.product === product._id ?
+                      [reviews.rating].map((num) =>
+                        <span key={reviews.product} className={`cursor-pointer text-2xl ${"text-gray-300"}`}>★</span>
+                      )
+                      : <span key={reviews.product} className={`cursor-pointer text-2xl ${"text-gray-300"}`}>☆</span>
+                    ))
+                  }
+                      {/* {[1].map((num) => (
+                        <span
+                          key={num}
+                          className={`cursor-pointer text-2xl ${"text-gray-300"}`}
+                        // onClick={() => setRating(num)}
+                        >
+                          ★
+                        </span>
+                      ))}
+                      <span className='text-gray-700'>(15)</span>
+                     */}
                     </div>
                   </div>
                 </div>

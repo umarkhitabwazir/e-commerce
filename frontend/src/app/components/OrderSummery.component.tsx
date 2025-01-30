@@ -139,7 +139,7 @@ const ShippingComponent = () => {
     try {
       console.log(data);
       let res = await axios.post(`${API_URL}/address`, data, { withCredentials: true })
-      console.log("res", res)
+      console.log("addressRes", res)
 
       window.location.reload();
 
@@ -159,6 +159,12 @@ const ShippingComponent = () => {
 
 
   let handleProceedPay = async () => {
+    if (!savedAddress) {
+      alert("Please add address")
+      setFormToggle(true)
+      return
+      
+    }
    router.push(`${LOCAL_HOST}/payment-cashier?product=${productId}&q=${quantity}&p=${productPrice}`)
   }
   return (

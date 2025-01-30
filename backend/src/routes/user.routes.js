@@ -9,7 +9,7 @@ import { categoryList } from "../controllers/CategoryList.controller.js";
 import { createCart } from "../controllers/Cart.controller.js";
 import {previewOrder,createOrder, updateOrder,getOrder, deleteOder, singleUserOrder, findOrderedProducts, cancelOrder } from "../controllers/Order.controller.js";
 import { transferMoney } from "../controllers/MoneyTransfer.controller.js";
-import { reviewController, updateReview, deleteReview } from "../controllers/Review.controller.js";
+import { reviewController, updateReview, deleteReview, getAllReviews } from "../controllers/Review.controller.js";
 import { sortPriceLowToHigh, sortPriceHighToLower, sortNewest } from "../controllers/SortBy.js";
 import { body,  } from "express-validator";
 import { addressController,findAddress } from "../controllers/Address.controller.js";
@@ -97,6 +97,7 @@ userRouter.route("/createCart").post(authMiddleware, createCart); // Add an item
 
 // Review Routes
 userRouter.route("/review/:productId").post(authMiddleware, reviewController); // Add a review for a product
+userRouter.route("/get-all-reviews/:productIdsArr").get(getAllReviews); // get  a review for a product
 userRouter.route("/update/:productId").patch(authMiddleware, updateReview); // Update a review
 userRouter.route("/delete/:productId").delete(authMiddleware, deleteReview); // Delete a review
 
