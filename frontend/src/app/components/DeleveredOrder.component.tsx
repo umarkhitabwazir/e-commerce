@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react'
 
 const DeleveredOrderComponent = ({
@@ -64,7 +65,7 @@ const DeleveredOrderComponent = ({
                       key={orderProduct.productId}
                       className="flex items-center gap-4 p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition duration-300"
                     >
-                      <img
+                      <Image
                         src={product.image}
                         alt={product.title}
                         className="w-20 h-20 rounded-lg object-cover"

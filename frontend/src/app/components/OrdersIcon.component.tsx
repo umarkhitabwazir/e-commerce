@@ -3,6 +3,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import withAuth from '../utils/withAuth';
 import axios from 'axios';
+import Image from 'next/image';
 
 const OrderIconComponent = () => {
     const router = useRouter()
@@ -44,7 +45,7 @@ let fetchOrderAccepedCancel = orders.filter((order: { cancelled: boolean }) => !
                 <div className={`${isOrderPage ? "hidden" :orderCount===0?"hidden": ""}  bg-gray-600 rounded-full flex justify-center items-center w-6 h-6 absolute left-5 md:right-0 bottom-7 shadow-md`}>
                     <h2 className="text-white text-sm font-bold">{orderCount}</h2>
                 </div>
-                <img
+                <Image
                     className="rounded-md"
                     src="/order.png"
                     width={40}

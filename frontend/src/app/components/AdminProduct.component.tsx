@@ -4,6 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import withAuth from "../utils/withAuth";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const AdminProductComponent = () => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -66,7 +67,7 @@ const AdminProductComponent = () => {
               key={product._id}
               className="border rounded-lg p-5 shadow-lg bg-white hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1"
             >
-              <img
+              <Image
                 src={product.image}
                 alt={product.title}
                 className="w-full h-48 object-cover mb-4 rounded-lg"

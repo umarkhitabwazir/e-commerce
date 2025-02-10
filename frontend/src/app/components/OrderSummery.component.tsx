@@ -9,6 +9,7 @@ import axios from "axios";
 import withAuth from "../utils/withAuth";
 import SingleProductComponent from "./SingleProduct.component";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 const ShippingComponent = () => {
   const addressStructure = {
@@ -194,7 +195,7 @@ const ShippingComponent = () => {
             onSubmit={handleSubmit(onSubmit, onError)}
             className={`${formToggle ? "block" : savedAddress ? "hidden" : "hidden"} bg-white absolute top-0 z-50 shadow-md rounded-lg p-6 m-4 w-full max-w-screen-md`}
           >
-            <img onClick={handleFormToggle} className="absolute top-2 right-2 cursor-pointer hover:h-7 hover:w-7" src="/cross.jpg" alt="img" width={30} height={30} />
+            <Image onClick={handleFormToggle} className="absolute top-2 right-2 cursor-pointer hover:h-7 hover:w-7" src="/cross.jpg" alt="img" width={30} height={30} />
             <h1 className="text-xl font-semibold text-gray-900 border-b pb-2 mb-4">
               Add Delivery Address
             </h1>

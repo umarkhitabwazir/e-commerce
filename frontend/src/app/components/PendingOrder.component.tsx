@@ -1,5 +1,6 @@
 "use client";
 import axios from 'axios';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import useSWR from 'swr';
@@ -116,7 +117,7 @@ console.log('swrorders',orders)
                     key={orderProduct.productId}
                     className="flex items-center gap-4 p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition duration-300"
                   >
-                    <img
+                    <Image
                       src={product.image}
                       alt={product.title}
                       className="w-20 h-20 rounded-lg object-cover"
@@ -154,7 +155,7 @@ console.log('swrorders',orders)
                 </button>
                 <div className={`${isCancelling ? "" : "hidden"} fixed  top-0 left-0 w-full h-full bg-white bg-opacity-80 flex  flex-col gap-3 justify-center items-center z-50`}>
                   <div onClick={() => { setIsCancelling(false) }} className='absolute top-0 right-0 p-4'>
-                    <img className='cursor-pointer w-10 h-10 hover:w-9 hover:h-9 transition-all duration-100 rounded-full'
+                    <Image className='cursor-pointer w-10 h-10 hover:w-9 hover:h-9 transition-all duration-100 rounded-full'
                       src="/cross.jpg" alt="cross-img" />
                   </div>
                   <span className='text-red-500'>Are you sure you want to cancel your order {" "} !</span>

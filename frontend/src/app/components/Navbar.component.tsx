@@ -3,13 +3,18 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import OrdersIconComponent from "./OrdersIcon.component";
-
-const Navbar = () => {
+import adminAuth from "../utils/adminAuth";
+type User={
+    email:string
+}
+const Navbar = ({user}:{user:any}) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOption, setSortOption] = useState("");
     const [isMenuOpen, setIsMenuOpen] = useState(false); // Added for toggle menu
     const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
-
+    const [isLogedin,setIsLogedin]=useState<User | null>({email:""})
+    const [loading,setLoading]=useState(false)
+console.log("object",isLogedin)
     const router = useRouter();
     const pathName = usePathname();
     const authRoutes = ["/sign-up", "/verify-email", "/login", "/log-out"];
@@ -50,6 +55,31 @@ const Navbar = () => {
       };
     }, []);
 
+
+    useEffect(()=>{
+        if (user) {
+            
+            setIsLogedin(user)
+        }
+
+    },[user,isLogedin])
+
+   useEffect(() => {
+     const fetchData = async () => {
+       setLoading(true);
+       try {
+ 
+         await new Promise((resolve) => setTimeout(resolve, 2000));
+ 
+       } catch (error) {
+         console.log("Error fetching data:", error);
+       } finally {
+         setLoading(false);
+       }
+     };
+ 
+     fetchData();
+   }, []);
     return (
         <nav
             className={`${isAuthRoute ? "hidden" :isFixed?"fixed": "sticky"} bg-gray-800 text-white transition-all duration-1000 top-0 w-full z-50 shadow-md`}
@@ -120,16 +150,17 @@ const Navbar = () => {
                             onChange={handleSitting}
                             className="block w-full py-2 bg-gray-700 text-white font-semibold rounded-lg shadow-md focus:ring focus:ring-blue-300 focus:outline-none transition duration-200 cursor-pointer hover:bg-gray-600"
                         >
-                            <option className="cursor-pointer" value="">
-                                Sitting
+
+                            <option className={` hidden cursor-pointer text-gray-400`} value="">
+                               {isLogedin?.email ?  isLogedin.email :  "register or login"} 
                             </option>
                             <option className="cursor-pointer" value="sign-up">
                                 Sign Up
                             </option>
-                            <option className="cursor-pointer" value="log-out">
+                            <option className={`${!user && "hidden"} cursor-pointer`} value="log-out">
                                 Log Out
                             </option>
-                            <option className="cursor-pointer" value="profile">
+                            <option className={`${!user && "hidden"} cursor-pointer`} value="profile">
                                 Profile
                             </option>
                             <option className="cursor-pointer" value="login">
@@ -147,4 +178,4 @@ const Navbar = () => {
     );
 };
 
-export default Navbar;
+export default adminAuth( Navbar);

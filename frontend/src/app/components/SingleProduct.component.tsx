@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
@@ -39,7 +40,7 @@ const SingleProductComponent = ({productId}:{productId:string | null }) => {
  <div className="bg-white shadow-md rounded-lg p-6 w-full mt-9 flex  justify-center items-center  ">
 
   {product.image ? (
-    <img
+    <Image
       src={product.image}
       alt={product.title}
       className="w-40 h-40 object-cover rounded-t-md mb-4 mr-5"

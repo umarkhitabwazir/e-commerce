@@ -65,6 +65,7 @@ const withAuth = <P extends WithAuthProps>(
 
                     setUser(response.data.data);
                 } catch (error: any) {
+                    console.log('nextwork error',error)
                     if (error.code === "ERR_NETWORK") {
                         setNetworkError(true);
                         console.log('error',error)

@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import axios from "axios";
-import withAuth from "../utils/withAuth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import withAuth from "../utils/withAuth";
 
 const ProductReviewComponent = ({ user, productId }: { user: any, productId: string | null }) => {
 
@@ -32,7 +32,7 @@ const ProductReviewComponent = ({ user, productId }: { user: any, productId: str
                 { rating, reviewMessage },
                 { withCredentials: true }
             );
-            console.log("response", response);
+            console.log("reviewResponse", response);
 
             setSuccess(true);
             setReviewMessage("");
@@ -100,4 +100,4 @@ const ProductReviewComponent = ({ user, productId }: { user: any, productId: str
     );
 };
 
-export default withAuth(ProductReviewComponent);
+export default withAuth( ProductReviewComponent)
