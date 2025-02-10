@@ -7,7 +7,7 @@ import { ApiResponse } from "../utils/apiResponse.js";
 
 const transferMoney = asyncHandler(async (req, res) => {
     const {  recipientId, amount } = req.body;
-let senderId=req.user.id
+constsenderId=req.user.id
 if (!senderId) {
     throw new ApiError(400,"user must be logined in!")
 }
@@ -49,7 +49,7 @@ if (!senderId) {
         
         await session.commitTransaction();
         session.endSession();
-        let moneyTranser = await MoneyTransfer.create({ senderId, recipientId, amount });
+        constmoneyTranser = await MoneyTransfer.create({ senderId, recipientId, amount });
         res.status(200).json(
             new ApiResponse(200, moneyTranser, "Money transferred successfully")
         )

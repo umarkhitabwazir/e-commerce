@@ -3,17 +3,17 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-let addressController = asyncHandler(async (req, res) => {
-    const { fullName, Province, City, phone, Building, HouseNo, Floor, Street } = req.body;
-    let requiredFiels = [fullName, Province, City, phone,  HouseNo ]
-    let user=req.user
+const addressController = asyncHandler(async (req, res) => {
+    const  { fullName, Province, City, phone, Building, HouseNo, Floor, Street } = req.body;
+    const requiredFiels = [fullName, Province, City, phone,  HouseNo ]
+    const user=req.user
     if (!user) {
        throw new ApiError(400,"user must be loged in!") 
     }
     if (requiredFiels.some(field => !field)) {
         throw new ApiError(400, "all field is required!")
     }
-    let address = await Address.create(
+    const address = await Address.create(
       {  fullName,
         Province,
         City,
@@ -29,13 +29,13 @@ let addressController = asyncHandler(async (req, res) => {
     }
     res.status(201).json(new ApiResponse(201,address,"address created successfully!"))
 })
-let findAddress=asyncHandler(async(req,res)=>{
-    let user=req.user
+const findAddress=asyncHandler(async(req,res)=>{
+    const user=req.user
 
     if (!user) {
         throw new ApiError(400,"user must be loged in",false)
     }
-    let address=await Address.findOne({user:user.id})
+    const address=await Address.findOne({user:user.id})
     if (!address) {
         throw new ApiError(404,null,"address not founded",false)
     }

@@ -1,27 +1,27 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FieldErrors, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AddressComponent from "./Address.component";
 import { AddressSchema, AddressFormData } from "@/app/utils/formSchemas";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import withAuth from "../utils/withAuth";
 import SingleProductComponent from "./SingleProduct.component";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
-
+const Address = {
+  fullName: "",
+  Province: "",
+  City: "",
+  phone: 0,
+  Building: "",
+  HouseNo: "",
+  Floor: "",
+  Street: ""
+}
 const ShippingComponent = () => {
-  const addressStructure = {
-    fullName: "",
-    Province: "",
-    City: "",
-    phone: null,
-    Building: "",
-    HouseNo: "",
-    Floor: "",
-    Street: ""
-  }
+
   const orderSummaryStructure = {
     items: 0,
     shippingPrice: 0,
@@ -30,7 +30,7 @@ const ShippingComponent = () => {
   }
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
-  const [address, setAddress] = useState(addressStructure)
+  const [address, setAddress] = useState(Address)
   const [savedAddress, setSavedAddress] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [orderSummary, setOrderSummary] = useState(orderSummaryStructure)
@@ -49,7 +49,7 @@ const ShippingComponent = () => {
     resolver: zodResolver(AddressSchema),
   });
 
-  let fetchData = async () => {
+  const fetchData = async () => {
     setLoading(true)
     try {
       await new Promise(resolve => setTimeout(resolve, 400))
@@ -60,9 +60,9 @@ const ShippingComponent = () => {
     }
   }
   useEffect(() => {
-    let getAddress = async () => {
+    const getAddress = async () => {
       try {
-        let res = await axios.get(`${API_URL}/find-address`, { withCredentials: true })
+        const res = await axios.get(`${API_URL}/find-address`, { withCredentials: true })
         if (res.data.success) {
           setSavedAddress(true)
           await fetchData()
@@ -72,52 +72,56 @@ const ShippingComponent = () => {
         }
 
 
-      } catch (error: any) {
-        if (!error.response.data.success) {
-          setSavedAddress(false)
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
 
+          if (!error.response?.data.success) {
+            setSavedAddress(false)
+
+          }
         }
+
       }
     }
     getAddress()
-    let formdata = {
+    const formdata = {
       "products": [{
         "productId": productId,
-        "quantity":  quantity 
+        "quantity": quantity
       },
       ],
 
 
     }
-    let previewOrder = async () => {
+    const previewOrder = async () => {
       try {
-        let res = await axios.post(`${API_URL}/preview-order`, formdata)
-        console.log(res.data.data)
+        const res = await axios.post(`${API_URL}/preview-order`, formdata)
+        console.log('OrderSummary',res.data.data)
         setOrderSummary(res.data.data)
       } catch (error) {
         console.log(error)
       }
     }
     previewOrder()
-    //     let getOrder = async () => {
+    //     constgetOrder = async () => {
     //       try {
-    //         let res = await axios.get(`${API_URL}/get-order/${productId}`, { withCredentials: true })
+    //         constres = await axios.get(`${API_URL}/get-order/${productId}`, { withCredentials: true })
     //         console.log("res",res.data.data)
 
 
-    //           let totalQuantity = res.data.data.map((order: { products: { quantity: number }[] }) =>
+    //           consttotalQuantity = res.data.data.map((order: { products: { quantity: number }[] }) =>
     //             order.products.map((product) => product.quantity)
     //           ).flat().reduce((acc: number, quantity: number) => acc + quantity, 0)
     // console.log("totalQuantity",totalQuantity)
-    //           let deliveryFee = res.data.data.map((order: { shippingPrice: number }) =>
+    //           constdeliveryFee = res.data.data.map((order: { shippingPrice: number }) =>
     //             order.shippingPrice).flat().reduce((acc: number, shippingPrice: number) => acc + shippingPrice, 0)
     //           console.log("deliveryFee", deliveryFee)
 
-    //           let taxPrice = res.data.data.map((order: { taxPrice: number }) =>
+    //           consttaxPrice = res.data.data.map((order: { taxPrice: number }) =>
     //             order.taxPrice).flat().reduce((acc: number, taxPrice: number) => acc + taxPrice, 0)
 
 
-    //           let totalPrice = res.data.data.map((order: { totalPrice: number }) =>
+    //           consttotalPrice = res.data.data.map((order: { totalPrice: number }) =>
     //             order.totalPrice
     //           ).flat().reduce((acc: number, totalPrice: number) => acc + totalPrice, 0)
     //           setOrderSummary({
@@ -134,39 +138,41 @@ const ShippingComponent = () => {
     //       }
     //     }
     //     getOrder()
-  }, [API_URL, setAddress, setSavedAddress])
+  }, [API_URL, setAddress, setSavedAddress,productId,quantity])
 
   const onSubmit = async (data: AddressFormData) => {
     try {
       console.log(data);
-      let res = await axios.post(`${API_URL}/address`, data, { withCredentials: true })
+      const res = await axios.post(`${API_URL}/address`, data, { withCredentials: true })
       console.log("addressRes", res)
 
       window.location.reload();
 
 
-    } catch (error) {
-      console.log(error);
+    } catch (error:unknown) {
+      if (error instanceof AxiosError) {
+        
+        return;
+      }
     }
   };
 
-  const onError = (errors: any) => {
+  const onError = (errors: FieldErrors<AddressFormData>) => {
     console.log("Validation errors:", errors);
-
   };
-  let handleFormToggle = () => {
+  const handleFormToggle = () => {
     setFormToggle((prev) => !prev)
   }
 
 
-  let handleProceedPay = async () => {
+  const handleProceedPay = async () => {
     if (!savedAddress) {
       alert("Please add address")
       setFormToggle(true)
       return
-      
+
     }
-   router.push(`${LOCAL_HOST}/payment-cashier?product=${productId}&q=${quantity}&p=${productPrice}`)
+    router.push(`${LOCAL_HOST}/payment-cashier?product=${productId}&q=${quantity}&p=${productPrice}`)
   }
   return (
     <>

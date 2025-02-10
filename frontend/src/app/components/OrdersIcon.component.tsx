@@ -14,15 +14,15 @@ const OrderIconComponent = () => {
     const isOrderPage = pathName === "/your-orders"
 
     useEffect(() => {
-        let order = async () => {
+        const order = async () => {
             try {
-                let res = await axios.get(`${API_URL}/user-order`, { withCredentials: true })
-                let orders = res.data.data
+                const res = await axios.get(`${API_URL}/user-order`, { withCredentials: true })
+                const orders = res.data.data
                     .map((i: { isDelivered: boolean }) =>
                         i.isDelivered === false ? i : null
                     )
                     .filter(Boolean)
-let fetchOrderAccepedCancel = orders.filter((order: { cancelled: boolean }) => !order.cancelled).length
+const fetchOrderAccepedCancel = orders.filter((order: { cancelled: boolean }) => !order.cancelled).length
                 setOrderCount(fetchOrderAccepedCancel)
                 console.log(
                     "res",

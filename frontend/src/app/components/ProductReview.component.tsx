@@ -1,21 +1,29 @@
 "use client";
 import React, { useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import withAuth from "../utils/withAuth";
 
-const ProductReviewComponent = ({ user, productId }: { user: any, productId: string | null }) => {
-
+type User= {
+    id: string;
+    username: string;
+    email: string;
+    fullName: string;
+    role: string;
+    password: string;
+    address: string;
+    phone: number;
+  }
+const ProductReviewComponent = ({ user, productId }: { user: User, productId: string | null }) => {
+console.log(Object.keys(user).length === 0)
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
+   
     const [rating, setRating] = useState(1);
     const [reviewMessage, setReviewMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
-    const router = useRouter();
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         if (!productId) {
             return alert("Product not found return to home page and try again");
 

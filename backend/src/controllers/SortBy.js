@@ -4,9 +4,9 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 
 
-let sortPriceLowToHigh = asyncHandler(async (req, res) => {
+const sortPriceLowToHigh = asyncHandler(async (req, res) => {
     // Fetch all products and sort by price in ascending order
-    let products = await Product.find().sort({ price: 1 });
+    const products = await Product.find().sort({ price: 1 });
 
     if (!products || products.length === 0) {
         throw new ApiError(400, "No products found");
@@ -16,9 +16,9 @@ let sortPriceLowToHigh = asyncHandler(async (req, res) => {
         new ApiResponse(200, products, "Products sorted by price (Low to High)")
     );
 });
-let sortPriceHighToLower = asyncHandler(async (req, res) => {
+const sortPriceHighToLower = asyncHandler(async (req, res) => {
     // Fetch all products and sort by price in ascending order
-    let products = await Product.find().sort({ price: -1 });
+    const products = await Product.find().sort({ price: -1 });
 
     if (!products || products.length === 0) {
         throw new ApiError(400, "No products found");
@@ -29,9 +29,9 @@ let sortPriceHighToLower = asyncHandler(async (req, res) => {
     );
 });
 
-let sortNewest = asyncHandler(async (req, res) => {
+const sortNewest = asyncHandler(async (req, res) => {
     
-    let products = await Product.find().sort({ createdAt: -1 });
+    const products = await Product.find().sort({ createdAt: -1 });
 
 
     if (!products || products.length === 0) {

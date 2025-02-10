@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-let productSchema = new Schema({
+const productSchema = new Schema({
     title: {
         type: String,
         required: [true, "title is required"],
@@ -54,4 +54,4 @@ let productSchema = new Schema({
     { timestamps: true, user: true }
 )
 
-export let Product = mongoose.model("Product", productSchema)
+export const Product = mongoose.model("Product", productSchema)

@@ -1,6 +1,16 @@
 import React from 'react'
 
-const addressComponent = ({address,savedAddress}:{address:any,savedAddress:boolean}) => {
+type Address={
+  fullName: string,
+  Province: string,
+  City: string,
+  phone: number,
+  Building: string,
+  HouseNo: string,
+  Floor: string,
+  Street: string
+}
+const addressComponent = ({address,savedAddress}:{address:Address ,savedAddress:boolean}) => {
   return (
    <>
    <div className={`${savedAddress?"":"hidden"} bg-white mt-10 p-5 rounded-lg   shadow-md max-w-md mx-auto`}>

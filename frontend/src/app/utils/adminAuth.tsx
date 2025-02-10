@@ -1,7 +1,7 @@
 "use client";
+import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
 interface adminAuthProps {
     user: {
         username: string
@@ -15,9 +15,9 @@ interface adminAuthProps {
     }
 }
 const adminAuth = <P extends adminAuthProps>(AdminComponent: React.ComponentType<P>) => {
-    const adminAuthComponent = (props: Omit<P, "user">) => {
+    const AdminAuthComponent = (props: Omit<P, "user">) => {
         const router = useRouter();
-        const [user, setUser] = useState<any | null>(null);
+        const [user, setUser] = useState<adminAuthProps["user"] | null>(null);
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
         useEffect(() => {
@@ -46,7 +46,7 @@ console.log("adminAuthComponentError", error)
 
         return <AdminComponent {...props as P} user={user} />;
     }
-    return adminAuthComponent
+    return AdminAuthComponent
 }
 
 export default adminAuth

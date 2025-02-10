@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import ResendVerificationCode from '../components/ResendVerificationCode.component';
 // Define Zod schema for form validation
@@ -37,17 +37,18 @@ const VerifyEmail = ({ email }: { email: string | null }) => {
     setLoading(true);
     setError(null);
     try {
-      let emailVerificationCode = { emailVerificationCode: data.emailVerificationCode }
+      const emailVerificationCode = { emailVerificationCode: data.emailVerificationCode }
       console.log("emailVerificationCode", emailVerificationCode)
       const response = await axios.post(`${API_URL}/verify-email`, emailVerificationCode, { withCredentials: true });
       console.log("response", response.data)
       setSuccess(true);
       router.push(`${LOCAL_HOST}/`)
 
-    } catch (err: any) {
+    } catch (err:unknown) {
       console.log("err", err)
-      if (err.response.data) {
-        return setError(err.response.data.error);
+      if (err instanceof AxiosError) {
+        
+        return setError(err.response?.data.error);
       }
 
     } finally {

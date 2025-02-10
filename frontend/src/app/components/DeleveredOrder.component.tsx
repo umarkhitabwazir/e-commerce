@@ -1,12 +1,31 @@
-import Image from 'next/image';
 import React from 'react'
+import Image from 'next/image';
+type Product = {
+  _id: string;
+  title: string;
+  price: number;
+  image: string;
+};
 
-const DeleveredOrderComponent = ({
+type Order = {
+  _id: string;
+  products: { productId: string; quantity: number }[];
+  isDelivered: boolean;
+  isPaid: boolean;
+  totalPrice: number;
+  taxPrice: number;
+  shippingPrice: number;
+  cancelled: boolean;
+  createdAt: Date;
+};
+
+
+const DeleveredOrderComponent : React.FC<{ deleveredOders: Order[]; products: Product[] }> = ({
     deleveredOders,
     products
 }:{
-    deleveredOders: any[],
-    products: any[]
+    deleveredOders:Order[],
+    products: Product[]
 }
 ) => {
   return (
@@ -54,7 +73,7 @@ const DeleveredOrderComponent = ({
             </p>
 
             <div className="space-y-4">
-              {order.products.map((orderProduct:any) => {
+              {order.products.map((orderProduct:{productId:string,quantity:number}) => {
                 const product = products.find(
                   (p) => p._id === orderProduct.productId
                 );

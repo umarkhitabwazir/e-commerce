@@ -3,8 +3,26 @@ import React, { useState } from "react";
 import withAuth from "../utils/withAuth";
 import UserProfileForm from "./UserProfileForm.component";
 
-const ProfileComponent = ({ user }: { user: any }) => {
-    let [edit, setEdit] = useState(false)
+interface User {
+    id: string;
+    username: string;
+    email: string;
+    fullName: string;
+    role: string;
+    password: string;
+    address: string;
+    phone: number;
+    isVerified: boolean;
+    createdAt: string;
+    updatedAt: string;
+  }
+  
+  interface ProfileComponentProps {
+    user: User;
+  }
+
+const ProfileComponent : React.FC<ProfileComponentProps>  = ({ user }) => {
+    const[edit, setEdit] = useState(false)
 
     return (
         <>

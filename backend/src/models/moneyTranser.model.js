@@ -1,5 +1,5 @@
 import mongoose,{Schema} from "mongoose";
-let moneyTransferSchema = new Schema({
+const moneyTransferSchema = new Schema({
     recipientId:{
         type:Schema.Types.ObjectId,
         ref:"User",
@@ -16,4 +16,4 @@ let moneyTransferSchema = new Schema({
     }
 },{timestamps:true}
 )
-export let MoneyTransfer = mongoose.model("MoneyTransfer", moneyTransferSchema);
+export const MoneyTransfer = mongoose.model("MoneyTransfer", moneyTransferSchema);

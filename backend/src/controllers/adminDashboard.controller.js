@@ -5,18 +5,18 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 
 
-let adminProducts = asyncHandler(async (req, res) => {
-    let user = req.user
+const adminProducts = asyncHandler(async (req, res) => {
+    const user = req.user
     if (!user) {
         throw new ApiError(401, false, "user not loged in!", false)
     }
-    let userRole = user.role
-    let role = ["superadmin", "admin"]
+    const userRole = user.role
+    const role = ["superadmin", "admin"]
     if (!role.includes(userRole)) {
         throw new ApiError(401, false, "you can't access secure route", false)
 
     }
-    let product = await Product.find({ user: user.id })
+    const product = await Product.find({ user: user.id })
     if (!product) {
         throw new ApiError(404, false, "no product founded", false)
 

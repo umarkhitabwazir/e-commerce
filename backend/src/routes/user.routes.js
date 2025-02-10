@@ -25,7 +25,7 @@ dotenv.config({
 })
 
 
-let userRouter = Router()
+const userRouter = Router()
 // User Routes
 userRouter.route("/user/signup").post(
   [

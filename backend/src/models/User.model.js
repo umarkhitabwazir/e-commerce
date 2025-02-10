@@ -6,7 +6,7 @@ dotenv.config({
     path: ".env"        
 })
 
-let userSchema = new Schema(
+const userSchema = new Schema(
     {
         username: {
             type: String,
@@ -66,7 +66,7 @@ let userSchema = new Schema(
 )
 
 userSchema.pre("save",async function(next){
-    let user = this
+    const user = this
     if(!user.isModified("password")) return next()
     user.password = bcrypt.hashSync(user.password,10)
     next()
@@ -86,4 +86,4 @@ userSchema.methods.generateRefreshToken =async function(){
         {expiresIn:process.env.JWT_REFRESH_TOKEN_EXPIRES_IN})
 }
 
-export let User = mongoose.model( "User", userSchema)
+export const User = mongoose.model( "User", userSchema)

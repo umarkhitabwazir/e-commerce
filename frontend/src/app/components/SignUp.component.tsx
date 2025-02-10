@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { SignupSchema,SignupFormData } from '../utils/formSchemas';
+import { SignupSchema, SignupFormData } from '../utils/formSchemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -39,29 +39,31 @@ const SignupComponent = () => {
             if (created) {
                 const maskEmail = (email: string) => {
                     const [name, domain] = email.split('@');
-                    let firstTwo = name.slice(0, 2);
-                    let lastTwo = name.slice(-2);
+                    const firstTwo = name.slice(0, 2);
+                    const lastTwo = name.slice(-2);
 
                     console.log(`${firstTwo}****${lastTwo}@${domain}`);
 
                     return `${firstTwo}****${lastTwo}@${domain}`
                 };
-                let maskedEmail = maskEmail(data.email)
+                const maskedEmail = maskEmail(data.email)
                 router.push(`${LOCAL_HOST}/verify-email?email=${maskedEmail}`)
 
             }
 
             setLoading(false); // Stop loading
 
-        } catch (err: any) {
+        } catch (err: unknown) {
+            if (err instanceof AxiosError) {
+                setLoading(false); // Stop loading
 
-            setLoading(false); // Stop loading
-
-            if (err.response) {
-                setError(err.response.data.error); // Set error message from backend
-            } else {
-                setError('An unknown error occurred.');
+                if (err?.response) {
+                    setError(err.response.data.error); // Set error message from backend
+                } else {
+                    setError('An unknown error occurred.');
+                }
             }
+
         }
     };
 

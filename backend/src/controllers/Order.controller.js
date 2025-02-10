@@ -5,11 +5,11 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 
-const TAX_RATE = parseFloat(process.env.TAX_RATE);
-const SHIPPING_COST = parseFloat(process.env.SHIPPING_COST);
+const  TAX_RATE = parseFloat(process.env.TAX_RATE);
+const  SHIPPING_COST = parseFloat(process.env.SHIPPING_COST);
 
-let previewOrder = asyncHandler(async (req, res) => {
-    const { products } = req.body;
+const previewOrder = asyncHandler(async (req, res) => {
+    const  { products } = req.body;
 
 
 
@@ -18,9 +18,9 @@ let previewOrder = asyncHandler(async (req, res) => {
     }
 
     // Validate products
-    const productIds = products.map((item) => item.productId);
+    const  productIds = products.map((item) => item.productId);
 
-    const dbProducts = await Product.find({ _id: { $in: productIds } });
+    const  dbProducts = await Product.find({ _id: { $in: productIds } });
 
 
     if (dbProducts.length !== products.length) {
@@ -28,8 +28,8 @@ let previewOrder = asyncHandler(async (req, res) => {
     }
 
     let productTotalPrice = 0;
-    const validatedProducts = products.map((item) => {
-        const product = dbProducts.find((p) => p._id.toString() === item.productId);
+    const  validatedProducts = products.map((item) => {
+        const  product = dbProducts.find((p) => p._id.toString() === item.productId);
         if (!product) {
             throw new ApiError(404, `Product with ID ${item.productId} not found`);
         }
@@ -41,18 +41,18 @@ let previewOrder = asyncHandler(async (req, res) => {
             price: product.price,
         };
     });
-    let productquantities = validatedProducts.map((i) => i.quantity).flat().reduce((acc, quantity) => acc + quantity, 0)
+    const productquantities = validatedProducts.map((i) => i.quantity).flat().reduce((acc, quantity) => acc + quantity, 0)
 
 
     // Calculate prices
-    const taxPrice = TAX_RATE * productTotalPrice;
-    const shippingPrice = SHIPPING_COST;
-    const totalPrice = productTotalPrice + taxPrice + shippingPrice;
+    const  taxPrice = TAX_RATE * productTotalPrice;
+    const  shippingPrice = SHIPPING_COST;
+    const  totalPrice = productTotalPrice + taxPrice + shippingPrice;
 
 
     // Create the order
     try {
-        const previewOrder = {
+        const  previewOrder = {
 
             products: validatedProducts,
             items: productquantities,
@@ -70,20 +70,20 @@ let previewOrder = asyncHandler(async (req, res) => {
     }
 });
 
-let createOrder = asyncHandler(async (req, res) => {
-    const { products, paymentMethod } = req.body;
-    const user = req.user;
+const createOrder = asyncHandler(async (req, res) => {
+    const  { products, paymentMethod } = req.body;
+    const  user = req.user;
     if (!products || !Array.isArray(products) || products.length === 0 || !paymentMethod) {
         throw new ApiError(400, "Products and payment method are required");
     }
 
-    let produdsArr = [];
-    let productTotalPrice = 0;
-    for (const item of products) {
+    const produdsArr = [];
+    const productTotalPrice = 0;
+    for (const  item of products) {
         if (!item.productId || !item.quantity || item.quantity <= 0) {
             throw new ApiError(400, `Each product must have a valid productId and quantity > 0`);
         }
-        const product = await Product.findById(item.productId);
+        const  product = await Product.findById(item.productId);
         if (!product) {
             throw new ApiError(404, `Product with ID ${item.productId} not found`);
         }
@@ -95,7 +95,7 @@ let createOrder = asyncHandler(async (req, res) => {
     }
 
 
-    const order = await Order.create({
+    const  order = await Order.create({
         userId: user._id,
         products: produdsArr,
         paymentMethod,
@@ -108,9 +108,9 @@ let createOrder = asyncHandler(async (req, res) => {
 });
 
 
-let updateOrder = asyncHandler(async (req, res) => {
-    const orderId = req.params.orderId;
-    const { products, paymentMethod } = req.body;
+const updateOrder = asyncHandler(async (req, res) => {
+    const  orderId = req.params.orderId;
+    const  { products, paymentMethod } = req.body;
 
     if (!orderId) {
         throw new ApiError(400, "order is required");
@@ -118,13 +118,13 @@ let updateOrder = asyncHandler(async (req, res) => {
     if (!products || !Array.isArray(products) || products.length === 0 || !paymentMethod) {
         throw new ApiError(400, "Products and payment method are required");
     }
-    let produdsArr = [];
-    let productTotalPrice = 0;
-    for (const item of products) {
+    const produdsArr = [];
+    const productTotalPrice = 0;
+    for (const  item of products) {
         if (!item.productId || !item.quantity || item.quantity <= 0) {
             throw new ApiError(400, `Each product must have a valid productId and quantity > 0`);
         }
-        const product = await Product.findById(item.productId);
+        const  product = await Product.findById(item.productId);
         if (!product) {
             throw new ApiError(404, `Product with ID ${item.productId} not found`);
         }
@@ -138,7 +138,7 @@ let updateOrder = asyncHandler(async (req, res) => {
 
 
 
-    const order = await Order.findById(orderId);
+    const  order = await Order.findById(orderId);
     if (!order) {
         throw new ApiError(404, `Order with ID ${orderId} not found`);
     }
@@ -154,22 +154,22 @@ let updateOrder = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, order, "Order updated successfully"));
 });
 
-let getOrder = asyncHandler(async (req, res) => {
-    let user = req.user
+const getOrder = asyncHandler(async (req, res) => {
+    const user = req.user
     if (!user) {
         throw new ApiError(400, "user must be loged in!")
     }
-    let productId = req.params.productId
+    const productId = req.params.productId
     if (!productId) {
         throw new ApiError(400, "product id is required!")
 
     }
-    let order = await Order.find({ products: { $elemMatch: { productId: productId } } });
+    const order = await Order.find({ products: { $elemMatch: { productId: productId } } });
     console.log('order', order)
     if (!order) {
         throw new ApiError(400, "order not founded!")
     }
-    let logedInUser = order.map((i) => i.userId.toString())
+    const logedInUser = order.map((i) => i.userId.toString())
 
     if (logedInUser.includes(user.id) === false) {
         throw new ApiError(400, "you can't access to the other user order!")
@@ -178,24 +178,24 @@ let getOrder = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, order, "order founded successfully!", true))
 })
 
-let singleUserOrder = asyncHandler(async (req, res) => {
-    let user = req.user
+const singleUserOrder = asyncHandler(async (req, res) => {
+    const user = req.user
     if (!user) {
         throw new ApiError(400, null, "user must be logged in")
     }
-    let order = await Order.find({ userId: user.id })
+    const order = await Order.find({ userId: user.id })
     if (!order) {
         throw new ApiResponse(404, null, "order not founded")
     }
     console.log("order", order)
     res.status(200).json(new ApiResponse(200, order, "order founded!"))
 })
-let cancelOrder = asyncHandler(async (req, res) => {
-    let orderId = req.params.orderId
+const cancelOrder = asyncHandler(async (req, res) => {
+    const orderId = req.params.orderId
     if (!orderId) {
         throw new ApiError(401, "orderId is required!")
     }
-    let user = req.user
+    const user = req.user
     if (!user) {
         throw new ApiError(402, "user must be logined!")
     }
@@ -203,7 +203,7 @@ let cancelOrder = asyncHandler(async (req, res) => {
     if (!orderId) {
         throw new ApiError(401, "orderId is required!")
     }
-    let order = await Order.findById(orderId)
+    const order = await Order.findById(orderId)
     order.cancelled= true
     await order.save()
     if (!order) {
@@ -212,25 +212,25 @@ let cancelOrder = asyncHandler(async (req, res) => {
     }
     res.status(200).json(new ApiResponse(200, order, "order canceled successfully!"))
 })
-let findOrderedProducts = asyncHandler(async (req, res) => {
-    let { productIds } = req.body;
+const findOrderedProducts = asyncHandler(async (req, res) => {
+    const { productIds } = req.body;
     console.log("productIds",productIds)
     if (!productIds || !Array.isArray(productIds) || productIds.length === 0) {
       
         throw new ApiError(400, "Product IDs are required and must be a non-empty array");
     }
-    const objectIds = productIds;
+    const  objectIds = productIds;
     console.log("objectIds", objectIds);
-    let products = await Product.find({ _id: { $in: objectIds } })
+    const products = await Product.find({ _id: { $in: objectIds } })
     if (!products) {
         throw new ApiError(404, null, "products not founded")
     }
 
     res.status(200).json(new ApiResponse(200, products, "products founded", true));
 });
-let deleteOder = asyncHandler(async (req, res) => {
-    let orderId = req.params.orderId
-    let user = req.user
+const deleteOder = asyncHandler(async (req, res) => {
+    const orderId = req.params.orderId
+    const user = req.user
     if (!user) {
         throw new ApiError(402, "user must be logined!")
     }
@@ -238,7 +238,7 @@ let deleteOder = asyncHandler(async (req, res) => {
     if (!orderId) {
         throw new ApiError(401, "orderId is required!")
     }
-    let order = await Order.findById(orderId)
+    const order = await Order.findById(orderId)
     if (!order) {
         throw new ApiError(401, "order not found!")
 

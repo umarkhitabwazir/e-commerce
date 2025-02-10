@@ -1,6 +1,6 @@
 import mongoose,{Schema} from "mongoose";
 
-let categorySchema = new Schema(
+const categorySchema = new Schema(
     {
     categoryName:{
         type:String,
@@ -19,4 +19,4 @@ let categorySchema = new Schema(
 
 }
 );
-export let Category=mongoose.model("Category",categorySchema)
+export const Category=mongoose.model("Category",categorySchema)

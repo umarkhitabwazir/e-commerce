@@ -7,7 +7,7 @@ import cors from "cors"
 import { ApiError } from "./utils/apiError.js";
 import { adminRouter } from "./routes/admin.routes.js";
 import { superAdminRouter } from "./routes/superAdmin.routes.js";
-let app = express()
+const app = express()
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,

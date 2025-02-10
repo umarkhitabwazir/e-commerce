@@ -1,5 +1,3 @@
-import AdminDashboardComponent from "../components/AdminDashboard.component";
-import Navbar from "../components/Navbar.component";
 
 
 export default function DashboardLayout({

@@ -1,33 +1,46 @@
 "use client";
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
 import withAuth from "../utils/withAuth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
+interface Product {
+  _id: string;
+  title: string;
+  price: number;
+  brand: string,
+  countInStock: number,
+  description: string;
+  image: string;
+  createdAt: Date
+}
+
 const AdminProductComponent = () => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const router = useRouter();
 
   useEffect(() => {
     const getAdminProducts = async () => {
       try {
-        let res = await axios.get(`${API_URL}/admin-products`, {
+        const res = await axios.get(`${API_URL}/admin-products`, {
           withCredentials: true,
         });
         console.log("Products fetched successfully", res.data);
         setProducts(res.data.data || []);
-      } catch (error: any) {
-        if (error.response?.status === 401) {
-          return router.push("/");
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 401) {
+
+            return router.push("/");
+          }
         }
-        console.log("Error fetching admin products:", error.response);
       }
     };
     getAdminProducts();
-  }, [API_URL]);
+  }, [API_URL, router, setProducts]);
 
   const handleEdit = (productId: string) => {
     router.push(`/edit-product?product=${productId}`);
@@ -39,11 +52,13 @@ const AdminProductComponent = () => {
         await axios.delete(`${API_URL}/admin-products/${productId}`, {
           withCredentials: true,
         });
-        setProducts(products.filter((product: any) => product._id !== productId));
+        setProducts(products.filter((product: { _id: string }) => product._id !== productId));
         alert("Product deleted successfully.");
-      } catch (error: any) {
-        console.error("Error deleting product:", error);
-        alert("Failed to delete product. Please try again.");
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+
+          alert("Failed to delete product. Please try again.");
+        }
       }
     }
   };
@@ -62,7 +77,7 @@ const AdminProductComponent = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product: any) => (
+          {products.map((product: Product) => (
             <div
               key={product._id}
               className="border rounded-lg p-5 shadow-lg bg-white hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1"

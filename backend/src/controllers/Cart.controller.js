@@ -7,9 +7,9 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/User.model.js";
 
-let createCart = asyncHandler(async (req, res) => {
-    let { cartItem } = req.body
-    let userId = req.user
+const createCart = asyncHandler(async (req, res) => {
+    const { cartItem } = req.body
+    const userId = req.user
     console.log("userId", userId)
     if (!Array.isArray(cartItem)) {
         throw new ApiError(400, "cartitem is required!")
@@ -17,17 +17,17 @@ let createCart = asyncHandler(async (req, res) => {
     if (!userId) {
         throw new ApiError(400, "user not login")
     }
-    let cartArr = []
+    const cartArr = []
  
-    for (let item of cartItem) {
+    for (const item of cartItem) {
 console.log("item.product",item.product)
 
-        let product = await Product.findById( item.product)
+        const product = await Product.findById( item.product)
         
         if (!product) {
             throw new ApiError(400,"product not found!")
         }
-        let productPrice=product.price * item.quantity
+        const productPrice=product.price * item.quantity
         
         cartArr.push({
             product:product.id,
@@ -37,7 +37,7 @@ console.log("item.product",item.product)
         })
     }
    
-    let createCart=await Cart.create({
+    const createCart=await Cart.create({
         user:userId,
         cartItems:cartArr
     })

@@ -3,22 +3,21 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { CreateProductSchema, CreateProductFormData } from '../utils/formSchemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import withAuth from '../utils/withAuth';
 import { useRouter } from 'next/navigation';
 
 // Zod schema validation
 
 
-const CreateProductComponent = () => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
-    const [error, setError] = useState("")
-    const [message, setMessage] = useState("")
-    const [loading, setLoading] = useState(false)
-    const router=useRouter()
+const  CreateProductComponent = () => {
+    const  API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const  [error, setError] = useState("")
+    const  [message, setMessage] = useState("")
+    const  [loading, setLoading] = useState(false)
+    const  router=useRouter()
 
-    const {
+    const  {
         register,
         handleSubmit,
         formState: { errors },
@@ -26,10 +25,10 @@ const CreateProductComponent = () => {
         resolver: zodResolver(CreateProductSchema),
     });
 
-    const onSubmit = async (data: CreateProductFormData) => {
+    const  onSubmit = async (data: CreateProductFormData) => {
         console.log(data);
         setLoading(true)
-        let formData = new FormData()
+        const formData = new FormData()
         formData.append('productImg', data.productImg[0]);
         formData.append('title', data.title);
         formData.append('description', data.description);
@@ -40,19 +39,18 @@ const CreateProductComponent = () => {
 
         console.log(formData)
         try {
-            let res = await axios.post(`${API_URL}/product/create`, formData, { withCredentials: true })
+            const res = await axios.post(`${API_URL}/product/create`, formData, { withCredentials: true })
             console.log('res', res.data.message)
             setMessage(res.data.message)
             setTimeout(() => { setMessage("") }, 2000)
             setLoading(false)
             router.push('/my-products')
-        } catch (error: any) {
-            console.log()
-            setLoading(false)
+        } catch (error: unknown) {
+                        setLoading(false)
 
-            if (error.response.data.error) {
+            if (error instanceof AxiosError) {
 
-                setError(error.response.data.error)
+                setError(error.response?.data.error)
             }
             console.log("creatProductError", error)
         }

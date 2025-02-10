@@ -3,7 +3,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import withAuth from "../utils/withAuth";
-import Loading from "./Loading.component";
 import PendingOrderComponent from "./PendingOrder.component";
 import DeleveredOrderComponent from "./DeleveredOrder.component";
 import ProductReviewComponent from "./ProductReview.component";
@@ -34,7 +33,6 @@ const GetUserOrderComponent = () => {
   const [pendingOders, setPendingOrders] = useState<Order[]>([]);
   const [deleveredOders, setDeleveredOders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [remainingMinutes, setRemainingMinutes] = useState<{ [key: string]: number }>({});
   const searchParams=useSearchParams();
   const productId = searchParams.get("product");
@@ -60,7 +58,6 @@ const GetUserOrderComponent = () => {
           ),
         ];
         if (productIds.length === 0) {
-          setLoading(false);
           return;
         }
 
@@ -70,10 +67,8 @@ const GetUserOrderComponent = () => {
           { withCredentials: true }
         );
         setProducts(productRes.data.data);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching orders or products:", error);
-        setLoading(false);
       }
     };
 

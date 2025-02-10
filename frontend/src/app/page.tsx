@@ -1,8 +1,7 @@
 "use client";
-import React from 'react'
+import React, { Suspense } from 'react'
 import Products from './components/Products.component'
 import adminAuth from './utils/adminAuth'
-import AdminDashboardComponent from './components/AdminDashboard.component';
 import AdminHomePageComponent from './components/AdminHomePage.component';
 type user = {
   username: string
@@ -15,12 +14,12 @@ type user = {
 
 }
 
-const homePage = ({ user }: {
+const HomePage = ({ user }: {
   user: user
 
 }
 ) => {
-  let role = ["admin", "superadmin"]
+  const role = ["admin", "superadmin"]
   let roleAuth
   if (user) {
     roleAuth = role.includes(user.role)
@@ -38,4 +37,14 @@ const homePage = ({ user }: {
   )
 }
 
-export default adminAuth(homePage)
+const WrappedHomePage = adminAuth(HomePage);
+
+const Page = () => (
+  <Suspense fallback={<div
+  className='fixed  top-0 left-0 w-full h-full bg-white bg-opacity-80  flex-col justify-center items-center z-50'
+  >Loading...</div>}>
+    <WrappedHomePage />
+  </Suspense>
+);
+
+export default Page

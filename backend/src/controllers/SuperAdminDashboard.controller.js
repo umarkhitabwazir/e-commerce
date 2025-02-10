@@ -3,14 +3,14 @@ import { ApiError } from "../utils/apiError.js"
 import { ApiResponse } from "../utils/apiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 
-let listAllUsers = asyncHandler(async (req, res) => {
-    let user = req.user
-    const users = await User.find({ role: { $ne: "superadmin" } }).select("-password")
+const listAllUsers = asyncHandler(async (req, res) => {
+    const user = req.user
+    const  users = await User.find({ role: { $ne: "superadmin" } }).select("-password")
     console.log("users", user)
     if (!user) {
         throw new ApiError(404, "Users not found")
     }
-    let listAllUsers = users.map((user) => {
+    const listAllUsers = users.map((user) => {
         return {
             id: user.id,
             username: user.username,
@@ -31,45 +31,45 @@ let listAllUsers = asyncHandler(async (req, res) => {
 
 
 
-    // let isVerified = user.isVerified
+    // const isVerified = user.isVerified
     // if (!isVerified) {
     //     throw new ApiError(401, "delete account after email verification")
     // }
-    // let isUser = user.role === "user"
+    // const isUser = user.role === "user"
     // if (isUser) {
     //     throw new ApiError(401, "only Admin  can delete account")
 
     // }
 
-    // let findProduct = await Product.find({ user: user.id })
+    // const findProduct = await Product.find({ user: user.id })
 
     // if (findProduct) {
     //     await Product.deleteMany({ user: user.id })
     // }
-    // let findCategory = await Category.find({ user: user.id })
+    // const findCategory = await Category.find({ user: user.id })
     // if (findCategory) {
     //     await Category.deleteMany({ user: user.id })
     // }
 
-    // let findCart = await Cart.find({ user: user.id })
+    // const findCart = await Cart.find({ user: user.id })
     // if (findCart) {
     //     await Cart.deleteMany({ user: user.id })
     // }
-    // let findOrder = await Order.find({ user: user.id })
+    // const findOrder = await Order.find({ user: user.id })
     // if (findOrder) {
     //     await Order.deleteMany({ user: user.id })
     // }
-    // let findReview = await Review.find({ user: user.id })
+    // const findReview = await Review.find({ user: user.id })
     // if (findReview) {
     //     await Review.deleteMany({ user: user.id })
     // }
-    // let findMoneyTransfer = await MoneyTransfer.find({ user: user.id })
+    // const findMoneyTransfer = await MoneyTransfer.find({ user: user.id })
     // if (findMoneyTransfer) {
     //     await MoneyTransfer.deleteMany({ user: user.id })
 
     // }
 
-    // let deleteUser = await User.findOneAndDelete(user.id)
+    // const deleteUser = await User.findOneAndDelete(user.id)
     // if (!deleteUser) {
     //     throw new ApiError(404, "User not found")
     // }

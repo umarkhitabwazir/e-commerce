@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-let addressSchema = new Schema({
+const addressSchema = new Schema({
     fullName: {
         type: String,
         required: [true, "fullname is required"],
@@ -90,4 +90,4 @@ let addressSchema = new Schema({
       },
 })
 
-export let Address=mongoose.model("Address", addressSchema);
+export const Address=mongoose.model("Address", addressSchema);

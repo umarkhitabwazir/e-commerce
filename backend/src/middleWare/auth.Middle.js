@@ -5,21 +5,21 @@ import { ApiError } from "../utils/apiError.js";
 dotenv.config({
     path: ".env"
 })
-let authMiddleware = async (req, res, next) => {
-    // let token = req.headers.authorization;
+const authMiddleware = async (req, res, next) => {
+    // const token = req.headers.authorization;
 
-    let accessToken = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
-    let refreshToken = req.cookies?.refreshToken || req.header("Authorization")?.replace("Bearer ", "")
+    const accessToken = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
+    const refreshToken = req.cookies?.refreshToken || req.header("Authorization")?.replace("Bearer ", "")
     if (!accessToken) {
         next(new ApiError(401, "Unauthorized"))
     }
     try {
-        let decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_TOKEN_SECRET);
+        const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_TOKEN_SECRET);
         if (!decoded || !decoded.id) {
             throw new ApiError(401, "Unauthorized. Invalid token.");
         }
-        let user = decoded.id;
-        let userExists = await User.findById(user);
+        const user = decoded.id;
+        const userExists = await User.findById(user);
 
         if (!userExists) {
             throw new ApiError(401, "user not founded!")

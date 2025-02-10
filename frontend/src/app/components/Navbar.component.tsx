@@ -7,24 +7,22 @@ import adminAuth from "../utils/adminAuth";
 type User={
     email:string
 }
-const Navbar = ({user}:{user:any}) => {
-    const [searchQuery, setSearchQuery] = useState("");
+const Navbar = ({user}:{user:User}) => {
     const [sortOption, setSortOption] = useState("");
     const [isMenuOpen, setIsMenuOpen] = useState(false); // Added for toggle menu
     const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
     const [isLogedin,setIsLogedin]=useState<User | null>({email:""})
-    const [loading,setLoading]=useState(false)
-console.log("object",isLogedin)
     const router = useRouter();
     const pathName = usePathname();
     const authRoutes = ["/sign-up", "/verify-email", "/login", "/log-out"];
     const isAuthRoute = authRoutes.includes(pathName);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
+        console.log(e)
     };
 
     const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSortOption(e.target.value)
         router.push(`${LOCAL_HOST}?sort=${e.target.value}`);
     };
 
@@ -64,22 +62,7 @@ console.log("object",isLogedin)
 
     },[user,isLogedin])
 
-   useEffect(() => {
-     const fetchData = async () => {
-       setLoading(true);
-       try {
- 
-         await new Promise((resolve) => setTimeout(resolve, 2000));
- 
-       } catch (error) {
-         console.log("Error fetching data:", error);
-       } finally {
-         setLoading(false);
-       }
-     };
- 
-     fetchData();
-   }, []);
+
     return (
         <nav
             className={`${isAuthRoute ? "hidden" :isFixed?"fixed": "sticky"} bg-gray-800 text-white transition-all duration-1000 top-0 w-full z-50 shadow-md`}

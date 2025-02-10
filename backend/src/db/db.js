@@ -7,7 +7,7 @@ dotenv.config({
 
 const DB_URL = process.env.DB_URL;
 
-let connectDb = async () => {
+const connectDb = async () => {
     await mongoose.connect(DB_URL)
 
 }

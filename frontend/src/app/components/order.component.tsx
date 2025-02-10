@@ -10,7 +10,7 @@ interface FormData {
 }
 
 const OrderPage = () => {
-  const { register, handleSubmit, formState: { errors }, setValue, setError, clearErrors } = useForm<FormData>();
+  const {  handleSubmit, formState: { errors }, setValue, setError, clearErrors } = useForm<FormData>();
   const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
   const [loading, setLoading] = useState(false);
   const [selectedQuantity, setSelectedQuantity] = useState<number | null>(1);
@@ -25,7 +25,7 @@ const OrderPage = () => {
     if (!productId || !productPrice) {
       router.push("/");
     }
-  }, [router]);
+  }, [router,productId,productPrice]);
 
   const onSubmit: SubmitHandler<FormData> = async () => {
     if (!selectedQuantity) {

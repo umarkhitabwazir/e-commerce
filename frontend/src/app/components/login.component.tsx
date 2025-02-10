@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { LoginSchema, LoginFormData } from '../utils/formSchemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -33,7 +33,7 @@ const LoginComponent = () => {
     const isQuantity = quantity ? quantity : ""
     const isProduct = product ? product : ""
     const isProductPrice = productPrice ? productPrice : ""
-const [networkError,setNetworkError]=useState(false)
+    const [networkError, setNetworkError] = useState(false)
     // Form submit handler
     const onSubmit = async (data: LoginFormData) => {
 
@@ -43,58 +43,59 @@ const [networkError,setNetworkError]=useState(false)
 
             const response = await axios.post(`${API_URL}/user/Login`, data, { withCredentials: true });
             const created = response.data
-            console.log("created", created)
             if (created) {
                 const maskEmail = (email: string) => {
                     const [name, domain] = email.split('@');
-                    let firstTwo = name.slice(0, 2);
-                    let lastTwo = name.slice(-2);
+                    const firstTwo = name.slice(0, 2);
+                    const lastTwo = name.slice(-2);
 
-                    console.log(`${firstTwo}****${lastTwo}@${domain}`);
 
                     return `${firstTwo}****${lastTwo}@${domain}`
                 };
-                let maskedEmail = maskEmail(data.email)
+                const maskedEmail = maskEmail(data.email)
                 router.push(`${LOCAL_HOST}/verify-email?email=${maskedEmail}`)
 
             }
-            let resdata = response
+            const resdata = response
             console.log("resdata", resdata)
             setLoading(false); // Stop loading
             if (resdata.data.statusCode === 200) {
-                
+
                 router.push(`${trackedPath || "/"}?q=${isQuantity}&product=${isProduct}&p=${isProductPrice} `);
 
             }
 
-        } catch (err: any) {
+        } catch (err: unknown) {
 
             setLoading(false); // Stop loading
             console.log('err', err)
+            if (err instanceof AxiosError) {
 
-if (err.status=== 500) {
-   setNetworkError(true)
-}
-            if (err.response) {
-                setError(err.response.data.error); // Set error message from backend
-            } else {
-                setError('An unknown error occurred.');
+                if (err.status === 500) {
+                    setNetworkError(true)
+                }
+                if (err.response) {
+                    setError(err.response.data.error); // Set error message from backend
+                } else {
+                    setError('An unknown error occurred.');
+                }
+                if (err.code === "ERR_NETWORK") {
+                    setLoading(true)
+                }
+                // if email not verified
+                // if (err.status === 401) {
+                //     router.push(`${LOCAL_HOST}/verify-email`)
+                // }
             }
-            if (err.code==="ERR_NETWORK") {
-                setLoading(true)
-            }
-            // if email not verified
-            // if (err.status === 401) {
-            //     router.push(`${LOCAL_HOST}/verify-email`)
-            // }
         }
+
     };
-{
-    networkError&&   <NoInternetComponent/>
-}
+
     return (
         <>
-
+            {
+                networkError && <NoInternetComponent />
+            }
 
             <div className="flex justify-center items-center min-h-screen bg-gray-100">
                 <div className="w-full max-w-4xl bg-white p-8 rounded-lg shadow-lg">

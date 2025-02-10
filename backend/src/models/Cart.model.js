@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose"
 
-let cartSchema = new Schema(
+const cartSchema = new Schema(
     {
         user: {
             type: Schema.Types.ObjectId,
@@ -28,4 +28,4 @@ let cartSchema = new Schema(
     }, { timestamps: true }
 
 )
-export let Cart = mongoose.model("Cart", cartSchema)
+export const Cart = mongoose.model("Cart", cartSchema)

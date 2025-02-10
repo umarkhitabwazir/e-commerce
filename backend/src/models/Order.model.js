@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose"
 
-let orderSchema = new Schema({
+const orderSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: "User",
@@ -74,4 +74,4 @@ let orderSchema = new Schema({
     { timestamps: true, user: true }
 
 )
-export let Order = mongoose.model("Order", orderSchema)
+export const Order = mongoose.model("Order", orderSchema)

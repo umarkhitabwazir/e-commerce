@@ -5,7 +5,7 @@ import { adminProducts } from "../controllers/adminDashboard.controller.js";
 import { upload } from "../middleWare/multer.middle.js";
 import { createProductsWithCategory, deleteProductWithCategory, updateProductWithCategory } from "../controllers/Product.controller.js";
 
-let adminRouter = Router()
+const adminRouter = Router()
 adminRouter.route("/admin-products").get(authMiddleware, adminProducts)
 
 adminRouter.route("/product/create").post(

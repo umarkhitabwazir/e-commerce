@@ -14,12 +14,12 @@ type user= {
 
 }
 const AdminDashboardComponent = ({ user }: { user:user }) => {
-  let role = ["admin", "superadmin"]
-  let pathName = usePathname()
-  let route = ["/login","/log-out","/sign-up"]
-  let auth = route.includes(pathName)
+  const role = ["admin", "superadmin"]
+  const pathName = usePathname()
+  const route = ["/login","/log-out","/sign-up"]
+  const auth = route.includes(pathName)
   console.log("pathName",auth)
-  let roleAuth = role.includes(user.role)
+  const roleAuth = role.includes(user.role)
   return (
     <div className={`${roleAuth ? "" : "hidden" } ${ auth && "hidden" }  bg-gray-800 w-auto fixed h-full max-h-max top-14  left-0  p-4 z-50 `}>
      <div className="flex relative top-15 h-full flex-col gap-2 items-center">

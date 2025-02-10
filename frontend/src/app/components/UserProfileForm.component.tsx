@@ -2,13 +2,26 @@
 import React, { Dispatch, useState } from "react";
 import withAuth from "../utils/withAuth";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 
-const UserProfileForm = ({ user, setEdit }: { user: any, setEdit: Dispatch<React.SetStateAction<boolean>> }) => {
+type User = {
+  id: string;
+  username: string;
+  email: string;
+  fullName: string;
+  role: string;
+  password: string;
+  address: string;
+  phone: number;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const UserProfileForm = ({ user, setEdit }: { user: User, setEdit: Dispatch<React.SetStateAction<boolean>> }) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
+
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
+
   const [updated, setUpdated] = useState(false)
 
   const [formData, setFormData] = useState({
@@ -17,7 +30,7 @@ const UserProfileForm = ({ user, setEdit }: { user: any, setEdit: Dispatch<React
     phone: user.phone || "",
   });
 
-  const handleInputChange = (e: { target: { name: any; value: any; }; }) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -26,7 +39,7 @@ const UserProfileForm = ({ user, setEdit }: { user: any, setEdit: Dispatch<React
     e.preventDefault();
     setLoading(true)
     console.log("Updated Data:", formData);
-    let updateUser = async () => {
+    const updateUser = async () => {
       try {
         await axios.patch(`${API_URL}/updateUser`, formData, { withCredentials: true })
         setLoading(false)

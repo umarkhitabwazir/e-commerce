@@ -6,7 +6,7 @@ import { ApiError } from "./utils/apiError.js";
 dotenv.config({
     path: ".env",
 });
-let PORT=process.env.PORT
+const PORT=process.env.PORT
 connectDb().then(() => {
 
     app.listen(PORT, () => {

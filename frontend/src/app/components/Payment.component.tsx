@@ -4,28 +4,26 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 import withAuth from '../utils/withAuth';
 
-const PaymentComponent = () => {
-    const [selectedPayment, setSelectedPayment] = useState('');
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
-    const searchParams = useSearchParams();
-    const productId = searchParams.get("product");
-    const [loading, setLoading] = useState(false)
-    const productPrice = searchParams.get("p");
-    const quantity: number = parseInt(searchParams.get("q") || "1");
-    const router = useRouter()
+const  PaymentComponent = () => {
+    const  [selectedPayment, setSelectedPayment] = useState('');
+    const  API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const  searchParams = useSearchParams();
+    const  productId = searchParams.get("product");
+    const  [loading, setLoading] = useState(false)
+    const  quantity: number = parseInt(searchParams.get("q") || "1");
+    const  router = useRouter()
 
-    const handlePaymentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const  handlePaymentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedPayment(event.target.value);
     };
 
-    const handleProceed = async () => {
+    const  handleProceed = async () => {
         setLoading(true)
         if (selectedPayment) {
             try {
 
-                let paymentMethod = selectedPayment;
-                let res = await axios.post(`${API_URL}/create-order`, {
+                const paymentMethod = selectedPayment;
+                const res = await axios.post(`${API_URL}/create-order`, {
                     "products": [{
                         "productId": productId,
                         "quantity": quantity,
@@ -34,7 +32,7 @@ const PaymentComponent = () => {
                     ],
                     "paymentMethod": paymentMethod,
                 }, { withCredentials: true });
-                let data = res.data;
+                const data = res.data;
                 console.log("data", data)
                 router.push(`/your-orders?product=${productId}`)
             } catch (error) {

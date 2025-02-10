@@ -1,33 +1,34 @@
-"use client"
-import axios from 'axios'
-import React, { useState } from 'react'
+"use client";
+import React, { useState } from 'react';
+import axios, { AxiosError } from 'axios';
 
-const resendVerificationCode = () => {
+const ResendVerificationCode = () => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
   const [loading, setLoading] = useState<boolean>(false); // Track loading state
   const [resMesg, setResMesg] = useState<string | null>("");
-
   const [error, setError] = useState<string | undefined>(undefined);
 
-  let handleResendCode = async () => {
+  const handleResendCode = async () => {
     try {
-      setLoading(true)
-      let response = await axios.post(`${API_URL}/resendVerificationCode`, {}, { withCredentials: true })
-      setResMesg(response.data.message)
-      setLoading(false)
+      setLoading(true);
+      const response = await axios.post(`${API_URL}/resendVerificationCode`, {}, { withCredentials: true });
+      setResMesg(response.data.message);
+      setLoading(false);
       setTimeout(() => {
-        setResMesg("")
-      }, 2000)
-    } catch (err: any) {
-      setLoading(false)
-
-      setError(err.response.data.error || "An unknown error occurred.")
+        setResMesg("");
+      }, 2000);
+    } catch (err: unknown) {
+      setLoading(false);
+      if (err instanceof AxiosError) {
+        setError(err.response?.data.error || "An unknown error occurred.");
+      } else {
+        setError("An unknown error occurred.");
+      }
     }
-  }
+  };
+
   return (
     <div>
-
       <button
         onClick={handleResendCode}
         className={`w-full py-3 rounded-lg transition p-3 duration-200 ${loading
@@ -45,15 +46,13 @@ const resendVerificationCode = () => {
         </p>
       )}
 
-
       {error && (
         <p className="mt-4 text-red-500 font-medium transition duration-300">
           {error}
         </p>
       )}
-
     </div>
-  )
-}
+  );
+};
 
-export default resendVerificationCode
+export default ResendVerificationCode;
