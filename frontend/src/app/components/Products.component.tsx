@@ -21,7 +21,6 @@ const Products = () => {
   const value = searchParams.get("sort")
   const [reviews, setReviews] = useState([])
 
-console.log("products",products)
 
 
 
@@ -71,6 +70,7 @@ console.log("products",products)
       try {
         const endpoint = sort ? `${API_URL}/${sort}` : `${API_URL}/get-products`;
         const response = await axios.get(endpoint);
+      console.log('productresponse',response)
         const productsIdArr = response.data.data.map((product: { _id: string; }) => product._id)
         console.log("productsIdArr", productsIdArr)
         setProdcutsIds(productsIdArr)
