@@ -91,13 +91,7 @@ const GetUserOrderComponent = () => {
     calculateRemainingMinutes();
   }, [pendingOders]);
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex justify-center items-center absolute h-screen bg-gray-50">
-  //       <Loading />
-  //     </div>
-  //   );
-  // }
+
 
   return (
     <div className="p-8 bg-bgGray min-h-screen">

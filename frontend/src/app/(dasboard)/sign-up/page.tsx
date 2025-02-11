@@ -3,6 +3,7 @@ import Signup from '@/app/components/SignUp.component'
 const signup = () => {
   return (
     <div>
+       
       <Signup/>
     </div>
   )

@@ -1,12 +1,15 @@
+'use client'
 import CreateProductComponent from '@/app/components/CreateProduct.component'
-import React from 'react'
 
-const page = () => {
+const Page = () => {
   return (
-    <div  className='mt-1 p-20'>
-      <CreateProductComponent/>
+    <div className='mt-1 p-20'>
+     
+
+        <CreateProductComponent />
+
     </div>
   )
 }
 
-export default page
+export default Page

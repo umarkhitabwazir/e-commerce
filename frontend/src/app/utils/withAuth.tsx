@@ -2,7 +2,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import axios, { AxiosError } from "axios";
-import Loading from "../components/Loading.component";
 import NoInternetComponent from "../components/NoInternet.component";
 
 interface WithAuthProps {
@@ -23,7 +22,6 @@ const withAuth = <P extends WithAuthProps>(
     const AuthenticatedComponent = (props: Omit<P, "user">) => {
         const router = useRouter();
         const [user, setUser] = useState<WithAuthProps | null>(null);
-        const [loading, setLoading] = useState(true);
         const [networkError, setNetworkError] = useState(false);
         const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -82,7 +80,6 @@ const withAuth = <P extends WithAuthProps>(
                     );
                   }
                 } finally {
-                    setLoading(false);
                 }
             };
 
@@ -95,9 +92,7 @@ const withAuth = <P extends WithAuthProps>(
         }
 
       
-        if (loading) {
-            return <Loading />
-        }
+     
 
 
         if (!user) {

@@ -3,6 +3,7 @@ import BuyingComponent from '@/app/components/OrderSummery.component'
 const buying = () => {
   return (
     <div  className=''>
+       
       <BuyingComponent/>
     </div>
   )

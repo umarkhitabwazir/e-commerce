@@ -78,7 +78,7 @@ const createOrder = asyncHandler(async (req, res) => {
     }
 
     const produdsArr = [];
-    const productTotalPrice = 0;
+    let productTotalPrice = 0;
     for (const  item of products) {
         if (!item.productId || !item.quantity || item.quantity <= 0) {
             throw new ApiError(400, `Each product must have a valid productId and quantity > 0`);

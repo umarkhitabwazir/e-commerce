@@ -1,7 +1,7 @@
 "use client";
 
-import axios, { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
+import axios, { AxiosError } from "axios";
 import withAuth from "../utils/withAuth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -86,6 +86,8 @@ const AdminProductComponent = () => {
                 src={product.image}
                 alt={product.title}
                 className="w-full h-48 object-cover mb-4 rounded-lg"
+                width={100}
+                height={100}
               />
               <h2 className="text-xl font-bold text-gray-800 mb-2">
                 {product.title}

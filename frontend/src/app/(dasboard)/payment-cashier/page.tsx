@@ -1,10 +1,12 @@
-import PaymentComponent from '@/app/components/Payment.component'
 import React from 'react'
+import PaymentComponent from '@/app/components/Payment.component'
 
 const page = () => {
   return (
     <div className=''>
-      <PaymentComponent/>
+
+        <PaymentComponent />
+
     </div>
   )
 }

@@ -7,7 +7,9 @@ const order = () => {
 
   return (
     <div className=''>
-      <OrderComponent />
+        <OrderComponent />
+
+
     </div>
   )
 }

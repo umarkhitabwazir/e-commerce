@@ -3,7 +3,11 @@ import LogOutComponent from '@/app/components/LogOut.component'
 const page = () => {
   return (
     <div>
-      <LogOutComponent/>
+     
+
+        <LogOutComponent />
+      
+
     </div>
   )
 }

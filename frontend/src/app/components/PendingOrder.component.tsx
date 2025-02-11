@@ -137,7 +137,9 @@ const PendingOrderComponent: React.FC<PendingOrderComponentProps> = ({
                         <Image
                           src={product.image}
                           alt={product.title}
-                          className="w-20 h-20 rounded-lg object-cover"
+                          className=" rounded-lg object-cover"
+                          width={300}
+                          height={300}
                         />
                         <div>
                           <h3 className="text-lg font-semibold text-gray-800">
@@ -171,7 +173,10 @@ const PendingOrderComponent: React.FC<PendingOrderComponentProps> = ({
                     </button>
                     <div className={`${isCancelling ? "" : "hidden"} fixed  top-0 left-0 w-full h-full bg-white bg-opacity-80 flex  flex-col gap-3 justify-center items-center z-50`}>
                       <div onClick={() => { setIsCancelling(false) }} className='absolute top-0 right-0 p-4'>
-                        <Image className='cursor-pointer w-10 h-10 hover:w-9 hover:h-9 transition-all duration-100 rounded-full'
+                        <Image
+                         className='cursor-pointer w-10 h-10 hover:w-9 hover:h-9 transition-all duration-100 rounded-full'
+                          width={10}
+                          height={10}
                           src="/cross.jpg" alt="cross-img" />
                       </div>
                       <span className='text-red-500'>Are you sure you want to cancel your order {" "} !</span>

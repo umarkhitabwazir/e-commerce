@@ -87,7 +87,9 @@ const DeleveredOrderComponent : React.FC<{ deleveredOders: Order[]; products: Pr
                       <Image
                         src={product.image}
                         alt={product.title}
-                        className="w-20 h-20 rounded-lg object-cover"
+                        className=" rounded-lg object-cover"
+                        width={50}
+                        height={50}
                       />
                       <div>
                         <h3 className="text-lg font-semibold text-gray-800">

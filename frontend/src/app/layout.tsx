@@ -4,6 +4,8 @@ import "./globals.css";
 
 import Navbar from "./components/Navbar.component";
 import AdminDashboardComponent from "./components/AdminDashboard.component";
+import { Suspense } from "react";
+import Loading from "./components/Loading.component";
 
 
 const geistSans = Geist({
@@ -32,17 +34,20 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-<div>
-<div className="">
-
- <Navbar />
-</div>
-
-<AdminDashboardComponent/>
         
-</div>
+        <Suspense fallback={<Loading />}>
+        <div>
+          <div className="">
 
-        {children}
+            <Navbar />
+          </div>
+
+          <AdminDashboardComponent />
+
+        </div>
+
+          {children}
+        </Suspense>
       </body>
     </html>
   );

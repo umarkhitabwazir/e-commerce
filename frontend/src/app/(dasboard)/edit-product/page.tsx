@@ -1,7 +1,7 @@
 "use client";
+import React from "react";
 import EditProductComponent from "@/app/components/EditProduct.component";
 import { useSearchParams } from "next/navigation";
-import React from "react";
 
 const Page = () => {
   const searchParams = useSearchParams();
@@ -9,7 +9,10 @@ const Page = () => {
 
   return (
     <div>
+     
+
       <EditProductComponent productId={productId} />
+      
     </div>
   );
 };

@@ -1,6 +1,6 @@
 "use client"
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
 import withAuth from "../utils/withAuth";
 import { usePathname } from "next/navigation";
 type user= {
