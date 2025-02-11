@@ -21,7 +21,7 @@ const Products = () => {
   const value = searchParams.get("sort")
   const [reviews, setReviews] = useState([])
 
-
+console.log("products",products)
 
 
 
