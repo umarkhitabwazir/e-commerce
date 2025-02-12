@@ -61,24 +61,24 @@ const withAuth = <P extends WithAuthProps>(
                     }
 
                     setUser(response.data.data);
-                } catch (error: any) {
-                    console.log('loginerror',error.response.status===401)
+                } catch (error: unknown) {
                   if (error instanceof AxiosError) {
                       if (error.code === "ERR_NETWORK") {
                           setNetworkError(true);
                         
                           return; 
                       }
+                      const redirectPath = isAuthRoutes ? "/" : trackPath;
+                      if (error?.response?.status===401) {
+                        router.push(
+                            `/login?track=${
+                                redirectPath || "/"
+                            }&q=${isQuantity}&product=${isProduct}&p=${isProductPrice}`
+                        );
+                      }
                   }
 
-                    const redirectPath = isAuthRoutes ? "/" : trackPath;
-                  if (error.response.status===401) {
-                    router.push(
-                        `/login?track=${
-                            redirectPath || "/"
-                        }&q=${isQuantity}&product=${isProduct}&p=${isProductPrice}`
-                    );
-                  }
+              
                 } finally {
                 }
             };
