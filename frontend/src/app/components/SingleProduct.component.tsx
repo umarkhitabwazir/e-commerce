@@ -24,10 +24,13 @@ const SingleProductComponent = ({ productId }: { productId: string | null }) => 
         if (!productId) {
           return router.push("/")
         }
-        const res = await axios.get(`${API_URL}/get-single-product/${productId}`, { withCredentials: true });
+        const res = await axios.get(`${API_URL}/get-single-product/${productId}`);
         setProduct(res.data.data);
       } catch (error: unknown) {
+        console.log('singleProductError',error)
         if (error instanceof AxiosError) {
+        console.log('instanceofsingleProductError',error)
+
           return;
         }
       }

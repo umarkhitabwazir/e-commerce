@@ -28,7 +28,6 @@ const withAuth = <P extends WithAuthProps>(
         const authRoutes = useMemo( ()=>["/login", "/register"],[])
         const trackPath = usePathname();
         const isAuthRoutes = authRoutes.includes(trackPath);
-        
         const secureRoute = ["/create-product", "/my-products"];
         const roleAuth = secureRoute.includes(trackPath);
         const searchParams = useSearchParams();
@@ -62,7 +61,8 @@ const withAuth = <P extends WithAuthProps>(
                     }
 
                     setUser(response.data.data);
-                } catch (error: unknown) {
+                } catch (error: any) {
+                    console.log('loginerror',error.response.status===401)
                   if (error instanceof AxiosError) {
                       if (error.code === "ERR_NETWORK") {
                           setNetworkError(true);
@@ -72,7 +72,7 @@ const withAuth = <P extends WithAuthProps>(
                   }
 
                     const redirectPath = isAuthRoutes ? "/" : trackPath;
-                  if (!authRoutes) {
+                  if (error.response.status===401) {
                     router.push(
                         `/login?track=${
                             redirectPath || "/"
