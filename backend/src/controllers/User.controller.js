@@ -130,6 +130,9 @@ const  createUser = asyncHandler(async (req, res) => {
     const options = {
         httponly: true,
         secure: true,
+        sameSite: "None",
+        domain:"ukbazaar.vercel.app",
+        path: "/", 
     }
     const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
 
@@ -170,9 +173,12 @@ const  loginUser = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Email and password are required")
         }
         const  user = await User.findOne({ email: email })
-        const  options = {
+        const options = {
             httponly: true,
             secure: true,
+            sameSite: "None",
+            domain:"ukbazaar.vercel.app",
+            path: "/", 
         }
         const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
         if (!user) {
