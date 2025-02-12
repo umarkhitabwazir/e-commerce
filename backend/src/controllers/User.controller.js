@@ -119,11 +119,11 @@ const  createUser = asyncHandler(async (req, res) => {
 
     await user.save()
     const options = {
-        httponly: true,
+        httpOnly: true,
         secure: true,
         sameSite: "None",
-        domain:"ukbazaar.vercel.app",
-        // path: "/", 
+        domain:process.env.DOMAIN,
+        
     }
     const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
 
@@ -165,11 +165,11 @@ const  loginUser = asyncHandler(async (req, res) => {
         }
         const  user = await User.findOne({ email: email })
         const options = {
-            httponly: true,
+            httpOnly: true,
             secure: true,
             sameSite: "None",
-            domain:"ukbazaar.vercel.app",
-            // path: "/", 
+            domain:process.env.DOMAIN
+            
         }
         const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
         if (!user) {
