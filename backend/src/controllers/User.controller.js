@@ -225,13 +225,13 @@ const  logoutUser = asyncHandler(async (req, res) => {
         httpOnly: true, 
         secure: true, 
         sameSite: "None",
-        domain: "ukbazaar.vercel.app"
+        // domain: "ukbazaar.vercel.app"
     });
     res.clearCookie("accessToken", { 
         httpOnly: true, 
         secure: true, 
         sameSite: "None", 
-        domain: "ukbazaar.vercel.app"
+        // domain: "ukbazaar.vercel.app"
     });
     res.status(200).json(new ApiResponse(200, null, "User logged out successfully"))
 })
