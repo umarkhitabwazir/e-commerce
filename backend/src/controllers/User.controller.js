@@ -40,13 +40,19 @@ const  transporter = nodemailer.createTransport({
 });
 
 const  sendEmail = async (email, emailVerificationCode) => {
-    const  mailOptions = {
-        from: '"ukbazaar.vercel.app" <umairkhitab0308@gmail.com>',
+    const verificationLink = `https://ukbazaar.vercel.app/verify-email?code=${emailVerificationCode}`;
+
+    const mailOptions = {
+        from: '"UK Bazaar" <umairkhitab0308@gmail.com>', // Use domain-based email in production
         to: email,
         subject: "Email Verification",
-        text: `Your verification code is: ${emailVerificationCode}`,
+        html: `
+            <h2>Email Verification</h2>
+            <p>Your verification code is: <strong>${emailVerificationCode}</strong></p>
+            <p>Or click the link below to verify your email:</p>
+            <a href="${verificationLink}">${verificationLink}</a>
+        `,
     };
-
     return new Promise((resolve, reject) => {
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
@@ -120,7 +126,7 @@ const  createUser = asyncHandler(async (req, res) => {
     await user.save()
     const options = {
         httpOnly: true,
-        secure: false,
+        secure: true,
         sameSite: "None",
         domain:process.env.DOMAIN,
         
@@ -166,7 +172,7 @@ const  loginUser = asyncHandler(async (req, res) => {
         const  user = await User.findOne({ email: email })
         const options = {
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: "None",
             domain:process.env.DOMAIN
             
@@ -218,12 +224,12 @@ const  logoutUser = asyncHandler(async (req, res) => {
     res.clearCookie("refreshToken", { 
         httpOnly: true, 
         secure: true, 
-        sameSite: "None", 
+        sameSite: "None",
         domain: "ukbazaar.vercel.app"
     });
     res.clearCookie("accessToken", { 
         httpOnly: true, 
-        secure: true, 
+        secure: false, 
         sameSite: "None", 
         domain: "ukbazaar.vercel.app"
     });
