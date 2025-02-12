@@ -120,7 +120,7 @@ const  createUser = asyncHandler(async (req, res) => {
     await user.save()
     const options = {
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: "None",
         domain:process.env.DOMAIN,
         
@@ -166,7 +166,7 @@ const  loginUser = asyncHandler(async (req, res) => {
         const  user = await User.findOne({ email: email })
         const options = {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: "None",
             domain:process.env.DOMAIN
             
@@ -215,8 +215,18 @@ const  logoutUser = asyncHandler(async (req, res) => {
     }
     user.refreshToken = ""
     await user.save({ validateBeforeSave: false })
-    res.clearCookie("accessToken")
-    res.clearCookie("refreshToken")
+    res.clearCookie("refreshToken", { 
+        httpOnly: true, 
+        secure: true, 
+        sameSite: "None", 
+        domain: "ukbazaar.vercel.app"
+    });
+    res.clearCookie("accessToken", { 
+        httpOnly: true, 
+        secure: true, 
+        sameSite: "None", 
+        domain: "ukbazaar.vercel.app"
+    });
     res.status(200).json(new ApiResponse(200, null, "User logged out successfully"))
 })
 
