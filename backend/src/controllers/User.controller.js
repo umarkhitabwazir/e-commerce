@@ -229,7 +229,7 @@ const  logoutUser = asyncHandler(async (req, res) => {
     });
     res.clearCookie("accessToken", { 
         httpOnly: true, 
-        secure: false, 
+        secure: true, 
         sameSite: "None", 
         domain: "ukbazaar.vercel.app"
     });
