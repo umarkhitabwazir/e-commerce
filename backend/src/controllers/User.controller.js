@@ -4,14 +4,8 @@ import { ApiError } from "../utils/apiError.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 import {  validationResult } from "express-validator";
 import nodemailer from "nodemailer";
-import axios from "axios"
 import dotenv from "dotenv"
-import { MoneyTransfer } from "../models/moneyTranser.model.js";
-import { Product } from "../models/Product.model.js";
-import { Cart } from "../models/Cart.model.js";
-import { Order } from "../models/Order.model.js";
-import { Review } from "../models/Review.model.js";
-import { Category } from "../models/Category.model.js";
+
 dotenv.config({
     path: ".env"
 })
@@ -47,7 +41,7 @@ const  transporter = nodemailer.createTransport({
 
 const  sendEmail = async (email, emailVerificationCode) => {
     const  mailOptions = {
-        from: '"E-commerce Shop 🛒🛍" <umairkhitab0308@gmail.com>',
+        from: '"ukbazaar.vercel.app" <umairkhitab0308@gmail.com>',
         to: email,
         subject: "Email Verification",
         text: `Your verification code is: ${emailVerificationCode}`,
@@ -93,10 +87,7 @@ const  createUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, errors.array()[0].msg);
     }
 
-    // if (!["user", "admin", "superadmin"].includes(role)) {
-    //         throw new ApiError(400, "Role must be user or admin")
 
-    //     }
 
     if (role === "superadmin") {
         throw new ApiError(400, "you only create user and admin role! ")
@@ -132,7 +123,7 @@ const  createUser = asyncHandler(async (req, res) => {
         secure: true,
         sameSite: "None",
         domain:"ukbazaar.vercel.app",
-        path: "/", 
+        // path: "/", 
     }
     const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
 
@@ -178,7 +169,7 @@ const  loginUser = asyncHandler(async (req, res) => {
             secure: true,
             sameSite: "None",
             domain:"ukbazaar.vercel.app",
-            path: "/", 
+            // path: "/", 
         }
         const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
         if (!user) {
