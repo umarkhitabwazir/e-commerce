@@ -1,7 +1,6 @@
 "use client"
 import { usePathname, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-import withAuth from '../utils/withAuth';
 import axios from 'axios';
 import Image from 'next/image';
 import adminAuth from '../utils/adminAuth';
@@ -28,7 +27,7 @@ const fetchOrderAccepedCancel = orders.filter((order: { cancelled: boolean }) =>
               
                 
             } catch (error) {
-              return
+              return;
             }
         }
         order()
