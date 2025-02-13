@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation'
 interface adminAuthProps {
     user: {
@@ -26,7 +26,7 @@ const adminAuth = <P extends adminAuthProps>(AdminComponent: React.ComponentType
                     const response = await axios.get(`${API_URL}/get-logined-user`, {
                         withCredentials: true,
                     });
-                    console.log('response.data',response.data.status)
+                    console.log('response.data', response.data.status)
                     if (!response.data) {
                         setUser(null)
                     }
@@ -35,13 +35,16 @@ const adminAuth = <P extends adminAuthProps>(AdminComponent: React.ComponentType
                         setUser(response.data.data)
                         console.log("adminAuthComponent", response.data.data)
                     }
-                } catch (error) {
-                    return;
+                } catch (error: unknown) {
+                    if (error instanceof AxiosError) {
+
+                        console.error(error.message || error)
+                    }
                 }
             };
             checkAuth();
 
-        }, [ router, API_URL]);
+        }, [router, API_URL]);
 
         return <AdminComponent {...props as P} user={user} />;
     }
