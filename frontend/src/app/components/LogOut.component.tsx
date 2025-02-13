@@ -17,11 +17,11 @@ const LogOutComponent = () => {
                 try {
                     
 
-                        await axios.post(`${API_URL}/user/logout`, {}, { withCredentials: true })
-                    
+                        let res=await axios.post(`${API_URL}/user/logout`, {}, { withCredentials: true })
+                    console.log('res.data',res)
 
                     setLoading(false)
-                    router.push(`${LOCAL_HOST}/login`)
+                    router.push(`${LOCAL_HOST}/`)
 
                 } catch (error) {
                     console.log('logOutError', error)

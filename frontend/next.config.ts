@@ -19,7 +19,7 @@ module.exports = {
     return [
       {
         source: "/api/:path*",
-        destination: "https://e-commerce-backend-one-lyart.vercel.app/api/v2/:path*",
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/:path*`,
       },
     ];
   },

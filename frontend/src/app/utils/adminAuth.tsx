@@ -26,7 +26,7 @@ const adminAuth = <P extends adminAuthProps>(AdminComponent: React.ComponentType
                     const response = await axios.get(`${API_URL}/get-logined-user`, {
                         withCredentials: true,
                     });
-                    console.log("adminAuthComponent", response.data.data)
+                    console.log('response.data',response.data.status)
                     if (!response.data) {
                         setUser(null)
                     }
@@ -36,8 +36,7 @@ const adminAuth = <P extends adminAuthProps>(AdminComponent: React.ComponentType
                         console.log("adminAuthComponent", response.data.data)
                     }
                 } catch (error) {
-console.log("adminAuthComponentError", error)
-                    router.push("/");
+                    return;
                 }
             };
             checkAuth();

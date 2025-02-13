@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import withAuth from '../utils/withAuth';
 import axios from 'axios';
 import Image from 'next/image';
+import adminAuth from '../utils/adminAuth';
 
 const OrderIconComponent = () => {
     const router = useRouter()
@@ -17,22 +18,17 @@ const OrderIconComponent = () => {
         const order = async () => {
             try {
                 const res = await axios.get(`${API_URL}/user-order`, { withCredentials: true })
-                const orders = res.data.data
-                    .map((i: { isDelivered: boolean }) =>
+               
+                const orders = res.data.data.map((i: { isDelivered: boolean }) =>
                         i.isDelivered === false ? i : null
                     )
                     .filter(Boolean)
 const fetchOrderAccepedCancel = orders.filter((order: { cancelled: boolean }) => !order.cancelled).length
                 setOrderCount(fetchOrderAccepedCancel)
-                console.log(
-                    "res",
-                    res.data.data
-
-
-                );
+              
                 
             } catch (error) {
-                console.log("error", error)
+              return
             }
         }
         order()
@@ -57,4 +53,4 @@ const fetchOrderAccepedCancel = orders.filter((order: { cancelled: boolean }) =>
     )
 }
 
-export default withAuth(OrderIconComponent)
+export default adminAuth( OrderIconComponent)

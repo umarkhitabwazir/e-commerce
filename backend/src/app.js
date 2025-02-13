@@ -27,6 +27,7 @@ app.use("/api/v2",superAdminRouter, adminRouter, userRouter)
 app.use((err, req, res, next) => {
   if (err instanceof ApiError) {
     // Handle custom ApiError
+    console.log('instanceoferror',err)
     res.status(err.statusCode).json({
       success: false,
       error: err.message,

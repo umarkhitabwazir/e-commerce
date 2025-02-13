@@ -42,8 +42,11 @@ const LoginComponent = () => {
         try {
 
             const response = await axios.post(`${API_URL}/user/Login`, data, { withCredentials: true });
-            const created = response.data
-            if (created) {
+            const resdata = response
+
+            // if email not verified
+            if (resdata.data.statusCode === 401) {
+
                 const maskEmail = (email: string) => {
                     const [name, domain] = email.split('@');
                     const firstTwo = name.slice(0, 2);
@@ -54,10 +57,11 @@ const LoginComponent = () => {
                 };
                 const maskedEmail = maskEmail(data.email)
                 router.push(`${LOCAL_HOST}/verify-email?email=${maskedEmail}`)
-
             }
-            const resdata = response
-            console.log("resdata", resdata)
+
+
+
+
             setLoading(false); // Stop loading
             if (resdata.data.statusCode === 200) {
 
@@ -75,22 +79,18 @@ const LoginComponent = () => {
                     setNetworkError(true)
                 }
                 if (err.response) {
-                    setError(err.response.data.error); // Set error message from backend
+                    setError(err.response.data.error); 
                 } else {
                     setError('An unknown error occurred.');
                 }
                 if (err.code === "ERR_NETWORK") {
                     setLoading(true)
                 }
-                // if email not verified
-                // if (err.status === 401) {
-                //     router.push(`${LOCAL_HOST}/verify-email`)
-                // }
+
             }
         }
 
     };
-
     return (
         <>
             {

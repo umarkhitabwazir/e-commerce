@@ -12,6 +12,7 @@ dotenv.config({
 
 const generateAccessAndRefereshTokens = async (userId) => {
     try {
+     
         const user = await User.findById(userId)
         if (!user) {
             throw new ApiError(404, "User not found")
@@ -163,7 +164,7 @@ const  updateUser = asyncHandler(async (req, res) => {
 
 
 
-const  loginUser = asyncHandler(async (req, res) => {
+const  loginUser = asyncHandler(async (req, res,next) => {
     const { email, password } = req.body
     try {
         if (!email || !password) {
@@ -177,7 +178,6 @@ const  loginUser = asyncHandler(async (req, res) => {
             domain:process.env.DOMAIN
             
         }
-        const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
         if (!user) {
             throw new ApiError(404, "User not found")
         }
@@ -185,6 +185,8 @@ const  loginUser = asyncHandler(async (req, res) => {
         if (!isMatch) {
             throw new ApiError(400, "Invalid password")
         }
+        const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
+
         const  isVerified = user.isVerified
         if (!isVerified) {
             const  emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
@@ -195,9 +197,10 @@ const  loginUser = asyncHandler(async (req, res) => {
             res.
                 cookie("accessToken", accessToken, options)
                 .cookie("refreshToken", refreshToken, options).
-                status(200).json(new ApiResponse(200, null, "Email is not verified. Verification code has been sent to your email.", false)
+                status(200).json(new ApiResponse(401, null, "Email is not verified. Verification code has been sent to your email.", false)
                 )
-        }
+return;
+            }
     
         if (isVerified) {
             res.
@@ -207,7 +210,7 @@ const  loginUser = asyncHandler(async (req, res) => {
                 )
         }
     } catch (error) {
-        console.log("error",error)
+        next(error)
     }
 
 
@@ -224,14 +227,14 @@ const  logoutUser = asyncHandler(async (req, res) => {
     res.clearCookie("refreshToken", { 
         httpOnly: true, 
         secure: true, 
-        // sameSite: "None",
-        // domain: "ukbazaar.vercel.app"
+        sameSite: "None",
+        domain: process.env.DOMAIN
     });
     res.clearCookie("accessToken", { 
         httpOnly: true, 
         secure: true, 
-        // sameSite: "None", 
-        // domain: "ukbazaar.vercel.app"
+        sameSite: "None", 
+        domain: process.env.DOMAIN
     });
     res.status(200).json(new ApiResponse(200, null, "User logged out successfully"))
 })

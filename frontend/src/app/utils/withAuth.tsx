@@ -25,7 +25,7 @@ const withAuth = <P extends WithAuthProps>(
         const [networkError, setNetworkError] = useState(false);
         const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-        const authRoutes = useMemo( ()=>["/login", "/register"],[])
+        const authRoutes = useMemo( ()=>["/login", "/register","/log-out"],[])
         const trackPath = usePathname();
         const isAuthRoutes = authRoutes.includes(trackPath);
         const secureRoute = ["/create-product", "/my-products"];
@@ -68,8 +68,9 @@ const withAuth = <P extends WithAuthProps>(
                         
                           return; 
                       }
+                      console.log('error?.response?',error?.response?.status===401 && !isAuthRoutes)
                       const redirectPath = isAuthRoutes ? "/" : trackPath;
-                      if (error?.response?.status===401) {
+                      if (error?.response?.status===401 && !isAuthRoutes) {
                         router.push(
                             `/login?track=${
                                 redirectPath || "/"
