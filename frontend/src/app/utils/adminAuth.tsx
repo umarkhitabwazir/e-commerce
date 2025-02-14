@@ -2,17 +2,9 @@
 import React, { useEffect, useState } from 'react'
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation'
+import { UserInterface } from './user.interface';
 interface adminAuthProps {
-    user: {
-        username: string
-        email: string
-        fullName: string
-        role: string
-        password: string
-        address: string
-        phone: number
-
-    }
+    user:UserInterface
 }
 const adminAuth = <P extends adminAuthProps>(AdminComponent: React.ComponentType<P>) => {
     const AdminAuthComponent = (props: Omit<P, "user">) => {

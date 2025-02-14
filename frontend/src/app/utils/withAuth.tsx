@@ -3,17 +3,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import axios, { AxiosError } from "axios";
 import NoInternetComponent from "../components/NoInternet.component";
-
+import { UserInterface } from "./user.interface";
 interface WithAuthProps {
-    user: {
-        username: string;
-        email: string;
-        fullName: string;
-        role: string;
-        password: string;
-        address: string;
-        phone: number;
-    };
+    user: UserInterface
 }
 
 const withAuth = <P extends WithAuthProps>(

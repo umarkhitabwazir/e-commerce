@@ -103,41 +103,7 @@ const ShippingComponent = () => {
       }
     }
     previewOrder()
-    //     constgetOrder = async () => {
-    //       try {
-    //         constres = await axios.get(`${API_URL}/get-order/${productId}`, { withCredentials: true })
-    //         console.log("res",res.data.data)
 
-
-    //           consttotalQuantity = res.data.data.map((order: { products: { quantity: number }[] }) =>
-    //             order.products.map((product) => product.quantity)
-    //           ).flat().reduce((acc: number, quantity: number) => acc + quantity, 0)
-    // console.log("totalQuantity",totalQuantity)
-    //           constdeliveryFee = res.data.data.map((order: { shippingPrice: number }) =>
-    //             order.shippingPrice).flat().reduce((acc: number, shippingPrice: number) => acc + shippingPrice, 0)
-    //           console.log("deliveryFee", deliveryFee)
-
-    //           consttaxPrice = res.data.data.map((order: { taxPrice: number }) =>
-    //             order.taxPrice).flat().reduce((acc: number, taxPrice: number) => acc + taxPrice, 0)
-
-
-    //           consttotalPrice = res.data.data.map((order: { totalPrice: number }) =>
-    //             order.totalPrice
-    //           ).flat().reduce((acc: number, totalPrice: number) => acc + totalPrice, 0)
-    //           setOrderSummary({
-    //             items: totalQuantity,
-    //             deliveryFee: deliveryFee,
-    //             taxPrice: taxPrice,
-    //             totalPrice: totalPrice
-    //           })
-
-
-    //         console.log('res', res)
-    //       } catch (error) {
-    //         console.log("get order error", error)
-    //       }
-    //     }
-    //     getOrder()
   }, [API_URL, setAddress, setSavedAddress,productId,quantity])
 
   const onSubmit = async (data: AddressFormData) => {
@@ -167,7 +133,7 @@ const ShippingComponent = () => {
 
   const handleProceedPay = async () => {
     if (!savedAddress) {
-      alert("Please add address")
+      alert("Please add your Delivery  address")
       setFormToggle(true)
       return
 

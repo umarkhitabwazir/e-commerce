@@ -4,14 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import OrdersIconComponent from "./OrdersIcon.component";
 import adminAuth from "../utils/adminAuth";
-type User={
-    email:string
-}
-const Navbar = ({user}:{user:User}) => {
+import { UserInterface } from "../utils/user.interface";
+const Navbar = ({user}:{user:UserInterface}) => {
     const [sortOption, setSortOption] = useState("");
     const [isMenuOpen, setIsMenuOpen] = useState(false); // Added for toggle menu
     const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
-    const [isLogedin,setIsLogedin]=useState<User | null>({email:""})
+    const [isLogedin,setIsLogedin]=useState<UserInterface | null>(null)
     const router = useRouter();
     const pathName = usePathname();
     const authRoutes = ["/sign-up", "/verify-email", "/login", "/log-out"];
@@ -70,7 +68,7 @@ const Navbar = ({user}:{user:User}) => {
             <div className="container mx-auto  lg:flex items-center justify-between p-4">
                 {/* Logo */}
                 <div
-                    className="text-2xl font-bold cursor-pointer"
+                    className="text-2xl font-bold cursor-pointer hover:text-gray-300"
                     onClick={() => router.push("/")}
                 >
                     Shop
@@ -135,7 +133,7 @@ const Navbar = ({user}:{user:User}) => {
                         >
 
                             <option className={` hidden cursor-pointer text-gray-400`} value="">
-                               {isLogedin?.email ?  isLogedin.email :  "register or login"} 
+                               {isLogedin ?  isLogedin.email :  "register or login"} 
                             </option>
                             <option className="cursor-pointer" value="sign-up">
                                 Sign Up

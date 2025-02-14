@@ -10,7 +10,7 @@ type Address={
   Floor: string,
   Street: string
 }
-const addressComponent = ({address,savedAddress}:{address:Address ,savedAddress:boolean}) => {
+const AddressComponent = ({address,savedAddress}:{address:Address ,savedAddress:boolean}) => {
   return (
    <>
    <div className={`${savedAddress?"":"hidden"} bg-white mt-10 p-5 rounded-lg   shadow-md max-w-md mx-auto`}>
@@ -71,4 +71,4 @@ const addressComponent = ({address,savedAddress}:{address:Address ,savedAddress:
   )
 }
 
-export default addressComponent
+export default AddressComponent

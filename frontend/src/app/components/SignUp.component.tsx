@@ -71,10 +71,10 @@ const SignupComponent = () => {
         <>
 
 
-            <div className="flex justify-center items-center min-h-screen bg-gray-100">
+            <div className="flex justify-center items-center p-20 min-h-screen bg-gray-100">
                 <div className="w-full max-w-4xl bg-white p-8 rounded-lg shadow-lg">
                     <h2 className="text-3xl font-bold text-gray-600 text-center mb-8">Sign Up</h2>
-                    <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <form onSubmit={handleSubmit(onSubmit)} className=" flex  flex-wrap justify-center gap-2">
                         {/* Username Field */}
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-black mb-1">Username</label>
@@ -133,19 +133,7 @@ const SignupComponent = () => {
                             )}
                         </div>
 
-                        {/* Address Field */}
-                        <div className="flex flex-col col-span-2">
-                            <label className="block text-sm font-medium text-black mb-1">Address</label>
-                            <textarea
-                                {...register('address')}
-                                className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.address ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                placeholder="Enter your address"
-                            />
-                            {errors.address && (
-                                <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>
-                            )}
-                        </div>
+                      
 
                         {/* Phone Field */}
                         <div className="flex flex-col">
@@ -162,10 +150,10 @@ const SignupComponent = () => {
                         </div>
 
                         {/* Submit Button */}
-                        <div className="col-span-4">
+                        {/* <div className="col-span-4"> */}
                             <button
                                 type="submit"
-                                className={`w-full py-3 rounded-lg transition duration-200 ${loading
+                                className={`w-full py-3 rounded-lg mt-4 transition duration-200 ${loading
                                     ? 'bg-gray-400 cursor-not-allowed'
                                     : 'bg-blue-600 text-white hover:bg-blue-700'
                                     }`}
@@ -178,7 +166,7 @@ const SignupComponent = () => {
                                     {error.split(' at ')[0]}
                                 </p>
                             )}
-                        </div>
+                        {/* </div> */}
                     </form>
                     <div className='flex items-center justify-center flex-col'>
 

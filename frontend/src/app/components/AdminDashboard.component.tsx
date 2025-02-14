@@ -3,17 +3,9 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import adminAuth from "../utils/adminAuth";
-type user = {
-  username: string
-  email: string
-  fullName: string
-  role: string
-  password: string
-  address: string
-  phone: number
+import { UserInterface } from "../utils/user.interface";
 
-}
-const AdminDashboardComponent = ({ user }: { user: user }) => {
+const AdminDashboardComponent = ({ user }: { user: UserInterface }) => {
   const pathName = usePathname()
   if (!user) {
     return;

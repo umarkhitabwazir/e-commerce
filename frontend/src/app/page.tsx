@@ -3,19 +3,11 @@ import React from 'react';
 import Products from './components/Products.component';
 import adminAuth from './utils/adminAuth';
 import AdminHomePageComponent from './components/AdminHomePage.component';
+import { UserInterface } from './utils/user.interface';
 
-type User = {
-  username: string;
-  email: string;
-  fullName: string;
-  role: string;
-  password: string;
-  address: string;
-  phone: number;
-};
 
 interface HomePageProps {
-  user: User;
+  user: UserInterface;
 }
 
 const HomePage: React.FC<HomePageProps> = ({ user }) => {

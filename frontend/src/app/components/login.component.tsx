@@ -164,7 +164,14 @@ const LoginComponent = () => {
                         >
                             Sign up
                         </Link>
+
                     </div>
+                    <Link
+                            className="w-full  hover:text-gray-500 text-gray-600 font-semibold underline py-2 px-4 rounded mt-3"
+                            href="/"
+                        >
+                            Return to Home Page↗
+                        </Link>
                 </div>
             </div>
 

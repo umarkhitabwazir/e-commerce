@@ -3,18 +3,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import withAuth from "../utils/withAuth";
+import { UserInterface } from "../utils/user.interface";
 
-type User= {
-    id: string;
-    username: string;
-    email: string;
-    fullName: string;
-    role: string;
-    password: string;
-    address: string;
-    phone: number;
-  }
-const ProductReviewComponent = ({ user, productId }: { user: User, productId: string | null }) => {
+const ProductReviewComponent = ({ user, productId }: { user: UserInterface, productId: string | null }) => {
 console.log(Object.keys(user).length === 0)
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
    

@@ -2,7 +2,7 @@ import { User } from "../models/User.model.js"
 import { ApiResponse } from "../utils/apiResponse.js"
 import { ApiError } from "../utils/apiError.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
-import {  validationResult } from "express-validator";
+import { validationResult } from "express-validator";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv"
 
@@ -12,7 +12,7 @@ dotenv.config({
 
 const generateAccessAndRefereshTokens = async (userId) => {
     try {
-     
+
         const user = await User.findById(userId)
         if (!user) {
             throw new ApiError(404, "User not found")
@@ -30,7 +30,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
     }
 }
 
-const  transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
         user: "umairkhitab0308@gmail.com",
@@ -40,8 +40,8 @@ const  transporter = nodemailer.createTransport({
     debug: true,
 });
 
-const  sendEmail = async (email, emailVerificationCode) => {
-    const verificationLink = `https://ukbazaar.vercel.app/verify-email?code=${emailVerificationCode}`;
+const sendEmail = async (email, emailVerificationCode) => {
+    const verificationLink = `${process.env.CORS_ORIGIN}verify-email?&code=${emailVerificationCode}`;
 
     const mailOptions = {
         from: '"UK Bazaar" <umairkhitab0308@gmail.com>', // Use domain-based email in production
@@ -82,14 +82,14 @@ const  sendEmail = async (email, emailVerificationCode) => {
 //     }
 // };
 
-const  createUser = asyncHandler(async (req, res) => {
-    const { username, email, fullName, role, address, phone, password } = req.body
+const createUser = asyncHandler(async (req, res) => {
+    const { username, email, fullName, role, phone, password } = req.body
 
 
     if ([username, email, fullName, phone, password].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "All fields are required")
     }
-    const  errors = validationResult(req);
+    const errors = validationResult(req);
     if (!errors.isEmpty()) {
         throw new ApiError(400, errors.array()[0].msg);
     }
@@ -100,23 +100,22 @@ const  createUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "you only create user and admin role! ")
     }
 
-    const  exitUser = await User.findOne({
+    const exitUser = await User.findOne({
         $or: [{ username: username }, { email: email }]
     })
 
     if (exitUser) {
         throw new ApiError(400, "User username or email already exists")
     }
-    const  emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
+    const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
     await sendEmail(email, emailVerificationCode)
 
 
-    const  user = new User({
+    const user = new User({
         username,
         email,
         fullName,
         role,
-        address,
         phone,
         password,
         emailVerificationCode,
@@ -129,8 +128,8 @@ const  createUser = asyncHandler(async (req, res) => {
         httpOnly: true,
         secure: true,
         sameSite: "None",
-        domain:process.env.DOMAIN,
-        
+        domain: process.env.DOMAIN,
+
     }
     const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
 
@@ -145,16 +144,16 @@ const  createUser = asyncHandler(async (req, res) => {
 
 })
 
-const  updateUser = asyncHandler(async (req, res) => {
-    const  user = req.user
-    const { fullName, address, phone } = req.body
+const updateUser = asyncHandler(async (req, res) => {
+    const user = req.user
+    const { fullName, phone } = req.body
     if (!user.id) {
         throw new ApiError(401, "Unauthorized. Please log in first.")
     }
     if (fullName, address, phone) {
 
         user.fullName = fullName
-        user.address = address
+
         user.phone = phone
         await user.save()
     }
@@ -164,44 +163,44 @@ const  updateUser = asyncHandler(async (req, res) => {
 
 
 
-const  loginUser = asyncHandler(async (req, res,next) => {
+const loginUser = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body
     try {
         if (!email || !password) {
             throw new ApiError(400, "Email and password are required")
         }
-        const  user = await User.findOne({ email: email })
+        const user = await User.findOne({ email: email })
         const options = {
             httpOnly: true,
-            secure: true,
-            sameSite: "None",
-            domain:process.env.DOMAIN
-            
+            secure: false,
+            // sameSite: "None",
+            // domain: process.env.DOMAIN
+
         }
         if (!user) {
             throw new ApiError(404, "User not found")
         }
-        const  isMatch = await user.comparePassword(password)
+        const isMatch = await user.comparePassword(password)
         if (!isMatch) {
             throw new ApiError(400, "Invalid password")
         }
         const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
 
-        const  isVerified = user.isVerified
+        const isVerified = user.isVerified
         if (!isVerified) {
-            const  emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
+            const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
             await sendEmail(email, emailVerificationCode)
             user.emailVerificationCode = emailVerificationCode
             await user.save()
-    
+
             res.
                 cookie("accessToken", accessToken, options)
                 .cookie("refreshToken", refreshToken, options).
                 status(200).json(new ApiResponse(401, null, "Email is not verified. Verification code has been sent to your email.", false)
                 )
-return;
-            }
-    
+            return;
+        }
+
         if (isVerified) {
             res.
                 cookie("accessToken", accessToken, options)
@@ -216,37 +215,37 @@ return;
 
 })
 
-const  logoutUser = asyncHandler(async (req, res) => {
-    const  user = req.user
+const logoutUser = asyncHandler(async (req, res) => {
+    const user = req.user
 
     if (!user) {
         throw new ApiError(404, "User not not logged in")
     }
     user.refreshToken = ""
     await user.save({ validateBeforeSave: false })
-    res.clearCookie("refreshToken", { 
-        httpOnly: true, 
-        secure: true, 
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
         sameSite: "None",
         domain: process.env.DOMAIN
     });
-    res.clearCookie("accessToken", { 
-        httpOnly: true, 
-        secure: true, 
-        sameSite: "None", 
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
         domain: process.env.DOMAIN
     });
     res.status(200).json(new ApiResponse(200, null, "User logged out successfully"))
 })
 
-const  verifyEmail = asyncHandler(async (req, res) => {
-    const  { emailVerificationCode } = req.body;
+const verifyEmail = asyncHandler(async (req, res) => {
+    const { emailVerificationCode } = req.body;
 
     if (!emailVerificationCode) {
         throw new ApiError(400, "Verification code is required.");
     }
 
-    const  user = req.user;
+    const user = req.user;
     if (!user) {
         throw new ApiError(401, "Unauthorized. Please log in first.");
     }
@@ -270,8 +269,8 @@ const  verifyEmail = asyncHandler(async (req, res) => {
 
     res.status(200).json(new ApiResponse(200, user, "Email verified successfully."));
 });
-const  resendEmailVerificationCode = asyncHandler(async (req, res) => {
-    const  user = req.user;
+const resendEmailVerificationCode = asyncHandler(async (req, res) => {
+    const user = req.user;
     if (!user) {
         throw new ApiError(401, "Unauthorized. Please log in first.");
     }
@@ -282,7 +281,7 @@ const  resendEmailVerificationCode = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Email is already verified.");
     }
 
-    const  emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
+    const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
     await sendEmail(user.email, emailVerificationCode);
 
     user.emailVerificationCode = emailVerificationCode;
@@ -293,8 +292,8 @@ const  resendEmailVerificationCode = asyncHandler(async (req, res) => {
 
     res.status(200).json(new ApiResponse(200, null, "Verification code sent successfully."));
 })
-const  getLoginUserData = asyncHandler(async (req, res) => {
-    const  user = req.user
+const getLoginUserData = asyncHandler(async (req, res) => {
+    const user = req.user
     if (!user) {
         throw new ApiError(400, null, "user not logined!", false)
     }

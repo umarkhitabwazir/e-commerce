@@ -5,6 +5,7 @@ const page = () => {
     <div className='mt-20'>
        
       <ProfileComponent/>
+      
     </div>
   )
 }

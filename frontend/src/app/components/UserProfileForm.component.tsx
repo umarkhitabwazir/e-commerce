@@ -2,22 +2,10 @@
 import React, { Dispatch, useState } from "react";
 import withAuth from "../utils/withAuth";
 import axios from "axios";
+import { UserInterface } from "../utils/user.interface";
 
-type User = {
-  id: string;
-  username: string;
-  email: string;
-  fullName: string;
-  role: string;
-  password: string;
-  address: string;
-  phone: number;
-  isVerified: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
 
-const UserProfileForm = ({ user, setEdit }: { user: User, setEdit: Dispatch<React.SetStateAction<boolean>> }) => {
+const UserProfileForm = ({ user, setEdit }: { user: UserInterface, setEdit: Dispatch<React.SetStateAction<boolean>> }) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const [loading, setLoading] = useState(false)
@@ -26,7 +14,6 @@ const UserProfileForm = ({ user, setEdit }: { user: User, setEdit: Dispatch<Reac
 
   const [formData, setFormData] = useState({
     fullName: user.fullName || "",
-    address: user.address || "",
     phone: user.phone || "",
   });
 
@@ -71,20 +58,7 @@ const UserProfileForm = ({ user, setEdit }: { user: User, setEdit: Dispatch<Reac
         />
       </div>
 
-      {/* Address */}
-      <div>
-        <label className="text-black block mb-1" htmlFor="address">
-          Address
-        </label>
-        <input
-          className="text-black border rounded-md w-full px-2 py-1"
-          type="text"
-          id="address"
-          name="address"
-          value={formData.address}
-          onChange={handleInputChange}
-        />
-      </div>
+  
 
       {/* Phone */}
       <div>
