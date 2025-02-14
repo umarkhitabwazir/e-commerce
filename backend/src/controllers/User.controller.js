@@ -172,9 +172,9 @@ const loginUser = asyncHandler(async (req, res, next) => {
         const user = await User.findOne({ email: email })
         const options = {
             httpOnly: true,
-            secure: false,
-            // sameSite: "None",
-            // domain: process.env.DOMAIN
+            secure: true,
+            sameSite: "None",
+            domain: process.env.DOMAIN
 
         }
         if (!user) {
