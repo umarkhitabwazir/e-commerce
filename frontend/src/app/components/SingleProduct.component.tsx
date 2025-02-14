@@ -41,7 +41,7 @@ const SingleProductComponent = ({ productId }: { productId: string | null }) => 
 
   return (
     <>
-      <div className="bg-white shadow-md rounded-lg p-6 w-full mt-9 flex  justify-center items-center  ">
+      <div className="bg-white shadow-md rounded-lg p-6 w-full mt-9 flex md:flex-row flex-col  justify-center items-center  ">
 
         {product.image ? (
           <Image
