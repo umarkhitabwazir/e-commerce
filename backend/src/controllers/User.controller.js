@@ -146,12 +146,13 @@ const createUser = asyncHandler(async (req, res) => {
 
 const updateUser = asyncHandler(async (req, res) => {
     const user = req.user
-    const { fullName, phone } = req.body
+    const { fullName,username, phone } = req.body
     if (!user.id) {
         throw new ApiError(401, "Unauthorized. Please log in first.")
     }
-    if (fullName, address, phone) {
+    if (fullName,username, phone) {
 
+        user.username = username
         user.fullName = fullName
 
         user.phone = phone

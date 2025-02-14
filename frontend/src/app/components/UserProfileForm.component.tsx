@@ -14,6 +14,7 @@ const UserProfileForm = ({ user, setEdit }: { user: UserInterface, setEdit: Disp
 
   const [formData, setFormData] = useState({
     fullName: user.fullName || "",
+    username: user.username || "",
     phone: user.phone || "",
   });
 
@@ -57,8 +58,22 @@ const UserProfileForm = ({ user, setEdit }: { user: UserInterface, setEdit: Disp
           onChange={handleInputChange}
         />
       </div>
+      <div>
 
-  
+        <label className="text-black block mb-1" htmlFor="fullName">
+          username
+        </label>
+        <input
+          className="text-black border rounded-md w-full px-2 py-1"
+          type="text"
+          id="username"
+          name="username"
+          value={formData.username}
+          onChange={handleInputChange}
+        />
+      </div>
+
+
 
       {/* Phone */}
       <div>
