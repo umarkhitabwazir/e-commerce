@@ -97,7 +97,7 @@ userRouter.route("/createCart").post(authMiddleware, createCart); // Add an item
 
 // Review Routes
 userRouter.route("/review/:productId").post(authMiddleware, reviewController); // Add a review for a product
-userRouter.route("/get-all-reviews/:productIdsArr").get(getAllReviews); // get  a review for a product
+userRouter.route("/get-all-reviews").get(getAllReviews); // get  a review for a product
 userRouter.route("/update/:productId").patch(authMiddleware, updateReview); // Update a review
 userRouter.route("/delete/:productId").delete(authMiddleware, deleteReview); // Delete a review
 

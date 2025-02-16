@@ -32,16 +32,8 @@ const reviewController = asyncHandler(async (req, res) => {
     )
 });
 const getAllReviews = asyncHandler(async (req, res) => {  
-    const productIdsArr = req.params.productIdsArr
     
-    if (!productIdsArr || Array.isArray(productIdsArr) || productIdsArr.length === 0) {
-        throw new ApiError(404, "product Id not found")
-    }
-    const idsArr=productIdsArr.split(",")
-    const objectIds =idsArr.map(id => new mongoose.Types.ObjectId(id));
-
-  
-    const reviews = await Review.find({ product: { $in: objectIds } }).populate("user", "fullName email");
+    const reviews = await Review.find().populate("user","fullName");
 
     res.status(200).json(new ApiResponse(200, reviews, "All reviews fetched successfully"));
 });

@@ -1,10 +1,15 @@
 import axios, { AxiosError } from 'axios';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
+
+
 
 const SingleProductComponent = ({ productId }: { productId: string | null }) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const searchParams = useSearchParams()
+  const rating = Number(searchParams.get('rating')) || 0
   const [product, setProduct] = useState({
     title: "",
     price: 0,
@@ -27,9 +32,9 @@ const SingleProductComponent = ({ productId }: { productId: string | null }) => 
         const res = await axios.get(`${API_URL}/get-single-product/${productId}`);
         setProduct(res.data.data);
       } catch (error: unknown) {
-        console.log('singleProductError',error)
+        console.log('singleProductError', error)
         if (error instanceof AxiosError) {
-        console.log('instanceofsingleProductError',error)
+          console.log('instanceofsingleProductError', error)
 
           return;
         }
@@ -37,7 +42,9 @@ const SingleProductComponent = ({ productId }: { productId: string | null }) => 
     };
 
     getSingleProduct();
-  }, [API_URL,router, productId, setProduct]);
+  }, [API_URL, router, productId, setProduct]);
+
+
 
   return (
     <>
@@ -48,11 +55,11 @@ const SingleProductComponent = ({ productId }: { productId: string | null }) => 
             src={product.image}
             alt={product.title}
             className=" object-cover rounded-t-md mb-4 mr-5"
-            width={200}
+            width={400}
             height={400}
           />
         ) : (
-          <div  className="w-full h-full flex items-center justify-center  rounded-t-md mb-4">
+          <div className="w-full h-full flex items-center justify-center  rounded-t-md mb-4">
             <p className="text-gray-500">loading...</p>
           </div>
         )}
@@ -74,22 +81,32 @@ const SingleProductComponent = ({ productId }: { productId: string | null }) => 
 
           </div>
           <div className="flex items-center justify-center space-x-1 mt-1">
-            <span className='text-gray-700'>4.1</span>
 
-            {[1, 2, 3, 4, 5].map((num) => (
+
+            {Array.from({ length: 5 }).map((_, index) => (
               <span
-                key={num}
-                className={`cursor-pointer text-2xl ${"text-gray-300"}`}
-              // onClick={() => setRating(num)}
+                key={index}
+                className={`text-2xl ${index < Math.round(rating) ? "text-yellow-400" : "text-gray-300"}`}
               >
-                ★
+                {index < Math.round(rating) ? "★" : "☆"}
+
               </span>
             ))}
-            <span className='text-gray-700'>(15)</span>
+            <Link 
+              className='text-gray-700 underline hover:text-black hover:underline cursor-pointer'
+            href="#review"
+            scroll={true}
+            >
+            {rating === 0 ? "No" : rating} ratings
+            </Link>
+           
           </div>
         </div>
 
+       
       </div>
+   
+
 
     </>
   )

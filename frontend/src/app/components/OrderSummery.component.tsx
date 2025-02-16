@@ -40,7 +40,6 @@ const ShippingComponent = () => {
   const productPrice = searchParams.get("p")
   const [formToggle, setFormToggle] = useState(false)
   const router = useRouter()
-  console.log("orderSummary", orderSummary)
   const {
     register,
     handleSubmit,

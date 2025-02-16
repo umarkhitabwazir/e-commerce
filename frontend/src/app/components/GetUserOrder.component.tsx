@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import withAuth from "../utils/withAuth";
 import PendingOrderComponent from "./PendingOrder.component";
 import DeleveredOrderComponent from "./DeleveredOrder.component";
-import ProductReviewComponent from "./ProductReview.component";
+import ProductReviewComponent from "./ProductReviewForm.component";
 import { useSearchParams } from "next/navigation";
 
 interface Order {
@@ -124,7 +124,10 @@ const GetUserOrderComponent = () => {
 
             <h1 className="text-3xl font-bold text-green-500 mb-6">Delevered Orders</h1>
           </div>
+          {
+
           <DeleveredOrderComponent deleveredOders={deleveredOders} products={products} />
+          }
         </div>
       }
         <ProductReviewComponent productId={productId}/>

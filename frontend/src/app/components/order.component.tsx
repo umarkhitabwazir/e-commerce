@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import SingleProductComponent from "./SingleProduct.component";
+import ReviewComponent from "./Review.component";
 
 interface FormData {
   quantity: number;
@@ -63,14 +64,14 @@ const OrderPage = () => {
           <p className="text-black text-lg mt-4">Processing Order...</p>
         </div>
       ) : (
-        <div className="flex flex-col items-center bg-gray-100 min-h-screen w-screen p-6">
+        <div className="flex flex-col items-center bg-gray-100 min-h-screen w-full  p-6">
           {/* Order Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
+          <form onSubmit={handleSubmit(onSubmit)} className="bg-white shadow-lg rounded-lg p-6 w-full ">
 <div className="flex justify-center items-center">
 <h1 className="text-xl font-semibold text-gray-800 mb-4">Select Quantity</h1>
 
 </div>
-            <div className="flex justify-center gap-4 mb-6">
+            <div className="flex justify-center w-full gap-4 mb-6">
               {[1, 2, 3].map((qty) => (
                 <button
                   key={qty}
@@ -97,6 +98,8 @@ const OrderPage = () => {
               Buy Now
             </button>
           </form>
+          <h1 id='review' className="text-gray-400 mt-10 text-xl">Reviews for this Product</h1>
+          <ReviewComponent productId={productId}/>
         </div>
       )}
     </>

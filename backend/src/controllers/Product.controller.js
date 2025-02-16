@@ -35,7 +35,6 @@ let createProductsWithCategory = asyncHandler(async (req, res) => {
     }
     let category = await Category.findOne({ categoryName: categoryName })
     let localFilePath = req.file.path;
-    console.log("localFilePath", localFilePath)
 
     if (!localFilePath) {
         throw new ApiError(402, "image path not found!")

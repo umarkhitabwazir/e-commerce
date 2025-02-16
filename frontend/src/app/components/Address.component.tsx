@@ -13,7 +13,7 @@ type Address={
 const AddressComponent = ({address,savedAddress}:{address:Address ,savedAddress:boolean}) => {
   return (
    <>
-   <div className={`${savedAddress ? "" : "hidden"} bg-white mt-10 p-6 rounded-lg shadow-lg max-w-lg mx-auto transition-all duration-300`}>
+   <div className={`${savedAddress ? "" : "hidden"} bg-white mt-10 p-6 rounded-lg shadow-lg w-full max-w-lg mx-auto transition-all duration-300`}>
   <h1 className="text-2xl font-bold text-gray-900 border-b border-gray-200 pb-3 mb-6">
     Delivery Address
   </h1>

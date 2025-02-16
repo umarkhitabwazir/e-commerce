@@ -1,5 +1,6 @@
 import { Order } from "../models/Order.model.js";
 import { Product } from "../models/Product.model.js";
+import { Review } from "../models/Review.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -165,7 +166,7 @@ const getOrder = asyncHandler(async (req, res) => {
 
     }
     const order = await Order.find({ products: { $elemMatch: { productId: productId } } });
-    console.log('order', order)
+    
     if (!order) {
         throw new ApiError(400, "order not founded!")
     }
@@ -187,7 +188,7 @@ const singleUserOrder = asyncHandler(async (req, res) => {
     if (!order) {
         throw new ApiResponse(404, null, "order not founded")
     }
-    console.log("order", order)
+    
     res.status(200).json(new ApiResponse(200, order, "order founded!"))
 })
 const cancelOrder = asyncHandler(async (req, res) => {
@@ -214,13 +215,13 @@ const cancelOrder = asyncHandler(async (req, res) => {
 })
 const findOrderedProducts = asyncHandler(async (req, res) => {
     const { productIds } = req.body;
-    console.log("productIds",productIds)
+ 
     if (!productIds || !Array.isArray(productIds) || productIds.length === 0) {
       
         throw new ApiError(400, "Product IDs are required and must be a non-empty array");
     }
     const  objectIds = productIds;
-    console.log("objectIds", objectIds);
+   
     const products = await Product.find({ _id: { $in: objectIds } })
     if (!products) {
         throw new ApiError(404, null, "products not founded")

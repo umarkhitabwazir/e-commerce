@@ -113,9 +113,7 @@ const DeleveredOrderComponent : React.FC<{ deleveredOders: Order[]; products: Pr
 
 
               <div className="flex flex-col items-center ">
-                <span className="text-sm text-red-500">
-                  {/* minutes left to cancel */}
-                </span>
+               
                 <button className="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-500 transition">
                   Order
                 </button>
