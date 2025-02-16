@@ -19,57 +19,62 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 let createProductsWithCategory = asyncHandler(async (req, res) => {
     let{ categoryName, title, price, description, countInStock, brand } = req.body
     let userId = req.user
-       if (!userId) {
-        throw new ApiError(400, "user not login")
-    }
-    let user = await User.findById(userId)
-
-
-    if (!user.role === "admin" || !user.role === "superadmin") {
-        throw new ApiError(400, "only admin can create products")
-    }
-    if (!categoryName ||
-        !title || !price || !description || !countInStock
-        || !brand) {
-        throw new ApiError(400, "All fields are required")
-    }
-    let category = await Category.findOne({ categoryName: categoryName })
-    let localFilePath = req.file.path;
-
-    if (!localFilePath) {
-        throw new ApiError(402, "image path not found!")
-    }
-    let filesize = req.file.size
-
-    if (filesize > 10485760) {
-        throw new ApiError(402, "file too long only 10MB is allowed!")
-    }
-    let productImg = await uploadOnCloudinary(localFilePath)
-    if (!productImg.url) {
-        throw new ApiError(402, "image uploading faield!")
-    }
-    if (!category) {
-        category = await Category.create({
-            categoryName,
-
-            user: userId
-        })
-    }
-
-    let product = await Product.create(
-        {
-            title,
-            price,
-            description,
-            image: productImg.url,
-            countInStock,
-            brand,
-            user: userId,
-            category: category.id
-
+    try {
+           if (!userId) {
+            throw new ApiError(400, "user not login")
         }
-    )
-    res.status(201).json(new ApiResponse(201, product, "Product created successfully"))
+        let user = await User.findById(userId)
+    
+    
+        if (!user.role === "admin" || !user.role === "superadmin") {
+            throw new ApiError(400, "only admin can create products")
+        }
+        if (!categoryName ||
+            !title || !price || !description || !countInStock
+            || !brand) {
+            throw new ApiError(400, "All fields are required")
+        }
+        let category = await Category.findOne({ categoryName: categoryName })
+        let localFilePath = req.file.path;
+    
+        if (!localFilePath) {
+            throw new ApiError(402, "image path not found!")
+        }
+        let filesize = req.file.size
+    
+        if (filesize > 10485760) {
+            throw new ApiError(402, "file too long only 10MB is allowed!")
+        }
+        let productImg = await uploadOnCloudinary(localFilePath)
+        if (!productImg.url) {
+            throw new ApiError(402, "image uploading faield!")
+        }
+        if (!category) {
+            category = await Category.create({
+                categoryName,
+    
+                user: userId
+            })
+        }
+    
+        let product = await Product.create(
+            {
+                title,
+                price,
+                description,
+                image: productImg.url,
+                countInStock,
+                brand,
+                user: userId,
+                category: category.id
+    
+            }
+        )
+        res.status(201).json(new ApiResponse(201, product, "Product created successfully"))
+        
+    } catch (error) {
+        console.log('Product Not created error',error)
+    }
 })
 
 let updateProductWithCategory = asyncHandler(async (req, res) => {

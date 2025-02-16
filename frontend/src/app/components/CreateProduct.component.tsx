@@ -51,8 +51,8 @@ const  CreateProductComponent = () => {
             if (error instanceof AxiosError) {
 
                 setError(error.response?.data.error)
+                console.log("creatProductError", error)
             }
-            console.log("creatProductError", error)
         }
     };
 
