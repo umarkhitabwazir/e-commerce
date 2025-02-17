@@ -51,8 +51,7 @@ let createProductsWithCategory = asyncHandler(async (req, res) => {
         }
         if (!category) {
             category = await Category.create({
-                categoryName,
-    
+                categoryName,    
                 user: userId
             })
         }
