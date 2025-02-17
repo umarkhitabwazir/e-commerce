@@ -13,7 +13,7 @@ adminRouter.route("/product/create").post(
     authorizeRoles("superadmin", "admin"),
     upload.single("productImg"),
     createProductsWithCategory
-); // Create a product with category (Admin/Superadmin only)
+); 
 
 // Update Product
 adminRouter.route("/product/update/:productid").patch(
