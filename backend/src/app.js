@@ -12,7 +12,7 @@ app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true, 
-    // origin: "https://ukbazaar.vercel.app";
+   
 //     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 //     allowedHeaders: "Content-Type,Authorization",
   })
