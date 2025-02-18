@@ -42,10 +42,11 @@ const LoginComponent = () => {
         try {
 
             const response = await axios.post(`${API_URL}/user/Login`, data, { withCredentials: true });
-            const resdata = response
+            // const resdata = response
+            console.log('loginresponse',response)
 
             // if email not verified
-            if (resdata.data.statusCode === 401) {
+            if (response.data.statusCode === 401) {
 
                 const maskEmail = (email: string) => {
                     const [name, domain] = email.split('@');
@@ -63,7 +64,7 @@ const LoginComponent = () => {
 
 
             setLoading(false); // Stop loading
-            if (resdata.data.statusCode === 200) {
+            if (response.data.statusCode === 200) {
 
                 router.push(`${trackedPath || "/"}?q=${isQuantity}&product=${isProduct}&p=${isProductPrice} `);
 
@@ -72,7 +73,7 @@ const LoginComponent = () => {
         } catch (err: unknown) {
 
             setLoading(false); // Stop loading
-            console.log('err', err)
+            console.log('loginerr', err)
             if (err instanceof AxiosError) {
 
                 if (err.status === 500) {
