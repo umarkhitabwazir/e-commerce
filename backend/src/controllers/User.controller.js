@@ -126,9 +126,9 @@ const createUser = asyncHandler(async (req, res) => {
     await user.save()
     const options = {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
         sameSite: "None",
-        domain: process.env.DOMAIN,
+        domain: process.env.FRONTEND_DOMAIN,
 
     }
     const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
@@ -173,9 +173,9 @@ const loginUser = asyncHandler(async (req, res, next) => {
         const user = await User.findOne({ email: email })
         const options = {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === 'production',
             sameSite: "None",
-            domain: process.env.DOMAIN
+            domain: process.env.FRONTEND_DOMAIN
 
         }
         if (!user) {
@@ -226,15 +226,15 @@ const logoutUser = asyncHandler(async (req, res) => {
     await user.save({ validateBeforeSave: false })
     res.clearCookie("refreshToken", {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
         sameSite: "None",
-        domain: process.env.DOMAIN
+        domain: process.env.FRONTEND_DOMAIN
     });
     res.clearCookie("accessToken", {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
         sameSite: "None",
-        domain: process.env.DOMAIN
+        domain: process.env.FRONTEND_DOMAIN
     });
     res.status(200).json(new ApiResponse(200, null, "User logged out successfully"))
 })
