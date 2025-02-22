@@ -171,6 +171,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
             throw new ApiError(400, "Email and password are required")
         }
         const user = await User.findOne({ email: email })
+        console.log('user', user)
         const options = {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
