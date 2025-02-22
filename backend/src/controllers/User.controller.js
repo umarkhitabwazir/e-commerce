@@ -128,7 +128,7 @@ const createUser = asyncHandler(async (req, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: "None",
-        domain: process.env.FRONTEND_DOMAIN,
+        // domain: process.env.FRONTEND_DOMAIN,
 
     }
     const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
@@ -176,7 +176,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: "None",
-            domain: process.env.FRONTEND_DOMAIN
+            // domain: process.env.FRONTEND_DOMAIN
 
         }
         if (!user) {
@@ -187,7 +187,8 @@ const loginUser = asyncHandler(async (req, res, next) => {
             throw new ApiError(400, "Invalid password")
         }
         const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
-
+console.log('accessToken',accessToken)
+console.log('refreshToken',refreshToken)
         const isVerified = user.isVerified
         if (!isVerified) {
             const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
@@ -229,13 +230,13 @@ const logoutUser = asyncHandler(async (req, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: "None",
-        domain: process.env.FRONTEND_DOMAIN
+        // domain: process.env.FRONTEND_DOMAIN
     });
     res.clearCookie("accessToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: "None",
-        domain: process.env.FRONTEND_DOMAIN
+        // domain: process.env.FRONTEND_DOMAIN
     });
     res.status(200).json(new ApiResponse(200, null, "User logged out successfully"))
 })
