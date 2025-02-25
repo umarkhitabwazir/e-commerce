@@ -8,8 +8,8 @@ yarn-error.log*
 # Runtime data
 pids/
 *.pid
-*.seed
 *.pid.lock
+*.seed
 
 # Dependency directories
 node_modules/

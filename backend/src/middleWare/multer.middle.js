@@ -8,8 +8,7 @@ const __dirname = path.dirname(__filename);
 
 // Define upload path for development
 const uploadPath = path.resolve("D:/public"); // Fix Windows path
-console.log(fs.mkdirSync("D:/create-folder-from-production", { recursive: true }));
-console.log("Calculated Upload Path:", uploadPath);
+
 
   // ✅ Create folder if it doesn't exist
   if (!fs.existsSync(uploadPath)) {
