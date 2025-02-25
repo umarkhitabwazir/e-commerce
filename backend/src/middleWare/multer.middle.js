@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Define upload path for development
-const uploadPath = path.resolve("C:/create-folder-from-vs"); // Fix Windows path
+const uploadPath = path.resolve("D:/public"); // Fix Windows path
 console.log(fs.mkdirSync("D:/create-folder-from-production", { recursive: true }));
 console.log("Calculated Upload Path:", uploadPath);
 
