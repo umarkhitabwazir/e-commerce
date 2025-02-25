@@ -3,9 +3,9 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import path from "path";
 
-const uploadPath = path.join("D:/e-commerce/public");
+const uploadPath = path.join("D:\public");
 console.log("Calculated Upload Path:", uploadPath);
-
+console.log('fs.existsSync(uploadPath)',fs.existsSync(uploadPath))
 // ✅ Create folder if it doesn't exist
 if (!fs.existsSync(uploadPath)) {
   console.log("Creating public folder...");
