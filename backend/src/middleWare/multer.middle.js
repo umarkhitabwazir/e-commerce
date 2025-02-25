@@ -1,9 +1,28 @@
 import multer from "multer";
-console.log('object')
+import fs from "fs";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const uploadPath = path.join("D:/e-commerce/public");
+console.log("Calculated Upload Path:", uploadPath);
+
+// ✅ Create folder if it doesn't exist
+if (!fs.existsSync(uploadPath)) {
+  console.log("Creating public folder...");
+  try {
+    fs.mkdirSync(uploadPath, { recursive: true });  // Create folder and any necessary parent directories
+    console.log("Folder created successfully.");
+  } catch (error) {
+    console.error("Error creating folder:", error.message);  // Log error if folder creation fails
+  }
+} else {
+  console.log("Public folder already exists.");
+}
+
 const storage = multer.diskStorage(
     {
     destination: function (req, file, cb) {
-      cb(null, "")
+      cb(null, uploadPath)
     },
     filename: function (req, file, cb) {
               

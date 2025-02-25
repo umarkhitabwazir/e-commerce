@@ -19,8 +19,8 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 let createProductsWithCategory = asyncHandler(async (req, res) => {
     let{ categoryName, title, price, description, countInStock, brand } = req.body
     let userId = req.user
-    let localFilePath = req.file.path;
-    console.log('localFilePath',localFilePath)
+    
+    
     try {
            if (!userId) {
             throw new ApiError(400, "user not login")
