@@ -37,8 +37,10 @@ let createProductsWithCategory = asyncHandler(async (req, res) => {
             throw new ApiError(400, "All fields are required")
         }
         let category = await Category.findOne({ categoryName: categoryName })
-        let localFilePath = req.file.path;
-    
+        let localFilePath = req.file.path ; //for development
+        // let localFilePath = req.file.buffer;  //for production 
+
+    console.log('localFilePath',localFilePath)
         if (!localFilePath) {
             throw new ApiError(402, "image path not found!")
         }
@@ -138,8 +140,9 @@ let updateProductWithCategory = asyncHandler(async (req, res) => {
     }
 
     if (fileLocalPath) {
+        const base64File = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
 
-        let productImg = await uploadOnCloudinary(fileLocalPath)
+        let productImg = await uploadOnCloudinary(base64File)
         if (!productImg) {
             throw new ApiError(402, "image uploading falid!")
         }
