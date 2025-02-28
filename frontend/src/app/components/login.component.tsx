@@ -73,7 +73,6 @@ const LoginComponent = () => {
         } catch (err: unknown) {
 
             setLoading(false); // Stop loading
-            console.log('loginerr', err)
             if (err instanceof AxiosError) {
 
                 if (err.status === 500) {

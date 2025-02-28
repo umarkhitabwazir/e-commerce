@@ -5,10 +5,13 @@ import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import { ProductTypes } from '../utils/productsTypes';
+import { set } from 'zod';
 
 const Products = () => {
   const [sort, setSort] = useState<string | null>(null);
   const [products, setProducts] = useState([]);
+  const [searchResult, setSearchResult] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [reviews, setReviews] = useState<{ product: string; rating: number }[]>([]);
   const router = useRouter();
@@ -16,8 +19,9 @@ const Products = () => {
   const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
   const routePath = usePathname();
   const searchParams = useSearchParams();
+  const searchedProducts = searchParams.get("search")
+
   const value = searchParams.get("sort");
-console.log('reviews',reviews)
   useEffect(() => {
     if (value) {
       setSort(value);
@@ -31,6 +35,23 @@ console.log('reviews',reviews)
 
   // Fetch products
   useEffect(() => {
+    // get searched products
+    if (searchedProducts) {
+      const fetchSearchedProducts = async () => {
+        try {
+          const response = await axios.get(`${API_URL}/get-searched-products?search=${searchedProducts}`);
+          setProducts(response.data.data);
+          setSearchResult(response.data.data.length);
+          setError(null);
+        } catch (err: unknown) {
+          if (err instanceof AxiosError) {
+            setError(err.message || "An error occurred while fetching products.");
+          }
+        }
+      };
+      fetchSearchedProducts();
+
+    }
     const fetchProducts = async () => {
       try {
         const endpoint = sort ? `${API_URL}/${sort}` : `${API_URL}/get-products`;
@@ -43,9 +64,11 @@ console.log('reviews',reviews)
         }
       }
     };
-    fetchProducts();
-  }, [API_URL, sort]);
-console.log('arr',Array.from({ length: 5 }))
+    if (!searchedProducts) {
+
+      fetchProducts();
+    }
+  }, [API_URL, sort, searchedProducts]);
   // Fetch all reviews
   useEffect(() => {
     const fetchAllReviews = async () => {
@@ -59,33 +82,32 @@ console.log('arr',Array.from({ length: 5 }))
       }
     };
     fetchAllReviews();
-  }, [API_URL,setReviews]);
+  }, [API_URL, setReviews]);
 
   // Calculate average rating for each product
   const getAverageRating = (productId: string) => {
-    const productReviews = reviews.filter(review => review.product ===productId );
+    const productReviews = reviews.filter(review => review.product === productId);
     if (productReviews.length === 0) return "0";
-    
+
     const sum = productReviews.reduce((acc, review) => acc + review.rating, 0);
-    return (sum / productReviews.length).toFixed(1); 
+    return (sum / productReviews.length).toFixed(1);
   };
 
   return (
     <div className="bg-bgGray min-h-screen p-10">
+      {
+        searchedProducts &&
+         <h1 className=' text-gray-400  font-semibold mb-4'>
+          {searchResult}  items found for "{searchedProducts}"
+        </h1>
+      }
+
       {error ? (
         <p className="text-red-500 text-center">{error}</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {products.map((product: {
-            _id: string;
-            image: string;
-            description: string;
-            price: number;
-            title: string;
-            countInStock: number;
-            brand: string;
-          }) => {
-            const productId=product._id
+          {products.map((product: ProductTypes) => {
+            const productId = product._id
             const averageRating = parseFloat(getAverageRating(productId));
             return (
               <div

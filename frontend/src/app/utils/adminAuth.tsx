@@ -18,19 +18,17 @@ const adminAuth = <P extends adminAuthProps>(AdminComponent: React.ComponentType
                     const response = await axios.get(`${API_URL}/get-logined-user`, {
                         withCredentials: true,
                     });
-                    console.log('response.data', response.data.status)
                     if (!response.data) {
                         setUser(null)
                     }
 
                     if (response.data.data) {
                         setUser(response.data.data)
-                        console.log("adminAuthComponent", response.data.data)
                     }
                 } catch (error: unknown) {
                     if (error instanceof AxiosError) {
 
-                        console.error(error.message || error)
+                       return
                     }
                 }
             };

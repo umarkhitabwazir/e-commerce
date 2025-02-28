@@ -29,7 +29,7 @@ const fetchOrderAccepedCancel = orders.filter((order: { cancelled: boolean }) =>
             } catch (error:unknown) {
                 if (error instanceof AxiosError) {
                     
-                    console.error(error.message || error)
+                   return 
                 }
             }
         }

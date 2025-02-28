@@ -4,7 +4,7 @@ import {
   resendEmailVerificationCode,
   getLoginUserData
 } from "../controllers/User.controller.js";
-import { getAllProducts, getSingleProduct, } from "../controllers/Product.controller.js";
+import {searchProduct, getAllProducts, getSingleProduct, getSearchedProduct, } from "../controllers/Product.controller.js";
 import { categoryList } from "../controllers/CategoryList.controller.js";
 import { createCart } from "../controllers/Cart.controller.js";
 import {previewOrder,createOrder, updateOrder,getOrder, deleteOder, singleUserOrder, findOrderedProducts, cancelOrder } from "../controllers/Order.controller.js";
@@ -65,6 +65,8 @@ userRouter.route("/priceHighLow").get(sortPriceHighToLower); // Sort products by
 userRouter.route("/newest").get(sortNewest); // Sort products by newest first
 
 // Get All Products
+userRouter.route("/search-products").get(searchProduct); // search products
+userRouter.route("/get-searched-products").get(getSearchedProduct); //get searched products
 userRouter.route("/get-products").get(getAllProducts); // Retrieve all products
 
 // Get Single Product
