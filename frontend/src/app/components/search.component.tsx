@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { ProductTypes } from '../utils/productsTypes'
 import { useRouter, useSearchParams } from 'next/navigation';
 

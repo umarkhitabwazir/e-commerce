@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { ProductTypes } from '../utils/productsTypes';
-import { set } from 'zod';
 
 const Products = () => {
   const [sort, setSort] = useState<string | null>(null);
@@ -98,7 +97,7 @@ const Products = () => {
       {
         searchedProducts &&
          <h1 className=' text-gray-400  font-semibold mb-4'>
-          {searchResult}  items found for "{searchedProducts}"
+          {searchResult}  items found for &quot;{searchedProducts}&quot;
         </h1>
       }
 
