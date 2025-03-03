@@ -42,11 +42,8 @@ const LoginComponent = () => {
         try {
 
             const response = await axios.post(`${API_URL}/user/Login`, data, { withCredentials: true });
-            // const resdata = response
-            console.log('loginresponse',response)
-
-            // if email not verified
-            if (response.data.statusCode === 401) {
+            const resdata = response?.data.data
+            if (!resdata.isVerified) {
 
                 const maskEmail = (email: string) => {
                     const [name, domain] = email.split('@');
@@ -63,8 +60,9 @@ const LoginComponent = () => {
 
 
 
+
             setLoading(false); // Stop loading
-            if (response.data.statusCode === 200) {
+            if (response.data.data.isVerified) {
 
                 router.push(`${trackedPath || "/"}?q=${isQuantity}&product=${isProduct}&p=${isProductPrice} `);
 
@@ -74,12 +72,13 @@ const LoginComponent = () => {
 
             setLoading(false); // Stop loading
             if (err instanceof AxiosError) {
-
                 if (err.status === 500) {
                     setNetworkError(true)
                 }
+                // if email not verified
+
                 if (err.response) {
-                    setError(err.response.data.error); 
+                    setError(err.response.data.error);
                 } else {
                     setError('An unknown error occurred.');
                 }
@@ -106,6 +105,7 @@ const LoginComponent = () => {
                         <div className=" ">
                             <label className="block text-sm font-medium text-black mb-1">Email</label>
                             <input
+
                                 {...register('email')}
                                 type="email"
                                 className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.email ? 'border-red-500' : 'border-gray-300'
@@ -158,20 +158,39 @@ const LoginComponent = () => {
                         <h4 className="text-center text-gray-500 text-sm">
                             or
                         </h4>
+
+
                         <Link
                             href="/sign-up"
-                            className="text-blue-500 hover:text-blue-700 underline text-sm font-thin"
+                            className="text-blue-500 hover:text-blue-700 underline text-lg font-extrabold"
                         >
                             Sign up
                         </Link>
 
+
                     </div>
-                    <Link
-                            className="w-full  hover:text-gray-500 text-gray-600 font-semibold underline py-2 px-4 rounded mt-3"
-                            href="/"
-                        >
-                            Return to Home Page↗
-                        </Link>
+                    <div className=' flex flex-wrap justify-between items-center'>
+
+                        <div>
+
+                            <Link
+                                href="/reset-password"
+                                className="text-blue-500 hover:text-blue-700 underline text-lg font-bold"
+                            >
+                                Forgot Password ?
+                            </Link>
+                        </div>
+                        <div>
+
+                            <Link
+                                className="w-full  hover:text-gray-500 text-gray-600 font-semibold underline py-2 px-4 rounded mt-3"
+                                href="/"
+                            >
+                                Return to Home Page↗
+                            </Link>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 

@@ -171,7 +171,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
             throw new ApiError(400, "Email and password are required")
         }
         const user = await User.findOne({ email: email })
-        console.log('user', user)
+       
         const options = {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -187,8 +187,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
             throw new ApiError(400, "Invalid password")
         }
         const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
-console.log('accessToken',accessToken)
-console.log('refreshToken',refreshToken)
+
         const isVerified = user.isVerified
         if (!isVerified) {
             const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
@@ -199,7 +198,7 @@ console.log('refreshToken',refreshToken)
             res.
                 cookie("accessToken", accessToken, options)
                 .cookie("refreshToken", refreshToken, options).
-                status(200).json(new ApiResponse(401, null, "Email is not verified. Verification code has been sent to your email.", false)
+                status(200).json(new ApiResponse(200, null, "Email is not verified. Verification code has been sent to your email.", true)
                 )
             return;
         }
@@ -212,10 +211,46 @@ console.log('refreshToken',refreshToken)
                 )
         }
     } catch (error) {
+        console.log('loginer',error)
         next(error)
     }
 
 
+})
+
+const forgotPassword = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+        throw new ApiError(400, "Email is required.");
+    }
+    const user = await User.findOne({ email: email });
+    if (!user) {
+        throw new ApiError(404, "User not found.");
+    }
+    const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
+    user.passwordResetCode = emailVerificationCode; 
+    await user.save();
+
+    sendEmail(user.email, emailVerificationCode);
+    res.status(200).json(new ApiResponse(200, null, "Password reset link sent successfully."));
+})
+const resetPassword = asyncHandler(async (req, res) => {
+    const { email, passwordResetCode, newPassword } = req.body;
+    console.log('resetPassword',req.body)
+    if (!email || !passwordResetCode || !newPassword) {
+        throw new ApiError(400, "All fields are required.");
+    }
+    const user = await User.findOne({ email: email });
+    if (!user) {
+        throw new ApiError(404, "User not found.");
+    }
+    if (user.passwordResetCode !== parseInt(passwordResetCode)) {
+        throw new ApiError(400, "Invalid password reset code.");
+    }
+    user.password = newPassword;
+    user.passwordResetCode = null;
+    await user.save();
+    res.status(200).json(new ApiResponse(200, null, "Password reset successfully."));
 })
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -256,7 +291,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
 
 
     if (user.isVerified) {
-        throw new ApiError(400, "Email is already verified.");
+        throw new ApiError(400, "Email is already verified,  return to given below home page.");
     }
 
     if (user.emailVerificationCode !== parseInt(emailVerificationCode)) {
@@ -281,7 +316,7 @@ const resendEmailVerificationCode = asyncHandler(async (req, res) => {
 
 
     if (user.isVerified) {
-        throw new ApiError(400, "Email is already verified.");
+        throw new ApiError(400, "Email is already verified you can skip this step.");
     }
 
     const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
@@ -307,6 +342,8 @@ export {
     createUser,
     verifyEmail,
     loginUser,
+    forgotPassword,
+    resetPassword,
     logoutUser,
     updateUser,
     resendEmailVerificationCode,

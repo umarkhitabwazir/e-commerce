@@ -60,7 +60,7 @@ const withAuth = <P extends WithAuthProps>(
                         
                           return; 
                       }
-                      console.log('error?.response?',error?.response?.status===401 && !isAuthRoutes)
+                      console.log('middlewareError',error?.response)
                       const redirectPath = isAuthRoutes ? "/" : trackPath;
                       if (error?.response?.status===401 && !isAuthRoutes) {
                         router.push(

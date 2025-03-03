@@ -6,15 +6,16 @@ dotenv.config({
     path: ".env"
 })
 const authMiddleware = async (req, res, next) => {
-    // const token = req.headers.authorization;
 
     const accessToken = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
     const refreshToken = req.cookies?.refreshToken || req.header("Authorization")?.replace("Bearer ", "")
+
     if (!accessToken) {
         next(new ApiError(401, "Unauthorized"))
     }
     try {
         const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_TOKEN_SECRET);
+        console.log('decoded)', decoded)
         if (!decoded || !decoded.id) {
             throw new ApiError(401, "Unauthorized. Invalid token.");
         }

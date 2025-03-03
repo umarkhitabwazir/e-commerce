@@ -24,7 +24,7 @@ const Navbar = ({ user }: { user: UserInterface }) => {
     const [isLogedin, setIsLogedin] = useState<UserInterface | null>(null)
     const router = useRouter();
     const pathName = usePathname();
-    const authRoutes = ["/sign-up", "/verify-email", "/login", "/log-out"];
+    const authRoutes = ["/sign-up", "/verify-email","/reset-password", "/login", "/log-out"];
     const isAuthRoute = authRoutes.includes(pathName);
 
     useEffect(() => {

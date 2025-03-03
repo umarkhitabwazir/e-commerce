@@ -133,7 +133,7 @@ const SignupComponent = () => {
                             )}
                         </div>
 
-                      
+
 
                         {/* Phone Field */}
                         <div className="flex flex-col">
@@ -151,21 +151,21 @@ const SignupComponent = () => {
 
                         {/* Submit Button */}
                         {/* <div className="col-span-4"> */}
-                            <button
-                                type="submit"
-                                className={`w-full py-3 rounded-lg mt-4 transition duration-200 ${loading
-                                    ? 'bg-gray-400 cursor-not-allowed'
-                                    : 'bg-blue-600 text-white hover:bg-blue-700'
-                                    }`}
-                                disabled={loading}
-                            >
-                                {loading ? 'Submitting...' : 'Sign Up'}
-                            </button>
-                            {error && (
-                                <p className="text-red-600 font-light flex justify-center items-center mt-4">
-                                    {error.split(' at ')[0]}
-                                </p>
-                            )}
+                        <button
+                            type="submit"
+                            className={`w-full py-3 rounded-lg mt-4 transition duration-200 ${loading
+                                ? 'bg-gray-400 cursor-not-allowed'
+                                : 'bg-blue-600 text-white hover:bg-blue-700'
+                                }`}
+                            disabled={loading}
+                        >
+                            {loading ? 'Submitting...' : 'Sign Up'}
+                        </button>
+                        {error && (
+                            <p className="text-red-600 font-light flex justify-center items-center mt-4">
+                                {error.split(' at ')[0]}
+                            </p>
+                        )}
                         {/* </div> */}
                     </form>
                     <div className='flex items-center justify-center flex-col'>
@@ -175,7 +175,7 @@ const SignupComponent = () => {
                         </h4>
                         <Link
                             href="/login"
-                            className="text-blue-500 hover:text-blue-700 underline text-sm font-thin"
+                            className="text-blue-500 hover:text-blue-700 underline text-lg font-extrabold"
                         >
                             Login
                         </Link>

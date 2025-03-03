@@ -7,6 +7,11 @@ import cors from "cors"
 import { ApiError } from "./utils/apiError.js";
 import { adminRouter } from "./routes/admin.routes.js";
 import { superAdminRouter } from "./routes/superAdmin.routes.js";
+import { productRouter } from "./routes/product.routes.js";
+import {  sortingRouters } from "./routes/sorting.routes.js";
+import {  orderRouters } from "./routes/order.routes.js";
+import {  addressRouters } from "./routes/address.routes.js";
+import {  reviewsRouters } from "./routes/reviews.routes.js";
 const app = express()
 app.use(
   cors({
@@ -23,7 +28,16 @@ app.use(express.json({ limit: "16kb" }))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use("/api/v2",superAdminRouter, adminRouter, userRouter)
+app.use("/api/v2",
+  superAdminRouter, 
+  adminRouter,
+   userRouter,
+   productRouter,
+   sortingRouters,
+   orderRouters,
+   addressRouters,
+   reviewsRouters
+  )
 
 
 

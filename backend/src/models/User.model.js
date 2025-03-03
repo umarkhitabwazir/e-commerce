@@ -40,6 +40,10 @@ const userSchema = new Schema(
             required: [true,"password is required"],
             trim: true, 
         },
+        passwordResetCode:{
+            type: Number,
+            trim: true,
+        },
       
         phone:{
             type:Number,

@@ -33,14 +33,13 @@ const VerifyEmail = ({ email }: { email: string | null }) => {
   const [success, setSuccess] = useState(false);
   const searchParams = useSearchParams()
   const code = searchParams.get('code')
-  console.log('code', code)
   const router = useRouter()
   const API_URL = process.env.NEXT_PUBLIC_API_URL
   const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST
 
   // verifyEmailFromEmaiBox
   useEffect(() => {
-    const verifyEmailFromEmaiBox = async () => {
+    const verifyEmailFormEmaiBox = async () => {
       try {
         const emailVerificationCode = { emailVerificationCode: code }
         await axios.post(`${API_URL}/verify-email`, emailVerificationCode, { withCredentials: true });
@@ -58,7 +57,7 @@ const VerifyEmail = ({ email }: { email: string | null }) => {
       }
     }
     if (code) {
-      verifyEmailFromEmaiBox()
+      verifyEmailFormEmaiBox()
     }
   }, [API_URL, code, router, setLoading, setError])
 
@@ -73,12 +72,17 @@ const VerifyEmail = ({ email }: { email: string | null }) => {
 
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
+        
         setError(err.response?.data.error);
-        return router.push("/login")
+if (err.response?.data.error==='Unauthorized') {
+  
+  return router.push("/login")
+}
       }
 
     } finally {
       setLoading(false);
+
     }
   };
 
