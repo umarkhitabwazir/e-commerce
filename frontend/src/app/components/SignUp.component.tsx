@@ -22,7 +22,6 @@ const SignupComponent = () => {
     });
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
     const [error, setError] = useState<string | undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(false);
     const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
