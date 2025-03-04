@@ -36,7 +36,7 @@ const SignupComponent = () => {
         setError(undefined); // Clear previous error
         try {
 
-            const response = await axios.post(`${API_URL}/user/signup`, data, { withCredentials: true });
+            await axios.post(`${API_URL}/user/signup`, data, { withCredentials: true });
           
           
           
