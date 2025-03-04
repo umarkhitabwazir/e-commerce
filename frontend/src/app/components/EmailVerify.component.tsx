@@ -8,6 +8,7 @@ import axios, { AxiosError } from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import ResendVerificationCode from '../components/ResendVerificationCode.component';
 import Link from 'next/link';
+import Image from 'next/image';
 // Define Zod schema for form validation
 const VerifyEmailSchema = z.object({
   emailVerificationCode: z
@@ -31,6 +32,7 @@ const VerifyEmail = ({ email }: { email: string | null }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const searchParams = useSearchParams()
   const code = searchParams.get('code')
   const router = useRouter()
@@ -72,12 +74,12 @@ const VerifyEmail = ({ email }: { email: string | null }) => {
 
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
-        
+
         setError(err.response?.data.error);
-if (err.response?.data.error==='Unauthorized') {
-  
-  return router.push("/login")
-}
+        if (err.response?.data.error === 'Unauthorized') {
+
+          return router.push("/login")
+        }
       }
 
     } finally {
@@ -103,12 +105,25 @@ if (err.response?.data.error==='Unauthorized') {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-black mb-1">Verification code</label>
-                <input
-                  {...register('emailVerificationCode')}
-                  className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.emailVerificationCode ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                  placeholder="Enter your Code"
-                />
+
+                <div className='relative'>
+
+                  <input
+                    type={passwordVisible ? 'text' : 'password'}
+                    {...register('emailVerificationCode')}
+                    className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.emailVerificationCode ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    placeholder="Enter your Code"
+                  />
+
+                  <div className='absolute right-3 top-3'>
+
+                    <Image onClick={() => setPasswordVisible(prev => !prev)}
+                      src={passwordVisible ? "/eye-solid.svg" : "/eye-slash-solid.svg"}
+                      className='cursor-pointer'
+                      width={20} height={20} alt='eye-slash-solid' />
+                  </div>
+                </div>
                 {errors.emailVerificationCode && (
                   <p className="text-red-500 text-sm mt-1">{errors.emailVerificationCode.message}</p>
                 )}
@@ -134,18 +149,18 @@ if (err.response?.data.error==='Unauthorized') {
             <ResendVerificationCode />
 
           </div>
-        
-       <div className='mt-3'>
-       <Link
-          className="w-full  hover:text-gray-500 text-gray-600 font-semibold underline py-2 px-4  rounded "
-          href="/"
-          >
-          Return to Home Page↗
-        </Link>
-       </div>
-          </div>
 
-        
+          <div className='mt-3'>
+            <Link
+              className="w-full  hover:text-gray-500 text-gray-600 font-semibold underline py-2 px-4  rounded "
+              href="/"
+            >
+              Return to Home Page↗
+            </Link>
+          </div>
+        </div>
+
+
       }
     </div>
   );

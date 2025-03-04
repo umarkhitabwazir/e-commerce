@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import NoInternetComponent from './NoInternet.component';
+import Image from 'next/image';
 
 
 const LoginComponent = () => {
@@ -32,6 +33,7 @@ const LoginComponent = () => {
     const productPrice = searchParams.get('p')
     const isQuantity = quantity ? quantity : ""
     const isProduct = product ? product : ""
+    const [passwordVisible, setPasswordVisible] = useState(false)
     const isProductPrice = productPrice ? productPrice : ""
     const [networkError, setNetworkError] = useState(false)
     // Form submit handler
@@ -120,13 +122,24 @@ const LoginComponent = () => {
                         {/* Password Field */}
                         <div className="">
                             <label className="block text-sm font-medium text-black mb-1">Password</label>
-                            <input
-                                {...register('password')}
-                                type="password"
-                                className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.password ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                placeholder="Enter your password"
-                            />
+                            <div className='relative'>
+
+                                <input
+                                    {...register('password')}
+                                    type={passwordVisible ? 'text' : 'password'}
+                                    className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.password ? 'border-red-500' : 'border-gray-300'
+                                        }`}
+                                    placeholder="Enter your password"
+                                />
+
+                                <div className='absolute right-3 top-3'>
+
+                                    <Image onClick={()=>setPasswordVisible(prev=>!prev)}
+                                     src={passwordVisible?"/eye-solid.svg" :"/eye-slash-solid.svg"}
+                                     className='cursor-pointer'
+                                      width={20} height={20} alt='eye-slash-solid' />
+                                </div>
+                            </div>
                             {errors.password && (
                                 <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
                             )}

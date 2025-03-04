@@ -48,10 +48,49 @@ const sendEmail = async (email, emailVerificationCode) => {
         to: email,
         subject: "Email Verification",
         html: `
-            <h2>Email Verification</h2>
-            <p>Your verification code is: <strong>${emailVerificationCode}</strong></p>
-            <p>Or click the link below to verify your email:</p>
-            <a href="${verificationLink}">${verificationLink}</a>
+           <!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="color: #333; text-align: center;">Email Verification</h2>
+        <p style="font-size: 16px; color: #555;">
+            Your verification code is: <strong>${emailVerificationCode}</strong>
+        </p>
+        
+    </div>
+</body>
+</html>
+
         `,
     };
     return new Promise((resolve, reject) => {
@@ -225,14 +264,14 @@ const forgotPassword = asyncHandler(async (req, res) => {
     }
     const user = await User.findOne({ email: email });
     if (!user) {
-        throw new ApiError(404, "User not found.");
+        throw new ApiError(404, "User not found with this email.");
     }
     const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
     user.passwordResetCode = emailVerificationCode; 
     await user.save();
 
-    sendEmail(user.email, emailVerificationCode);
-    res.status(200).json(new ApiResponse(200, null, "Password reset link sent successfully."));
+    await sendEmail(user.email, emailVerificationCode);
+    res.status(200).json(new ApiResponse(200, null, "Password reset code sent successfully."));
 })
 const resetPassword = asyncHandler(async (req, res) => {
     const { email, passwordResetCode, newPassword } = req.body;
@@ -244,7 +283,7 @@ const resetPassword = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(404, "User not found.");
     }
-    if (user.passwordResetCode !== parseInt(passwordResetCode)) {
+    if (user.passwordResetCode !== Number( passwordResetCode)) {
         throw new ApiError(400, "Invalid password reset code.");
     }
     user.password = newPassword;

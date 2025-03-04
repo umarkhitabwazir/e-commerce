@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // Define Zod schema for form validation
 
@@ -23,7 +24,8 @@ const SignupComponent = () => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
     const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
     const [error, setError] = useState<string | undefined>(undefined);
-    const [loading, setLoading] = useState<boolean>(false); // Track loading state
+    const [loading, setLoading] = useState<boolean>(false);
+    const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
     const router = useRouter()
 
 
@@ -121,13 +123,24 @@ const SignupComponent = () => {
                         {/* Password Field */}
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-black mb-1">Password</label>
-                            <input
-                                {...register('password')}
-                                type="password"
-                                className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.password ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                placeholder="Enter your password"
-                            />
+                            <div className='relative'>
+
+                                <input
+                                    {...register('password')}
+                                    type={passwordVisible ? 'text' : 'password'}
+                                    className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.password ? 'border-red-500' : 'border-gray-300'
+                                        }`}
+                                    placeholder="Enter your password"
+                                />
+
+                                <div className='absolute right-3 top-3'>
+
+                                    <Image onClick={() => setPasswordVisible(prev => !prev)}
+                                        src={passwordVisible ? "/eye-solid.svg" : "/eye-slash-solid.svg"}
+                                        className='cursor-pointer'
+                                        width={20} height={20} alt='eye-slash-solid' />
+                                </div>
+                            </div>
                             {errors.password && (
                                 <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
                             )}
@@ -150,7 +163,7 @@ const SignupComponent = () => {
                         </div>
 
                         {/* Submit Button */}
-                        {/* <div className="col-span-4"> */}
+                     
                         <button
                             type="submit"
                             className={`w-full py-3 rounded-lg mt-4 transition duration-200 ${loading
@@ -166,7 +179,7 @@ const SignupComponent = () => {
                                 {error.split(' at ')[0]}
                             </p>
                         )}
-                        {/* </div> */}
+                    
                     </form>
                     <div className='flex items-center justify-center flex-col'>
 
