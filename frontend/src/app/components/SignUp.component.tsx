@@ -37,6 +37,7 @@ const SignupComponent = () => {
         try {
 
             const response = await axios.post(`${API_URL}/user/signup`, data, { withCredentials: true });
+           console.log('response', response)
             const created = response.statusText === 'Created'
             if (created) {
                 const maskEmail = (email: string) => {
@@ -49,7 +50,8 @@ const SignupComponent = () => {
                     return `${firstTwo}****${lastTwo}@${domain}`
                 };
                 const maskedEmail = maskEmail(data.email)
-                router.push(`${LOCAL_HOST}/verify-email?email=${maskedEmail}`)
+                console.log('maskedEmail', maskedEmail)
+               return router.push(`/verify-email?email=${maskedEmail}`)
 
             }
 
