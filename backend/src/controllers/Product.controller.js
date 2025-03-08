@@ -37,11 +37,12 @@ let createProductsWithCategory = asyncHandler(async (req, res) => {
             throw new ApiError(400, "All fields are required")
         }
         let category = await Category.findOne({ categoryName: categoryName })
-        let localFilePath = req.file.path ; //for development
-        // let localFilePath = req.file.buffer;  //for production 
+        // let localFilePath = req.file.path ; //for development
+        let localFileBuffer = req.file?.buffer;  
+        console.log('localFileBuffer', localFileBuffer);
 
     console.log('localFilePath',localFilePath)
-        if (!localFilePath) {
+        if (!localFileBuffer) {
             throw new ApiError(402, "image path not found!")
         }
         let filesize = req.file.size
