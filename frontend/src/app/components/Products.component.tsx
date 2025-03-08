@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { usePathname, useSearchParams } from 'next/navigation';
@@ -24,16 +24,14 @@ const Products = () => {
 
   const value = searchParams.get("sort");
 
-  const fetchData = async () => {
- 
+  const fetchData = useCallback(async () => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setLoading(false);
+  }, []);
 
-
-  }
   useEffect(() => {
     fetchData();
-  }, [setLoading, fetchData]);
+  }, [fetchData]);
   useEffect(() => {
     if (value) {
       setSort(value);
@@ -49,7 +47,7 @@ const Products = () => {
   useEffect(() => {
     // get searched products
     if (searchedProducts) {
-      const fetchSearchedProducts = async () => {
+      const fetchSearchedProducts = useCallback(async () => {
         try {
           const response = await axios.get(`${API_URL}/get-searched-products?search=${searchedProducts}`);
           setProducts(response.data.data);
@@ -60,7 +58,7 @@ const Products = () => {
             setError(err.message || "An error occurred while fetching products.");
           }
         }
-      };
+      }, [searchedProducts])
       fetchSearchedProducts();
 
     }
@@ -111,6 +109,10 @@ const Products = () => {
 
   return (
     <div className="bg-bgGray min-h-screen p-10">
+      {
+        loading &&
+        <Loading />
+      }
       {
         searchedProducts &&
         <h1 className=' text-gray-400  font-semibold mb-4'>

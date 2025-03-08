@@ -10,12 +10,13 @@ const CategoryComponent = () => {
     const [category, setCategory] = useState<Category[]>([])
     const [loading, setLoading] = useState(true)
     useEffect(() => {
-        let fetchCategory = async () => {
+        const fetchCategory = async () => {
             try {
                 const res = await axios.get(`${API_URL}/all-category-list`)
                 const data = res.data.data
                 setCategory(data)
-            } catch (error: unknown) {
+            } catch (_error) {
+                
                 setLoading(false)
 
             } finally {

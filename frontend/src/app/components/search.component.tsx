@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { ProductTypes } from '../utils/productsTypes'
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -18,16 +18,16 @@ const SearchComponent = ({
     const [loading, setLoading] = useState(true);
     const updatedSearchParams = new URLSearchParams(searchParams.toString());
     
-    const fetchData = async () => {
+    const fetchData =useCallback( async () => {
  
         await new Promise((resolve) => setTimeout(resolve, 2000));
         setLoading(false);
     
     
-      }
+      },[])
       useEffect(() => {
         fetchData();
-      }, [setLoading, fetchData]);
+      }, [ fetchData]);
 
     return (
         <div className={ `${isProductSearched?"hidden":loading?"hidden":""} text-black z-50 bg-gray-300 rounded-md absolute w-full h-64 flex flex-col justify-center 
