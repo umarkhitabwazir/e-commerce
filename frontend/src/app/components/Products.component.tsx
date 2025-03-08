@@ -47,7 +47,7 @@ const Products = () => {
   useEffect(() => {
     // get searched products
     if (searchedProducts) {
-      const fetchSearchedProducts = useCallback(async () => {
+      const fetchSearchedProducts = async () => {
         try {
           const response = await axios.get(`${API_URL}/get-searched-products?search=${searchedProducts}`);
           setProducts(response.data.data);
@@ -58,7 +58,7 @@ const Products = () => {
             setError(err.message || "An error occurred while fetching products.");
           }
         }
-      }, [searchedProducts])
+      }
       fetchSearchedProducts();
 
     }
@@ -104,8 +104,7 @@ const Products = () => {
   };
 
 
-  loading &&
-    <Loading />
+ 
 
   return (
     <div className="bg-bgGray min-h-screen p-10">

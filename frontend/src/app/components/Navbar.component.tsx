@@ -41,7 +41,7 @@ const Navbar = ({ user }: { user: UserInterface }) => {
         if (!searchResult) {
             setIsProductSearched(true)
         }
-    }, [searchInput, setIsProductSearched])
+    }, [searchInput])
 
     const search = async (value: string) => {
 
