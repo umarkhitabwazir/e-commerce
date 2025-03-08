@@ -1,1 +1,1 @@
-[live gemo of this code](https://ukbazaar.vercel.app/)
+[Application live gemo ](https://ukbazaar.vercel.app/)
