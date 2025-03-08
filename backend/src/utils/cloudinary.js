@@ -1,32 +1,33 @@
-import {v2 as cloudinary} from "cloudinary"
-import fs from "fs"
+import { v2 as cloudinary } from "cloudinary";
 
-cloudinary.config({ 
-    cloud_name: process.env.CLOUD_NAME, 
-    api_key: process.env.CLOUD_API_KEY, 
-    api_secret: process.env.CLOUD_API_SECRET 
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
 });
 
-const uploadOnCloudinary = async (localFilePath) => {
-    try {
-        if (!localFilePath) return null
-        
-        const response = await cloudinary.uploader.upload(localFilePath, {
-            resource_type: "auto",
-            folder:`ecommerce/products-img`
-        })
-       
-        console.log("file is uploaded on cloudinary ", response.url);
-        fs.unlinkSync(localFilePath)
-        return response;
 
-    } catch (error) {
-        console.log(error)
-        fs.unlinkSync(localFilePath) 
-        return null;
-    }
-}
+const uploadOnCloudinary = async (buffer) => {
+    console.log('Cloudinarybuffer',buffer)
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "auto",
+        folder: "ecommerce/products-img",
+      },
+      (error, result) => {
+        if (error) {
+          console.error("Cloudinary upload error:", error);
+          reject(error);
+        } else {
+          console.log('result',result)
+          resolve(result);
+        }
+      }
+    );
 
+    stream.end(buffer); 
+  });
+};
 
-
-export {uploadOnCloudinary}
+export { uploadOnCloudinary };

@@ -37,11 +37,10 @@ let createProductsWithCategory = asyncHandler(async (req, res) => {
             throw new ApiError(400, "All fields are required")
         }
         let category = await Category.findOne({ categoryName: categoryName })
-        // let localFilePath = req.file.path ; //for development
+        
         let localFileBuffer = req.file?.buffer;  
-        console.log('localFileBuffer', localFileBuffer);
+       
 
-    console.log('localFilePath',localFilePath)
         if (!localFileBuffer) {
             throw new ApiError(402, "image path not found!")
         }
@@ -50,7 +49,7 @@ let createProductsWithCategory = asyncHandler(async (req, res) => {
         if (filesize > 10485760) {
             throw new ApiError(402, "file too long only 10MB is allowed!")
         }
-        let productImg = await uploadOnCloudinary(localFilePath)
+        let productImg = await uploadOnCloudinary(localFileBuffer)
         if (!productImg.url) {
             throw new ApiError(402, "image uploading faield!")
         }
