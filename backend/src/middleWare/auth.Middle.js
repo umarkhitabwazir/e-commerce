@@ -15,7 +15,7 @@ const authMiddleware = async (req, res, next) => {
     }
     try {
         const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_TOKEN_SECRET);
-        console.log('decoded)', decoded)
+        
         if (!decoded || !decoded.id) {
             throw new ApiError(401, "Unauthorized. Invalid token.");
         }

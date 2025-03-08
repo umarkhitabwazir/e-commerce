@@ -69,9 +69,6 @@ userRouter.route("/get-logined-user").get(authMiddleware, getLoginUserData); // 
 
 
 
-// Category List
-userRouter.route("/categoryList").post(categoryList); // Create a category list
-
 
 
 

@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import { ProductTypes } from '../utils/productsTypes'
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -11,14 +12,25 @@ const SearchComponent = ({
     isProductSearched: boolean,
     setIsProductSearched: React.Dispatch<React.SetStateAction<boolean>> 
 }) => {
-    console.log('isProductSearched', isProductSearched);
+
     const router = useRouter();
     const searchParams = useSearchParams();
+    const [loading, setLoading] = useState(true);
     const updatedSearchParams = new URLSearchParams(searchParams.toString());
     
+    const fetchData = async () => {
+ 
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        setLoading(false);
+    
+    
+      }
+      useEffect(() => {
+        fetchData();
+      }, [setLoading, fetchData]);
 
     return (
-        <div className={ `${isProductSearched?"hidden":""} text-black z-50 bg-gray-300 rounded-md absolute w-full h-64 flex flex-col justify-center 
+        <div className={ `${isProductSearched?"hidden":loading?"hidden":""} text-black z-50 bg-gray-300 rounded-md absolute w-full h-64 flex flex-col justify-center 
             items-center overflow-y-auto`}>
             
             {product?.length === 0 && <h1>No product found</h1>}

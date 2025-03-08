@@ -12,6 +12,7 @@ import {  sortingRouters } from "./routes/sorting.routes.js";
 import {  orderRouters } from "./routes/order.routes.js";
 import {  addressRouters } from "./routes/address.routes.js";
 import {  reviewsRouters } from "./routes/reviews.routes.js";
+import categoryRouter from "./routes/category.routes.js";
 const app = express()
 app.use(
   cors({
@@ -36,7 +37,10 @@ app.use("/api/v2",
    sortingRouters,
    orderRouters,
    addressRouters,
-   reviewsRouters
+   reviewsRouters,
+  //  categoryList,
+   categoryRouter
+
   )
 
 

@@ -6,12 +6,14 @@ import { useRouter } from 'next/navigation';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { ProductTypes } from '../utils/productsTypes';
+import Loading from './Loading.component';
 
 const Products = () => {
   const [sort, setSort] = useState<string | null>(null);
   const [products, setProducts] = useState([]);
   const [searchResult, setSearchResult] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [reviews, setReviews] = useState<{ product: string; rating: number }[]>([]);
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -21,6 +23,17 @@ const Products = () => {
   const searchedProducts = searchParams.get("search")
 
   const value = searchParams.get("sort");
+
+  const fetchData = async () => {
+ 
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setLoading(false);
+
+
+  }
+  useEffect(() => {
+    fetchData();
+  }, [setLoading, fetchData]);
   useEffect(() => {
     if (value) {
       setSort(value);
@@ -92,11 +105,15 @@ const Products = () => {
     return (sum / productReviews.length).toFixed(1);
   };
 
+
+  loading &&
+    <Loading />
+
   return (
     <div className="bg-bgGray min-h-screen p-10">
       {
         searchedProducts &&
-         <h1 className=' text-gray-400  font-semibold mb-4'>
+        <h1 className=' text-gray-400  font-semibold mb-4'>
           {searchResult}  items found for &quot;{searchedProducts}&quot;
         </h1>
       }

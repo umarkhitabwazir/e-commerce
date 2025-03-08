@@ -8,6 +8,8 @@ import { UserInterface } from "../utils/user.interface";
 import axios, { AxiosError } from "axios";
 import { ProductTypes } from "../utils/productsTypes";
 import SearchComponent from "./search.component";
+import CategoryComponent from "./Category.component";
+import Image from "next/image";
 
 const Navbar = ({ user }: { user: UserInterface }) => {
     const [sortOption, setSortOption] = useState("");
@@ -22,9 +24,10 @@ const Navbar = ({ user }: { user: UserInterface }) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
     const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
     const [isLogedin, setIsLogedin] = useState<UserInterface | null>(null)
+    const [categorisOpen, setCategorisOpen] = useState(false)
     const router = useRouter();
     const pathName = usePathname();
-    const authRoutes = ["/sign-up", "/verify-email","/reset-password", "/login", "/log-out"];
+    const authRoutes = ["/sign-up", "/verify-email", "/reset-password", "/login", "/log-out"];
     const isAuthRoute = authRoutes.includes(pathName);
 
     useEffect(() => {
@@ -32,7 +35,7 @@ const Navbar = ({ user }: { user: UserInterface }) => {
         if (searchResultParam) {
             setSearchInput(searchResultParam)
         }
-      
+
     }, [searchResultParam, setSearchInput]);
     useEffect(() => {
         if (!searchResult) {
@@ -41,10 +44,10 @@ const Navbar = ({ user }: { user: UserInterface }) => {
     }, [searchInput, setIsProductSearched])
 
     const search = async (value: string) => {
-       
+
 
         try {
-setIsProductSearched(false)
+            setIsProductSearched(false)
             const res = await axios(`${API_URL}/search-products?search=${value}`);
             const data = res.data.data;
             const uniqueProducts = Array.from(new Set(data.map((product: ProductTypes) => product.title)))
@@ -70,7 +73,7 @@ setIsProductSearched(false)
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
         setSearchInput(value)
-      
+
         if (!value) {
             setSearchResult(null)
             updatedSearchParams.delete("search")
@@ -129,14 +132,33 @@ setIsProductSearched(false)
             <nav
                 className={`${isAuthRoute ? "hidden" : isFixed ? "fixed" : "sticky"} bg-gray-800 text-white transition-all duration-1000 top-0 w-full z-50 shadow-md`}
             >
-                <div className="container mx-auto  lg:flex items-center justify-between p-4">
+                <div className="container mx-auto  lg:flex items-center justify-between  p-4">
                     {/* Logo */}
+
                     <div
                         className="text-2xl font-bold cursor-pointer hover:text-gray-300"
                         onClick={() => router.push("/")}
                     >
                         Shop
                     </div>
+
+                    {/* Categories */}
+                    <div
+                        onMouseEnter={() => setCategorisOpen(true)}
+                        onMouseLeave={() => setCategorisOpen(false)}
+                        className="relative " >
+
+                        <div className="flex hover:cursor-pointer justify-center  items-center text-sky">
+                            <h1>Categories</h1>
+                            <Image className={categorisOpen?'':'hidden'} src="/arrow-up.png" width={20} height={20} alt="arrow-up" />
+                            <Image className={categorisOpen?'hidden':''} src="/arrow-down.png"  width={20} height={20} alt="arrow-down" />
+                        </div>
+                        <div className="absolute rounded-lg shadow-md ">
+
+                            {categorisOpen && <CategoryComponent />}
+                        </div>
+                    </div>
+
 
                     {/* Hamburger Menu for Mobile */}
                     <div className="md:hidden ">
@@ -169,7 +191,7 @@ setIsProductSearched(false)
                             >
                                 🔍
                             </button>
-                            <SearchComponent  product={searchResult} isProductSearched={isProductSearched} setIsProductSearched={setIsProductSearched} />
+                            <SearchComponent product={searchResult} isProductSearched={isProductSearched} setIsProductSearched={setIsProductSearched} />
 
                         </div>
 

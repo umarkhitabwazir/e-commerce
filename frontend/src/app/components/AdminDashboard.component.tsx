@@ -11,7 +11,7 @@ const AdminDashboardComponent = ({ user }: { user: UserInterface }) => {
     return;
   }
   const role = ["admin", "superadmin"]
-  const route = ["/login", "/log-out", "/sign-up"]
+  const route = ["/login", "/log-out","/verify-email", "/sign-up"]
   const auth = route.includes(pathName)
   // console.log("pathName",auth)
   const roleAuth = role.includes(user.role)

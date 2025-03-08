@@ -4,6 +4,13 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
+const allcategoryList=asyncHandler(async(req,res)=>{
+    const category=await Category.find()
+    res.status(200).json(
+        new ApiResponse(200,category,"all category list")
+    )
+})
+
 const categoryList=asyncHandler(async(req,res)=>{
 const {categoryName}=req.query
 console.log("categoryName",categoryName)
@@ -24,4 +31,7 @@ res.status(200).json(
 )
 })
 
-export {categoryList}
+export {
+    categoryList,
+    allcategoryList
+}

@@ -11,7 +11,8 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        bgGray:"#f9fafb"
+        bgGray:"#f9fafb",
+        'sky':'#2bb0ec'
       },
     },
   },

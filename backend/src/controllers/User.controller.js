@@ -237,7 +237,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
             res.
                 cookie("accessToken", accessToken, options)
                 .cookie("refreshToken", refreshToken, options).
-                status(200).json(new ApiResponse(200, null, "Email is not verified. Verification code has been sent to your email.", true)
+                status(200).json(new ApiResponse(200, "notVerified", "Email is not verified. Verification code has been sent to your email.", true)
                 )
             return;
         }

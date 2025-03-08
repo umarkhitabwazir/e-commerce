@@ -2,6 +2,7 @@
 import React from 'react';
 
 const Loading = () => {
+ 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-white bg-opacity-80 flex justify-center items-center z-50">
       <div className="flex flex-col justify-center items-center">

@@ -45,7 +45,7 @@ const LoginComponent = () => {
 
             const response = await axios.post(`${API_URL}/user/Login`, data, { withCredentials: true });
             const resdata = response?.data.data
-            if (!resdata.isVerified) {
+            if (resdata==="notVerified") {
 
                 const maskEmail = (email: string) => {
                     const [name, domain] = email.split('@');
@@ -71,7 +71,6 @@ const LoginComponent = () => {
             }
 
         } catch (err: unknown) {
-
             setLoading(false); // Stop loading
             if (err instanceof AxiosError) {
                 if (err.status === 500) {
