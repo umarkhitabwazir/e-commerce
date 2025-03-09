@@ -5,7 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import SingleProductComponent from "./SingleProduct.component";
 import ReviewComponent from "./Review.component";
-import useStickyScroll from "./UseStickyScroll.component";
+
 
 interface FormData {
   quantity: number;
