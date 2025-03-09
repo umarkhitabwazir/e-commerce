@@ -12,23 +12,25 @@ const adminAuth = <P extends adminAuthProps>(AdminComponent: React.ComponentType
         const [user, setUser] = useState<adminAuthProps["user"] | null>(null);
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
+
         useEffect(() => {
             const checkAuth = async () => {
                 try {
                     const response = await axios.get(`${API_URL}/get-logined-user`, {
                         withCredentials: true,
                     });
-                    if (!response.data) {
+                    const newUser = response.data?.data ;
+                    if (!newUser) {
                         setUser(null)
                     }
 
-                    if (response.data.data) {
-                        setUser(response.data.data)
-                    }
+                    
+                        setUser(newUser)
+                    
                 } catch (error: unknown) {
                     if (error instanceof AxiosError) {
 
-                       return
+                       return null
                     }
                 }
             };
@@ -36,6 +38,7 @@ const adminAuth = <P extends adminAuthProps>(AdminComponent: React.ComponentType
 
         }, [router, API_URL]);
 
+      
         return <AdminComponent {...props as P} user={user} />;
     }
     return AdminAuthComponent

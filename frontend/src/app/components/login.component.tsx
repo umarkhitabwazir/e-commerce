@@ -88,7 +88,7 @@ const LoginComponent = () => {
                 }
 
             }
-        }
+        } 
 
     };
     return (

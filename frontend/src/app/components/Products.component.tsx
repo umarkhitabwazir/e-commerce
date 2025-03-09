@@ -105,7 +105,9 @@ const Products = () => {
         setProducts(res.data.data)
 
       } catch (error: unknown) {
-        return
+        if (error) {
+          return null
+        }
       }
     }
     if (categoryName) {
@@ -126,67 +128,72 @@ const Products = () => {
 
 
   return (
-    <div className="bg-bgGray min-h-screen p-10">
-      {
-        loading &&
-        <Loading />
-      }
-      {
-        searchedProducts &&
-        <h1 className=' text-gray-400  font-semibold mb-4'>
-          {searchResult}  items found for &quot;{searchedProducts}&quot;
-        </h1>
-      }
-
-      {error ? (
-        <p className="text-red-500 text-center">{error}</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {products.map((product: ProductTypes) => {
-            const productId = product._id
-            const averageRating = parseFloat(getAverageRating(productId));
-            return (
-              <div
-                key={product._id}
-                onClick={() => router.push(`${LOCAL_HOST}/order?product=${product._id}&p=${product.price}&stock=${product.countInStock}&rating=${averageRating}`)}
-                className="bg-white shadow-md rounded-lg cursor-pointer overflow-hidden transition-transform transform hover:scale-105"
-              >
-                <Image
-                  className="w-full h-48 object-cover"
-                  src={product.image}
-                  alt={product.title}
-                  width={100}
-                  height={48}
-                />
-                <div className="p-4">
-                  <h2 className="text-lg font-semibold mb-1">{product.title}</h2>
-                  <p className="text-sm text-gray-500">{product.brand}</p>
-                  <p className="text-gray-700 text-sm truncate mt-2">{product.description}</p>
-                  <div className="flex justify-between items-center mt-4">
-                    <span className="text-xl font-bold text-green-600">${product.price}</span>
-                    {product.countInStock > 0 ? (
-                      <span className="text-sm text-green-500">In Stock</span>
-                    ) : (
-                      <span className="text-sm text-red-500">Out of Stock</span>
-                    )}
-                  </div>
-
-                  {/* Star Rating Display */}
-                  <div className="flex items-center justify-center space-x-1 mt-2">
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <span key={index} className={` text-2xl ${index < Math.round(averageRating) ? "text-yellow-400" : "text-gray-300"}`}>
-                        {index < Math.round(averageRating) ? "★" : "☆"}
-                      </span>
-                    ))}
-                    <span className="text-gray-700">({averageRating})</span>
-                  </div>
+    <div className="bg-gray-100 min-h-screen px-6 py-10">
+    {loading && <Loading />}
+    
+    {searchedProducts && (
+      <h1 className="text-gray-600 font-semibold mb-6 text-lg">
+        {searchResult} items found for &quot;{searchedProducts}&quot;
+      </h1>
+    )}
+  
+    {error ? (
+      <p className="text-red-500 text-center text-lg">{error}</p>
+    ) : (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {products.map((product: ProductTypes) => {
+          const productId = product._id;
+          const averageRating = parseFloat(getAverageRating(productId));
+  
+          return (
+            <div
+              key={product._id}
+              onClick={() =>
+                router.push(`${LOCAL_HOST}/order?product=${product._id}&p=${product.price}&stock=${product.countInStock}&rating=${averageRating}`)
+              }
+              className="bg-white shadow-lg rounded-xl cursor-pointer overflow-hidden transition-transform transform hover:scale-105 hover:shadow-xl duration-300"
+            >
+              <Image
+                className="w-full h-52 object-cover"
+                src={product.image}
+                alt={product.title}
+                width={100}
+                height={52}
+              />
+              <div className="p-5">
+                <h2 className="text-lg font-semibold text-gray-800 mb-1 truncate">{product.title}</h2>
+                <p className="text-sm text-gray-500">{product.brand}</p>
+                <p className="text-gray-600 text-sm mt-2 line-clamp-2">{product.description}</p>
+  
+                <div className="flex justify-between items-center mt-4">
+                  <span className="text-lg font-bold text-green-600">${product.price}</span>
+                  {product.countInStock > 0 ? (
+                    <span className="text-sm font-medium text-green-500">In Stock</span>
+                  ) : (
+                    <span className="text-sm font-medium text-red-500">Out of Stock</span>
+                  )}
+                </div>
+  
+                {/* Star Rating Display */}
+                <div className="flex items-center justify-center space-x-1 mt-3">
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <span
+                      key={index}
+                      className={`text-xl ${index < Math.round(averageRating) ? "text-yellow-400" : "text-gray-300"}`}
+                    >
+                      {index < Math.round(averageRating) ? "★" : "☆"}
+                    </span>
+                  ))}
+                  <span className="text-gray-700 text-sm ml-1">({averageRating})</span>
                 </div>
               </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
+            </div>
+          );
+        })}
+      </div>
+    )}
+  </div>
+  
   );
 };
 

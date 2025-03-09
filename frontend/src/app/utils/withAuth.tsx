@@ -16,6 +16,7 @@ const withAuth = <P extends WithAuthProps>(
         const [user, setUser] = useState<WithAuthProps | null>(null);
         const [networkError, setNetworkError] = useState(false);
         const API_URL = process.env.NEXT_PUBLIC_API_URL;
+        
 
         const authRoutes = useMemo( ()=>["/login", "/register","/log-out"],[])
         const trackPath = usePathname();
@@ -23,6 +24,7 @@ const withAuth = <P extends WithAuthProps>(
         const secureRoute = ["/create-product", "/my-products"];
         const roleAuth = secureRoute.includes(trackPath);
         const searchParams = useSearchParams();
+        const updatedSearchParams=new URLSearchParams(searchParams.toString())
         const quantity = searchParams.get("q");
         const product = searchParams.get("product");
         const productPrice = searchParams.get("p");
@@ -58,16 +60,11 @@ const withAuth = <P extends WithAuthProps>(
                       if (error.code === "ERR_NETWORK") {
                           setNetworkError(true);
                         
-                          return; 
+                          return null; 
                       }
-                      console.log('middlewareError',error?.response)
-                      const redirectPath = isAuthRoutes ? "/" : trackPath;
                       if (error?.response?.status===401 && !isAuthRoutes) {
-                        router.push(
-                            `/login?track=${
-                                redirectPath || "/"
-                            }&q=${isQuantity}&product=${isProduct}&p=${isProductPrice}`
-                        );
+                        
+                        router.push(`/login?track=${trackPath}&${updatedSearchParams}`)
                       }
                   }
 

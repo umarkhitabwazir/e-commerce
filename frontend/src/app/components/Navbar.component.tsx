@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import OrdersIconComponent from "./OrdersIcon.component";
 import adminAuth from "../utils/adminAuth";

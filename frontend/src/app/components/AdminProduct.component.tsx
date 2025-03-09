@@ -49,14 +49,14 @@ const AdminProductComponent = () => {
   const handleDelete = async (productId: string) => {
     if (confirm("Are you sure you want to delete this product?")) {
       try {
-        await axios.delete(`${API_URL}/admin-products/${productId}`, {
+        await axios.delete(`${API_URL}/product/delete/${productId}`, {
           withCredentials: true,
         });
         setProducts(products.filter((product: { _id: string }) => product._id !== productId));
         alert("Product deleted successfully.");
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
-
+console.log(error)
           alert("Failed to delete product. Please try again.");
         }
       }

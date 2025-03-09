@@ -5,15 +5,15 @@ import { usePathname } from "next/navigation";
 import adminAuth from "../utils/adminAuth";
 import { UserInterface } from "../utils/user.interface";
 
-const AdminDashboardComponent = ({ user }: { user: UserInterface }) => {
+const AdminDashboardComponent = ({ user }: { user: UserInterface | null }) => {
   const pathName = usePathname()
-  if (!user) {
-    return;
-  }
+  
   const role = ["admin", "superadmin"]
   const route = ["/login", "/log-out", "/verify-email", "/sign-up"]
   const [showDasboard, setShowDasboard] = useState(false)
   const auth = route.includes(pathName)
+  
+  if (!user)  return null;
 
   const roleAuth = role.includes(user.role)
   return (
