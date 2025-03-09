@@ -41,7 +41,7 @@ const Navbar = ({ user }: { user: UserInterface }) => {
         if (!searchResult) {
             setIsProductSearched(true)
         }
-    }, [searchInput])
+    }, [searchInput, setIsProductSearched])
 
     const search = async (value: string) => {
 
@@ -132,6 +132,7 @@ const Navbar = ({ user }: { user: UserInterface }) => {
             <nav
                 className={`${isAuthRoute ? "hidden" : isFixed ? "fixed" : "sticky"} bg-gray-800 text-white transition-all duration-1000 top-0 w-full z-50 shadow-md`}
             >
+
                 <div className="container mx-auto  lg:flex items-center justify-between  p-4">
                     {/* Logo */}
 
@@ -142,22 +143,7 @@ const Navbar = ({ user }: { user: UserInterface }) => {
                         Shop
                     </div>
 
-                    {/* Categories */}
-                    <div
-                        onMouseEnter={() => setCategorisOpen(true)}
-                        onMouseLeave={() => setCategorisOpen(false)}
-                        className="relative " >
 
-                        <div className="flex hover:cursor-pointer justify-center  items-center text-sky">
-                            <h1>Categories</h1>
-                            <Image className={categorisOpen?'':'hidden'} src="/arrow-up.png" width={20} height={20} alt="arrow-up" />
-                            <Image className={categorisOpen?'hidden':''} src="/arrow-down.png"  width={20} height={20} alt="arrow-down" />
-                        </div>
-                        <div className="absolute rounded-lg shadow-md ">
-
-                            {categorisOpen && <CategoryComponent />}
-                        </div>
-                    </div>
 
 
                     {/* Hamburger Menu for Mobile */}
@@ -212,6 +198,22 @@ const Navbar = ({ user }: { user: UserInterface }) => {
                             </select>
                         </div>
 
+                        {/* Categories */}
+                        <div
+                            onMouseEnter={() => setCategorisOpen(true)}
+                            onMouseLeave={() => setCategorisOpen(false)}
+                            className="relative" >
+
+                            <div className="flex hover:cursor-pointer  text-sky">
+                                Categories
+                                <Image className={categorisOpen ? '' : 'hidden'} src="/arrow-up.png" width={20} height={20} alt="arrow-up" />
+                                <Image className={categorisOpen ? 'hidden' : ''} src="/arrow-down.png" width={20} height={20} alt="arrow-down" />
+                            </div>
+                            <div className="absolute z-50 rounded-lg shadow-md ">
+
+                                {categorisOpen && <CategoryComponent />}
+                            </div>
+                        </div>
                         {/* User Actions Dropdown */}
                         <div className="w-48">
                             <select

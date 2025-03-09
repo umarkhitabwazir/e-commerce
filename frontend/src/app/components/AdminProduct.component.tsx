@@ -64,7 +64,7 @@ const AdminProductComponent = () => {
   };
 
   return (
-    <div className="absolute w-4/5 max-sm:w-1/2 max-sm:p-10 max-md:w-3/5  right-5 p-6 bg-gray-100">
+    <div className="absolute w-4/5 right-5 p-6 bg-gray-100">
       <div className="flex justify-center flex-wrap items-center">
         <h1 className="font-bold max-sm:font-medium text-blue-600 mb-6">
           Admin Products Dashboard
@@ -76,16 +76,16 @@ const AdminProductComponent = () => {
           No products found. Add new products to see them here.
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="flex flex-wrap gap-6">
           {products.map((product: Product) => (
             <div
               key={product._id}
-              className="border rounded-lg p-5 shadow-lg bg-white hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1"
+              className="border  rounded-lg p-5 shadow-lg bg-white hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1"
             >
               <Image
                 src={product.image}
                 alt={product.title}
-                className="w-full h-48 object-cover mb-4 rounded-lg"
+                className="w-50 h-50 object-cover mb-4 rounded-lg"
                 width={100}
                 height={100}
               />

@@ -1,5 +1,6 @@
 'use client'
 import axios from 'axios';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 type Category = {
     _id: string,
@@ -9,6 +10,11 @@ const CategoryComponent = () => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
     const [category, setCategory] = useState<Category[]>([])
     const [loading, setLoading] = useState(true)
+    const searchParams = useSearchParams()
+    const updateSearchParams = new URLSearchParams(searchParams.toString());
+
+    const router = useRouter()
+    
     useEffect(() => {
         const fetchCategory = async () => {
             try {
@@ -44,7 +50,11 @@ const CategoryComponent = () => {
                                 <div
                                     key={category._id}>
 
-                                    <h3 className='cursor-pointer hover:text-gray-400'
+                                    <h3 onClick={() => {
+                                        updateSearchParams.set('category', category.categoryName)
+                                        router.push(`?${updateSearchParams.toString()}`)
+                                    }
+                                    } className='cursor-pointer hover:text-gray-400'
                                     >{category.categoryName}</h3>
                                 </div>
                             ))}

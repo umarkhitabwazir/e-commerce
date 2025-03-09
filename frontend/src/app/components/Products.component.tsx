@@ -21,6 +21,7 @@ const Products = () => {
   const routePath = usePathname();
   const searchParams = useSearchParams();
   const searchedProducts = searchParams.get("search")
+  const categoryName = searchParams.get("category")
 
   const value = searchParams.get("sort");
 
@@ -32,6 +33,8 @@ const Products = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+
   useEffect(() => {
     if (value) {
       setSort(value);
@@ -94,6 +97,22 @@ const Products = () => {
     fetchAllReviews();
   }, [API_URL, setReviews]);
 
+  // fetch category base products 
+  useEffect(() => {
+    const categoryBaseProducts = async () => {
+      try {
+        const res = await axios.post(`${API_URL}/find-Category-Products?category=${categoryName}`)
+        setProducts(res.data.data)
+
+      } catch (error: unknown) {
+        return
+      }
+    }
+    if (categoryName) {
+      categoryBaseProducts()
+    }
+  }, [API_URL, categoryName])
+
   // Calculate average rating for each product
   const getAverageRating = (productId: string) => {
     const productReviews = reviews.filter(review => review.product === productId);
@@ -104,7 +123,7 @@ const Products = () => {
   };
 
 
- 
+
 
   return (
     <div className="bg-bgGray min-h-screen p-10">

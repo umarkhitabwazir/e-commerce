@@ -34,17 +34,21 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        
+
         <Suspense fallback={<Loading />}>
-        <div>
-          <div className="">
+          <div className="relative">
+            <div >
 
-            <Navbar />
+              <Navbar />
+            </div>
+
+
+            <div className="absolute top-10">
+
+              <AdminDashboardComponent />
+            </div>
+
           </div>
-
-          <AdminDashboardComponent />
-
-        </div>
 
           {children}
         </Suspense>
