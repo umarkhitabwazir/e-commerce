@@ -214,7 +214,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
         const options = {
             httpOnly: true,
             secure: isProduction,
-            sameSite: isProduction ? 'Strict' : 'Lax',
+            sameSite: isProduction ? 'None' : 'Lax',
             // domain: process.env.FRONTEND_DOMAIN
 
         }
@@ -303,13 +303,13 @@ const logoutUser = asyncHandler(async (req, res) => {
     res.clearCookie("refreshToken", {
         httpOnly: true,
         secure: isProduction,
-        sameSite: isProduction ? 'Strict' : 'Lax',
+        sameSite: isProduction ? 'None' : 'Lax',
         // domain: process.env.FRONTEND_DOMAIN
     });
     res.clearCookie("accessToken", {
         httpOnly: true,
         secure: isProduction,
-        sameSite:  isProduction ? 'Strict' : 'Lax',
+        sameSite:  isProduction ? 'None' : 'Lax',
         // domain: process.env.FRONTEND_DOMAIN
     });
     res.status(200).json(new ApiResponse(200, null, "User logged out successfully"))
