@@ -74,7 +74,7 @@ const withAuth = <P extends WithAuthProps>(
             };
 
             checkAuth();
-        }, [API_URL, router, trackPath,authRoutes, isAuthRoutes, isProduct, isProductPrice, isQuantity, roleAuth]);
+        }, [API_URL, router, trackPath,authRoutes, isAuthRoutes, isProduct, isProductPrice, isQuantity,updatedSearchParams, roleAuth]);
 
         
         if (networkError) {

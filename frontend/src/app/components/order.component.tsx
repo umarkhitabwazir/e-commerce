@@ -20,7 +20,6 @@ const OrderPage = () => {
   const productId = searchParams.get("product");
   const productPrice = searchParams.get("p");
   const stock: number = parseInt(searchParams.get("stock") || "1");
-const isSticky=useStickyScroll()
   const router = useRouter();
 
   useEffect(() => {
