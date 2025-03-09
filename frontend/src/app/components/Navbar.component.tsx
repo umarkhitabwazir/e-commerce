@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import OrdersIconComponent from "./OrdersIcon.component";
 import adminAuth from "../utils/adminAuth";
@@ -10,6 +10,7 @@ import { ProductTypes } from "../utils/productsTypes";
 import SearchComponent from "./search.component";
 import CategoryComponent from "./Category.component";
 import Image from "next/image";
+import useStickyScroll from "./UseStickyScroll.component";
 
 const Navbar = ({ user }: { user: UserInterface }) => {
     const [sortOption, setSortOption] = useState("");
@@ -22,7 +23,7 @@ const Navbar = ({ user }: { user: UserInterface }) => {
     const searchResultParam = searchParams.get("search");
     const [searchInput, setSearchInput] = useState("");
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
+    
     const [isLogedin, setIsLogedin] = useState<UserInterface | null>(null)
     const [categorisOpen, setCategorisOpen] = useState(false)
     const router = useRouter();
@@ -86,51 +87,32 @@ const Navbar = ({ user }: { user: UserInterface }) => {
 
     const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSortOption(e.target.value)
-        updatedSearchParams.set("sort", e.target.value);
-        router.push(`${LOCAL_HOST}/?${updatedSearchParams.toString()}`);
+       
+        router.push(`/?sort=${e.target.value}`);
     };
 
     const handleSitting = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        router.push(`${LOCAL_HOST}/${e.target.value}`);
+        router.push(`/${e.target.value}`);
     };
 
     const handleMenuToggle = () => {
         setIsMenuOpen((prev) => !prev);
     };
-
-    const [isFixed, setIsFixed] = useState(false);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            const scrollTop = window.scrollY;
-            if (scrollTop > 50) {
-                setIsFixed(true);
-            } else {
-                setIsFixed(false);
-            }
-        };
-
-        window.addEventListener("scroll", handleScroll);
-
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
-    }, []);
+    
+    const isSticky = useStickyScroll();
 
 
     useEffect(() => {
         if (user) {
-
             setIsLogedin(user)
         }
-
     }, [user, isLogedin])
 
 
     return (
         <>
             <nav
-                className={`${isAuthRoute ? "hidden" : isFixed ? "fixed" : "sticky"} bg-gray-800 text-white transition-all duration-1000 top-0 w-full z-50 shadow-md`}
+                className={`${isAuthRoute ? "hidden" : isSticky ? "fixed top-2 bg-opacity-60 shadow-[0_-4px_10px_rgba(0,0,0,0.4)] " : "relative top-0"}}   bg-gray-800 text-white transition-all duration-500 top-0 w-full z-50 `}
             >
 
                 <div className="container mx-auto  lg:flex items-center justify-between  p-4">

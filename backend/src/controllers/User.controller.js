@@ -201,7 +201,7 @@ const updateUser = asyncHandler(async (req, res) => {
     res.status(201).json(new ApiResponse(201, user, "User updated successfully"))
 })
 
-
+const isProduction=process.env.NODE_ENV === 'production'
 
 const loginUser = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body
@@ -213,8 +213,8 @@ const loginUser = asyncHandler(async (req, res, next) => {
        
         const options = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: "None",
+            secure: isProduction,
+            sameSite:isProduction,
             // domain: process.env.FRONTEND_DOMAIN
 
         }
@@ -302,13 +302,13 @@ const logoutUser = asyncHandler(async (req, res) => {
     await user.save({ validateBeforeSave: false })
     res.clearCookie("refreshToken", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: "None",
+        secure: isProduction,
+        sameSite:isProduction,
         // domain: process.env.FRONTEND_DOMAIN
     });
     res.clearCookie("accessToken", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: isProduction,
         sameSite: "None",
         // domain: process.env.FRONTEND_DOMAIN
     });

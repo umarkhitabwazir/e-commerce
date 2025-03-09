@@ -17,8 +17,7 @@ const Products = () => {
   const [reviews, setReviews] = useState<{ product: string; rating: number }[]>([]);
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
-  const routePath = usePathname();
+   const routePath = usePathname();
   const searchParams = useSearchParams();
   const searchedProducts = searchParams.get("search")
   const categoryName = searchParams.get("category")
@@ -149,7 +148,7 @@ const Products = () => {
             <div
               key={product._id}
               onClick={() =>
-                router.push(`${LOCAL_HOST}/order?product=${product._id}&p=${product.price}&stock=${product.countInStock}&rating=${averageRating}`)
+                router.push(`/order?product=${product._id}&p=${product.price}&stock=${product.countInStock}&rating=${averageRating}`)
               }
               className="bg-white shadow-lg rounded-xl cursor-pointer overflow-hidden transition-transform transform hover:scale-105 hover:shadow-xl duration-300"
             >

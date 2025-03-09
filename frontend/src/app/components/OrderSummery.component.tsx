@@ -29,7 +29,7 @@ const ShippingComponent = () => {
     totalPrice: 0
   }
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
+  
   const [address, setAddress] = useState(Address)
   const [savedAddress, setSavedAddress] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -131,13 +131,15 @@ const ShippingComponent = () => {
 
 
   const handleProceedPay = async () => {
+    setLoading(true)
     if (!savedAddress) {
       alert("Please add your Delivery  address")
       setFormToggle(true)
       return
 
     }
-    router.push(`${LOCAL_HOST}/payment-cashier?product=${productId}&q=${quantity}&p=${productPrice}`)
+    setLoading(false)
+    router.push(`/payment-cashier?product=${productId}&q=${quantity}&p=${productPrice}`)
   }
   return (
     <>
@@ -383,7 +385,7 @@ const ShippingComponent = () => {
               </h2>
             </div>
             <button onClick={handleProceedPay} className="mt-6 w-full bg-blue-600 text-white font-medium py-2 rounded-md hover:bg-blue-700 transition-all">
-              Proceed to Pay
+            {loading?'loading...':'Proceed to Pay'}  
             </button>
           </div>
           <AddressComponent savedAddress={savedAddress} address={address} />
