@@ -5,7 +5,6 @@ const useStickyScroll = () => {
 
   const handleScroll = useCallback(() => {
     const scrollTop = window.scrollY;
-    console.log('scrollTop',scrollTop > 50)
     setIsFixed(scrollTop > 50);
   }, []);
 

@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import Navbar from "./components/Navbar.component";
-import AdminDashboardComponent from "./components/AdminDashboard.component";
+
 import { Suspense } from "react";
 import Loading from "./components/Loading.component";
 
@@ -43,10 +43,7 @@ export default function RootLayout({
             </div>
 
 
-            <div className="absolute top-10">
-
-              <AdminDashboardComponent />
-            </div>
+          
 
           </div>
 

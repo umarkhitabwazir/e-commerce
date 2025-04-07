@@ -6,7 +6,7 @@ import withAuth from "../utils/withAuth";
 import { UserInterface } from "../utils/user.interface";
 
 const ProductReviewComponent = ({ user, productId }: { user: UserInterface, productId: string | null }) => {
-console.log(Object.keys(user).length === 0)
+
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
    
     const [rating, setRating] = useState(1);

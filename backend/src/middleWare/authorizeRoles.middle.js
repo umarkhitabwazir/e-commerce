@@ -14,7 +14,7 @@ const  authorizeRoles = (...roles) => {
           }
           next();
       } catch (error) {
-        throw new ApiError(401,"unauthurized")
+        throw new ApiError(401,"Unauthorized")
       }
     };
 };

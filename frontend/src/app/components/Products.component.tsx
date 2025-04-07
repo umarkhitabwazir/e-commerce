@@ -5,7 +5,7 @@ import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { ProductTypes } from '../utils/productsTypes';
+import { ProductInterface } from '../utils/productsInterface';
 import Loading from './Loading.component';
 
 const Products = () => {
@@ -140,7 +140,7 @@ const Products = () => {
       <p className="text-red-500 text-center text-lg">{error}</p>
     ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product: ProductTypes) => {
+        {products.map((product: ProductInterface) => {
           const productId = product._id;
           const averageRating = parseFloat(getAverageRating(productId));
   

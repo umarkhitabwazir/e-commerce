@@ -1,4 +1,4 @@
-interface ProductTypes {
+interface ProductInterface {
     _id: string;
   title: string;
   price: number;
@@ -10,4 +10,4 @@ interface ProductTypes {
   brand: string;
   user: string;
 }
-export type { ProductTypes }
+export type { ProductInterface }

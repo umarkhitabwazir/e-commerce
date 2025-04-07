@@ -1,6 +1,6 @@
 'use client'
 import React, { useCallback, useEffect, useState } from 'react'
-import { ProductTypes } from '../utils/productsTypes'
+import {ProductInterface } from '../utils/productsInterface'
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const SearchComponent = ({
@@ -8,7 +8,7 @@ const SearchComponent = ({
     isProductSearched,
     setIsProductSearched
 }: { 
-    product: ProductTypes[] | null, 
+    product: ProductInterface[] | null, 
     isProductSearched: boolean,
     setIsProductSearched: React.Dispatch<React.SetStateAction<boolean>> 
 }) => {
@@ -35,7 +35,7 @@ const SearchComponent = ({
             
             {product?.length === 0 && <h1>No product found</h1>}
 
-            {product?.map((product: ProductTypes) => (
+            {product?.map((product: ProductInterface) => (
                 <div key={product._id} className='w-1/2 h-1/2 flex flex-col justify-center items-center'>
                     <h1 
                         onClick={() => {

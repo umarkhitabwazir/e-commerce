@@ -22,20 +22,14 @@ const LoginComponent = () => {
     });
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
     const [error, setError] = useState<string | undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(false); // Track loading state
     const router = useRouter()
     const searchParams = useSearchParams()
+    const updatedSearchParams=new URLSearchParams(searchParams.toString())
     const trackedPath = searchParams.get("track")
-    const quantity = searchParams.get('q')
-    const product = searchParams.get('product')
-    const productPrice = searchParams.get('p')
-    const isQuantity = quantity ? quantity : ""
-    const isProduct = product ? product : ""
     const [passwordVisible, setPasswordVisible] = useState(false)
-    const isProductPrice = productPrice ? productPrice : ""
-    const [networkError, setNetworkError] = useState(false)
+      const [networkError, setNetworkError] = useState(false)
     // Form submit handler
     const onSubmit = async (data: LoginFormData) => {
 
@@ -45,6 +39,7 @@ const LoginComponent = () => {
 
             const response = await axios.post(`${API_URL}/user/Login`, data, { withCredentials: true });
             const resdata = response?.data.data
+            console.log(response)
             if (resdata==="notVerified") {
 
                 const maskEmail = (email: string) => {
@@ -56,7 +51,7 @@ const LoginComponent = () => {
                     return `${firstTwo}****${lastTwo}@${domain}`
                 };
                 const maskedEmail = maskEmail(data.email)
-                router.push(`${LOCAL_HOST}/verify-email?email=${maskedEmail}`)
+                router.push(`/verify-email?email=${maskedEmail}`)
             }
 
 
@@ -66,11 +61,14 @@ const LoginComponent = () => {
             setLoading(false); // Stop loading
             if (response.data.data.isVerified) {
 
-                router.push(`${trackedPath || "/"}?q=${isQuantity}&product=${isProduct}&p=${isProductPrice} `);
-
+                router.push(`${trackedPath || "/"}?${updatedSearchParams} `);
+                setTimeout(() => {
+                   window.location.reload()
+                }, 500)
             }
 
         } catch (err: unknown) {
+            console.log(err)
             setLoading(false); // Stop loading
             if (err instanceof AxiosError) {
                 if (err.status === 500) {

@@ -7,7 +7,6 @@ import withAuth from '../utils/withAuth'
 const LogOutComponent = () => {
     const pathName = usePathname()
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
     const [loading, setLoading] = useState(false)
     const router = useRouter()
     useEffect(() => {
@@ -21,7 +20,7 @@ const LogOutComponent = () => {
                     
 
                     setLoading(false)
-                    router.push(`${LOCAL_HOST}/`)
+                    router.push(`/login`)
 
                 } catch (error) {
                     console.log('logOutError', error)
@@ -29,7 +28,7 @@ const LogOutComponent = () => {
             }
             logOut()
         }
-    }, [API_URL, pathName, LOCAL_HOST, router])
+    }, [API_URL, pathName, router])
 
     return (
         loading && <div className="fixed top-0 left-0 w-full h-full bg-white bg-opacity-80 flex flex-col justify-center items-center z-50">

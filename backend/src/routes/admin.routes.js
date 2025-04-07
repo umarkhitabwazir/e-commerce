@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleWare/auth.Middle.js";
 import { authorizeRoles } from "../middleWare/authorizeRoles.middle.js";
-import { adminProducts } from "../controllers/adminDashboard.controller.js";
+import { adminProducts,getOrdersByAdminProducts, orderConfirmed, orderDelivered, orderPickedByCounter, orderReadyForPickUp, orderShipping, paymentConfirmed } from "../controllers/adminDashboard.controller.js";
 import { upload } from "../middleWare/multer.middle.js";
 import { createProductsWithCategory, deleteProductWithCategory, updateProductWithCategory } from "../controllers/Product.controller.js";
 
@@ -29,6 +29,15 @@ adminRouter.route("/product/delete/:productid").delete(
     authorizeRoles("superadmin", "admin"),
     deleteProductWithCategory
   ); // Delete a product (Admin/Superadmin only)
-  
-  
+  adminRouter.route('/admin/get-ordered-products').get(
+    authMiddleware,
+    authorizeRoles('admin'),
+    getOrdersByAdminProducts
+  )
+  adminRouter.route("/order-confirmation/:orderId").patch(authMiddleware, authorizeRoles("admin"),orderConfirmed )
+  adminRouter.route("/payment-confirmation/:orderId").patch(authMiddleware, authorizeRoles("admin"),paymentConfirmed )
+  adminRouter.route("/order-shipping/:orderId").patch(authMiddleware, authorizeRoles("admin"),orderShipping)
+  adminRouter.route("/orderReadyForPickUp/:orderId").patch(authMiddleware, authorizeRoles("admin"),orderReadyForPickUp)
+  adminRouter.route("/order-delivered/:orderId").patch(authMiddleware, authorizeRoles("admin"),orderDelivered)
+  adminRouter.route("/orderPickedByCounte/:orderId").patch(authMiddleware, authorizeRoles("admin"),orderPickedByCounter)
 export { adminRouter }

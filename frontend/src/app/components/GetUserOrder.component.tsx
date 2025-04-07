@@ -7,32 +7,16 @@ import PendingOrderComponent from "./PendingOrder.component";
 import DeleveredOrderComponent from "./DeleveredOrder.component";
 import ProductReviewComponent from "./ProductReviewForm.component";
 import { useSearchParams } from "next/navigation";
+import { ProductInterface } from "../utils/productsInterface";
+import { OrderInterface } from "../utils/orderInterface";
 
-interface Order {
-  _id: string;
-  products: { productId: string; quantity: number }[];
-  isDelivered: boolean;
-  isPaid: boolean;
-  totalPrice: number;
-  taxPrice: number;
-  shippingPrice: number;
-  cancelled: boolean;
-  createdAt: Date;
-}
 
-interface Product {
-  _id: string;
-  title: string;
-  price: number;
-  description: string;
-  image: string;
-}
 
 const GetUserOrderComponent = () => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const [pendingOders, setPendingOrders] = useState<Order[]>([]);
-  const [deleveredOders, setDeleveredOders] = useState<Order[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [pendingOders, setPendingOrders] = useState<OrderInterface[]>([]);
+  const [deleveredOders, setDeleveredOders] = useState<OrderInterface[]>([]);
+  const [products, setProducts] = useState<ProductInterface[]>([]);
   const [remainingMinutes, setRemainingMinutes] = useState<{ [key: string]: number }>({});
   const searchParams=useSearchParams();
   const productId = searchParams.get("product");
@@ -43,10 +27,10 @@ const GetUserOrderComponent = () => {
         const res = await axios.get(`${API_URL}/user-order`, {
           withCredentials: true,
         });
-        const fetchedPendingOrders: Order[] = res.data.data.filter((order: Order) => !order.isDelivered);
-        const fetchedDeleveredOrders: Order[] = res.data.data.filter((order: Order) => order.isDelivered);
+        const fetchedPendingOrders: OrderInterface[] = res.data.data.filter((order: OrderInterface) => !order.isDelivered);
+        const fetchedDeleveredOrders: OrderInterface[] = res.data.data.filter((order: OrderInterface) => order.isDelivered);
       
-      const fetchedPendingOrdersAcceptedcancelled = fetchedPendingOrders.filter((order: Order) => !order.cancelled);
+      const fetchedPendingOrdersAcceptedcancelled = fetchedPendingOrders.filter((order: OrderInterface) => !order.cancelled);
       setPendingOrders(fetchedPendingOrdersAcceptedcancelled);
         setDeleveredOders(fetchedDeleveredOrders);
 

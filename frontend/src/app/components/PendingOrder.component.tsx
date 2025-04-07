@@ -1,39 +1,19 @@
 "use client";
 import axios from 'axios';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, {  useState } from 'react';
 import useSWR from 'swr';
-
+import TrackOrderComponent from './TrackOrder.component';
+import { OrderInterface } from '../utils/orderInterface';
+import { ProductInterface } from '../utils/productsInterface';
 const fetcher = (url: string) => axios.get(url, { withCredentials: true }).then(res => res.data);
+console.log("fetcher", fetcher);
 
-interface Product {
-  _id: string;
-  title: string;
-  price: number;
-  image: string;
-}
-
-interface OrderProduct {
-  productId: string;
-  quantity: number;
-}
-
-interface Order {
-  _id: string;
-  products: OrderProduct[];
-  isDelivered: boolean;
-  isPaid: boolean;
-  totalPrice: number;
-  taxPrice: number;
-  shippingPrice: number;
-  cancelled: boolean;
-  createdAt: Date;
-}
 
 interface PendingOrderComponentProps {
-  pendingOders: Order[];
+  pendingOders: OrderInterface[];
   remainingMinutes: { [key: string]: number };
-  products: Product[];
+  products: ProductInterface[];
 }
 
 const PendingOrderComponent: React.FC<PendingOrderComponentProps> = ({
@@ -44,9 +24,10 @@ const PendingOrderComponent: React.FC<PendingOrderComponentProps> = ({
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [loading, setLoading] = useState<boolean>(false);
   const [isCancelling, setIsCancelling] = useState<boolean>(false);
-
+  const [openTrackOrder, setOpenTrackOrder] = useState<boolean>(false);
+  const [product, setProduct] = useState<ProductInterface | null>(null);
   const { data: orders, error, mutate } = useSWR(`${API_URL}/user-order`, fetcher);
-  console.log('swrorders', orders);
+ 
 
   const isCancellingOrder = () => {
     setIsCancelling(true);
@@ -57,10 +38,10 @@ const PendingOrderComponent: React.FC<PendingOrderComponentProps> = ({
     setLoading(true);
     if (!orderId) return;
     if (remainingMinutes[orderId] <= 0) return;
-    console.log("orderId", orderId);
+    
     try {
       const cancelOrder = await axios.post(`${API_URL}/cancel-order/${orderId}`, {}, { withCredentials: true });
-      console.log("cancelOrder", cancelOrder);
+ 
       if (cancelOrder.status === 200) {
         mutate();
       }
@@ -76,18 +57,21 @@ const PendingOrderComponent: React.FC<PendingOrderComponentProps> = ({
   if (!orders) return <div>Loading...</div>;
 
   return (
-    <>
+    <div>
       {pendingOders.map((order) => {
         const orderDate = new Date(order.createdAt);
         const remainingTime = remainingMinutes[order._id];
         const delivered = order.isDelivered;
+        
         return (
           !order.cancelled && (
             <div
               key={order._id}
               className="mb-8 p-6 border rounded-xl bg-white shadow-lg hover:shadow-2xl transition-shadow duration-300"
             >
+
               <div className="flex justify-between items-center mb-4">
+
                 <h2 className="text-xl font-semibold text-gray-700">
                   Order #{order._id.slice(-6).toUpperCase()}
                 </h2>
@@ -127,42 +111,65 @@ const PendingOrderComponent: React.FC<PendingOrderComponentProps> = ({
                   const product = products.find(
                     (p) => p._id === orderProduct.productId
                   );
+                  if (!product) return null;
+
+
 
                   return (
                     product && (
-                      <div
-                        key={orderProduct.productId}
-                        className="flex items-center gap-4 p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition duration-300"
-                      >
-                        <Image
-                          src={product.image}
-                          alt={product.title}
-                          className=" rounded-lg object-cover"
-                          width={300}
-                          height={300}
-                        />
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-800">
-                            {product.title}
-                          </h3>
-                          <p className="text-sm text-gray-500">
-                            Price: ${product.price.toFixed(2)}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Quantity: {orderProduct.quantity}
-                          </p>
+                      <div className='md:flex  justify-between items-end' key={orderProduct.productId}>
+                        <div
+                          key={orderProduct.productId}
+                          className="flex items-center gap-4 p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition duration-300"
+                        >
+                          <Image
+                            src={product.image}
+                            alt={product.title}
+                            className=" rounded-lg object-cover"
+                            width={300}
+                            height={300}
+                          />
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-800">
+                              {product.title}
+                            </h3>
+                            <p className="text-sm text-gray-500">
+                              Price: ${product.price.toFixed(2)}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              Quantity: {orderProduct.quantity}
+                            </p>
+                          </div>
+
                         </div>
+                        {!delivered && (
+                          <div >
+
+                            <button onClick={() => { setOpenTrackOrder((prv) => !prv), setProduct(product) }} className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 transition">
+                              Track Order
+                            </button>
+                          </div>
+                        )}
+
                       </div>
                     )
                   );
+
                 })}
               </div>
-              <div className="flex justify-end gap-4 mt-4">
-                {!delivered && (
-                  <button className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 transition">
-                    Track Order
-                  </button>
-                )}
+              <div className="flex  justify-end gap-4 mt-4">
+
+
+
+                {openTrackOrder &&
+
+
+  <TrackOrderComponent product={product || null} order={order} setOpenTrackOrder={setOpenTrackOrder} />
+
+
+                }
+
+
                 {remainingTime > 0 && (
                   <div className="flex flex-col items-center ">
                     <span className="text-sm text-red-500">
@@ -174,7 +181,7 @@ const PendingOrderComponent: React.FC<PendingOrderComponentProps> = ({
                     <div className={`${isCancelling ? "" : "hidden"} fixed  top-0 left-0 w-full h-full bg-white bg-opacity-80 flex  flex-col gap-3 justify-center items-center z-50`}>
                       <div onClick={() => { setIsCancelling(false) }} className='absolute top-0 right-0 p-4'>
                         <Image
-                         className='cursor-pointer w-10 h-10 hover:w-9 hover:h-9 transition-all duration-100 rounded-full'
+                          className='cursor-pointer w-10 h-10 hover:w-9 hover:h-9 transition-all duration-100 rounded-full'
                           width={10}
                           height={10}
                           src="/cross.jpg" alt="cross-img" />
@@ -200,7 +207,7 @@ const PendingOrderComponent: React.FC<PendingOrderComponentProps> = ({
           )
         );
       })}
-    </>
+    </div>
   );
 };
 

@@ -1,3 +1,4 @@
+import e from "express"
 import mongoose, { Schema } from "mongoose"
 
 const orderSchema = new Schema({
@@ -48,6 +49,20 @@ const orderSchema = new Schema({
         required: [true, "totalPrice is required"],
         trim: true,
     },
+   
+    pickedByCounter: {
+        type: Boolean,       
+        default: false,
+    },
+    orderShipped: {
+        type: Boolean,       
+        default: false,
+    },
+    readyForPickup: {
+        type: Boolean,       
+        default: false,
+    },
+
     isPaid: {
         type: Boolean,
         required: [true, "isPaid is required"],
@@ -58,6 +73,10 @@ const orderSchema = new Schema({
         type: Date,
     },
     cancelled: {
+        type: Boolean,
+        default: false,
+    },
+    confirmed: {
         type: Boolean,
         default: false,
     },

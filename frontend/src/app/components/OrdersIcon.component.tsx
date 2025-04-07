@@ -39,7 +39,7 @@ const fetchOrderAccepedCancel = orders.filter((order: { cancelled: boolean }) =>
 
     return (
         <div>
-            <div title='Orders' onClick={() => { router.push(`${LOCAL_HOST}/your-orders`) }} className="relative cursor-pointer">
+            <div title='Orders' onClick={() => { router.push(`/your-orders`) }} className="relative cursor-pointer">
                 <div className={`${isOrderPage ? "hidden" :orderCount===0?"hidden": ""}  bg-gray-600 rounded-full flex justify-center items-center w-6 h-6 absolute left-5 md:right-0 bottom-7 shadow-md`}>
                     <h2 className="text-white text-sm font-bold">{orderCount}</h2>
                 </div>
