@@ -1,12 +1,18 @@
 "use client";
-import React, { useState } from "react";
+import React, {  useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import withAuth from "../utils/withAuth";
 import { UserInterface } from "../utils/user.interface";
 
 const ProductReviewComponent = ({ user, productId }: { user: UserInterface, productId: string | null }) => {
+useEffect(() => {
+if (!user) {
+          return;
+        }
+    
 
+}, [user])
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
    
     const [rating, setRating] = useState(1);

@@ -7,7 +7,6 @@ import adminAuth from '../utils/adminAuth';
 
 const OrderIconComponent = () => {
     const router = useRouter()
-    const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST;
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
     const [orderCount, setOrderCount] = useState(0)
     const pathName = usePathname()

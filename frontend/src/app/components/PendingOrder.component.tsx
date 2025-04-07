@@ -1,7 +1,7 @@
 "use client";
 import axios from 'axios';
 import Image from 'next/image';
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
 import useSWR from 'swr';
 import TrackOrderComponent from './TrackOrder.component';
 import { OrderInterface } from '../utils/orderInterface';
@@ -27,7 +27,7 @@ const PendingOrderComponent: React.FC<PendingOrderComponentProps> = ({
   const [openTrackOrder, setOpenTrackOrder] = useState<boolean>(false);
   const [product, setProduct] = useState<ProductInterface | null>(null);
   const { data: orders, error, mutate } = useSWR(`${API_URL}/user-order`, fetcher);
- 
+
 
   const isCancellingOrder = () => {
     setIsCancelling(true);
@@ -38,10 +38,10 @@ const PendingOrderComponent: React.FC<PendingOrderComponentProps> = ({
     setLoading(true);
     if (!orderId) return;
     if (remainingMinutes[orderId] <= 0) return;
-    
+
     try {
       const cancelOrder = await axios.post(`${API_URL}/cancel-order/${orderId}`, {}, { withCredentials: true });
- 
+
       if (cancelOrder.status === 200) {
         mutate();
       }
@@ -62,7 +62,7 @@ const PendingOrderComponent: React.FC<PendingOrderComponentProps> = ({
         const orderDate = new Date(order.createdAt);
         const remainingTime = remainingMinutes[order._id];
         const delivered = order.isDelivered;
-        
+
         return (
           !order.cancelled && (
             <div
@@ -145,7 +145,10 @@ const PendingOrderComponent: React.FC<PendingOrderComponentProps> = ({
                         {!delivered && (
                           <div >
 
-                            <button onClick={() => { setOpenTrackOrder((prv) => !prv), setProduct(product) }} className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 transition">
+                            <button onClick={() => {
+                              setOpenTrackOrder((prv) => !prv);
+                              setProduct(product)
+                            }} className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 transition">
                               Track Order
                             </button>
                           </div>
@@ -164,7 +167,7 @@ const PendingOrderComponent: React.FC<PendingOrderComponentProps> = ({
                 {openTrackOrder &&
 
 
-  <TrackOrderComponent product={product || null} order={order} setOpenTrackOrder={setOpenTrackOrder} />
+                  <TrackOrderComponent product={product || null} order={order} setOpenTrackOrder={setOpenTrackOrder} />
 
 
                 }
