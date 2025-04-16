@@ -6,7 +6,7 @@ import {
   forgotPassword,
   resetPassword
 } from "../controllers/User.controller.js";
-import { categoryList } from "../controllers/CategoryList.controller.js";
+
 import { createCart } from "../controllers/Cart.controller.js";
 import { transferMoney } from "../controllers/MoneyTransfer.controller.js";
 import { body, } from "express-validator";

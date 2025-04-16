@@ -1,6 +1,5 @@
 import { Order } from "../models/Order.model.js";
 import { Product } from "../models/Product.model.js";
-import { Review } from "../models/Review.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";

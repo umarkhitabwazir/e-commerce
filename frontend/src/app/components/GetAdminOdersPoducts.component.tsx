@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect } from 'react'
 import adminOrdersInterface from '../utils/AdminOrdersInterface';
 import Image from 'next/image';
+import withAuth from '../utils/withAuth';
 
 const AdminOrdersComponent = () => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -12,29 +13,29 @@ const AdminOrdersComponent = () => {
   const updatedSearchParams = new URLSearchParams(searchParams.toString())
   const router = useRouter()
 
+  const fetchAdminOdersPrpoducts = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/admin/get-ordered-products`, { withCredentials: true })
+      const data = await response.data.data
+      
+      setAdminOrders(data)
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        console.log(error.response?.data)
+        const notLoggedIn = error.response?.data.error === 'Unauthorized'
+        if (notLoggedIn) {
 
-
-  useEffect(() => {
-    const fetchAdminOdersPrpoducts = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/admin/get-ordered-products`, { withCredentials: true })
-        const data = await response.data.data
-        console.log(data)
-        setAdminOrders(data)
-      } catch (error: unknown) {
-        if (error instanceof AxiosError) {
-          console.log(error.response?.data)
-          const notLoggedIn = error.response?.data.error === 'Unauthorized'
-          if (notLoggedIn) {
-
-            router.push(`/login?track=${updatedSearchParams.toString()}`)
-
-          }
+          router.push(`/login?track=${updatedSearchParams.toString()}`)
 
         }
 
       }
+
     }
+  }
+
+  useEffect(() => {
+   
     fetchAdminOdersPrpoducts()
   }, [API_URL])
 
@@ -43,9 +44,8 @@ const AdminOrdersComponent = () => {
     
     try {
       await axios.patch(`${API_URL}/order-confirmation/${orderId}`, {}, { withCredentials: true })
-      setTimeout(() => {
-        window.location.reload()
-      }, 500)
+     
+     await fetchAdminOdersPrpoducts()
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
 
@@ -62,9 +62,8 @@ const handlePaymentConfirmation = async (orderId: string) => {
   try {
    await axios.patch(`${API_URL}/payment-confirmation/${orderId}`, {}, { withCredentials: true })
     
-    setTimeout(() => {
-      window.location.reload()
-    }, 500)
+    await fetchAdminOdersPrpoducts()
+
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
 
@@ -80,10 +79,9 @@ const handleOrderShipping = async (orderId: string) => {
   
   try {
    await axios.patch(`${API_URL}/order-shipping/${orderId}`, {}, { withCredentials: true })
-    
-    setTimeout(() => {
-      window.location.reload()
-    }, 500)
+ 
+    await fetchAdminOdersPrpoducts()
+
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
 
@@ -100,9 +98,8 @@ const handleOrderReadyForPickUp = async (orderId: string) => {
   try {
    await axios.patch(`${API_URL}/orderReadyForPickUp/${orderId}`, {}, { withCredentials: true })
     
-    setTimeout(() => {
-      window.location.reload()
-    }, 500)
+    await fetchAdminOdersPrpoducts()
+
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
 
@@ -119,10 +116,8 @@ const handleOrderDelivered = async (orderId: string) => {
   
   try {
    await axios.patch(`${API_URL}/order-delivered/${orderId}`, {}, { withCredentials: true })
-    
-    setTimeout(() => {
-      window.location.reload()
-    }, 500)
+    await fetchAdminOdersPrpoducts()
+
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
 
@@ -137,10 +132,9 @@ const handlePickByCounter = async (orderId: string) => {
   
   try {
    await axios.patch(`${API_URL}/orderPickedByCounte/${orderId}`, {}, { withCredentials: true })
-    
-    setTimeout(() => {
-      window.location.reload()
-    }, 500)
+   
+    await fetchAdminOdersPrpoducts()
+
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
 
@@ -268,4 +262,4 @@ const handlePickByCounter = async (orderId: string) => {
 
 
 
-export default AdminOrdersComponent
+export default withAuth( AdminOrdersComponent)

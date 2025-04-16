@@ -4,7 +4,149 @@ import { Product } from "../models/Product.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 
+dotenv.config({
+    path: ".env"
+})
+
+const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+        user: process.env.EMAIL_USER, 
+        pass: process.env.EMAIL_PASS,
+    },
+    logger: true,
+    debug: true,
+});
+
+const sendEmail = async (email,image,title,price, subject) => {
+
+
+    const mailOptions = {
+        from: `"UK Bazaar" <${process.env.EMAIL_USER}>`, // Use domain-based email in production
+        to: email,
+        subject: subject,
+        html: `<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: #ffffff;
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #2c3e50;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .content p {
+            font-size: 16px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .order-details {
+            background-color: #f9fafc;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .order-details ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .order-details li {
+            margin: 10px 0;
+            font-size: 15px;
+        }
+        .product-image {
+            margin-top: 10px;
+            text-align: center;
+        }
+        .product-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Order Confirmation</h1>
+        </div>
+        <div class="content">
+            <p>Thank you for your order!</p>
+            <p>Your order has been <strong>${subject}</strong>.</p>
+
+            <div class="order-details">
+                <ul>
+                    <li><strong>Product:</strong> ${title}</li>
+                    <li><strong>Price:</strong> ${price}</li>
+                </ul>
+                <div class="product-image">
+                    <img src="${image}" alt="${title}" />
+                </div>
+            </div>
+
+            <p>We appreciate your business and hope to serve you again soon!</p>
+            <p>Best regards,</p>
+            <p><strong>UK Bazaar Team</strong></p>
+        </div>
+        <div class="footer">
+            &copy; 2025 UK Bazaar. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>
+
+
+        `,
+    };
+    return new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error("Failed to send email:", error);
+                return reject(new ApiError(500, "Failed to send email"));
+            }
+            resolve(info);
+        });
+    });
+};
 
 
 const adminProducts = asyncHandler(async (req, res) => {
@@ -40,10 +182,8 @@ const getOrdersByAdminProducts = asyncHandler(async (req, res) => {
         .populate("userId","username email phone" )
         .populate("products.productId", "title price image")
 
-        console.log ("ordered", JSON.stringify( getAllOrdered, null, 2))
         // Extract product IDs of admin's products
         const adminProductIds = adminProducts.map((product) => product._id);
-        console.log("Admin Product IDs:", adminProductIds);
         // Filter orders containing admin's products
         const filterAdminProducts = getAllOrdered.filter((order) =>
             order.products.map((p) =>  adminProductIds.includes(new mongoose.Types.ObjectId( p.productId?._id)))
@@ -86,6 +226,8 @@ const orderConfirmed = asyncHandler(async (req, res) => {
         throw new ApiError(404, false, "no order founded", false)
 
     }
+    
+
     const orderconfirm = order.confirmed
     order.confirmed = !orderconfirm
     await order.save()
@@ -183,15 +325,23 @@ const orderDelivered = asyncHandler(async (req, res) => {
         throw new ApiError(401, false, "you can't access secure route", false)
 
     }
-    const order = await Order.findById(orderId)
+    const order = await Order.findById(orderId).populate("products.productId", "title price image").populate("userId", "email")
     if (!order) {
         throw new ApiError(404, false, "no order founded", false)
 
     }
-    const orderDelivered = order.isDelivered
+    
+
+        const orderDelivered = order.isDelivered
     order.isDelivered = !orderDelivered
    
     await order.save()
+    const email = order.userId.email
+    const image = order.products[0].productId.image
+    const title = order.products[0].productId.title
+    const price = order.products[0].productId.price
+    const subject = order.isDelivered ? "delivered" : "not delivered"
+    await sendEmail(email,image,title,price, subject)
     res.status(200).json(new ApiResponse(200, null, "order delivered successfully", true))
 })
 const orderPickedByCounter = asyncHandler(async (req, res) => {

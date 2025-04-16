@@ -4,6 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import withAuth from "../utils/withAuth";
 import { UserInterface } from "../utils/user.interface";
+import SingleProductComponent from "./SingleProduct.component";
 
 const ProductReviewComponent = ({ user, productId }: { user: UserInterface, productId: string | null }) => {
 useEffect(() => {
@@ -55,6 +56,7 @@ if (!user) {
             <h2 className="text-lg font-semibold text-gray-400 mb-2">Write a Review</h2>
             {error && <p className="text-red-500">{error}</p>}
             {success && <p className="text-green-500">Review submitted successfully!</p>}
+            <SingleProductComponent productId={productId} />
             <form onSubmit={handleSubmit}>
                 {/* Star Rating Input */}
                 <label className="block text-sm font-medium text-gray-700">Rating</label>

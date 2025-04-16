@@ -33,8 +33,8 @@ const generateAccessAndRefereshTokens = async (userId) => {
 const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-        user: "umairkhitab0308@gmail.com",
-        pass: "segi polt qkkt ctxi",
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
     },
     logger: true,
     debug: true,
@@ -185,11 +185,11 @@ const createUser = asyncHandler(async (req, res) => {
 
 const updateUser = asyncHandler(async (req, res) => {
     const user = req.user
-    const { fullName,username, phone } = req.body
+    const { fullName, username, phone } = req.body
     if (!user.id) {
         throw new ApiError(401, "Unauthorized. Please log in first.")
     }
-    if (fullName,username, phone) {
+    if (fullName, username, phone) {
 
         user.username = username
         user.fullName = fullName
@@ -201,7 +201,7 @@ const updateUser = asyncHandler(async (req, res) => {
     res.status(201).json(new ApiResponse(201, user, "User updated successfully"))
 })
 
-const isProduction=process.env.NODE_ENV === 'production'
+const isProduction = process.env.NODE_ENV === 'production'
 
 const loginUser = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body
@@ -210,7 +210,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
             throw new ApiError(400, "Email and password are required")
         }
         const user = await User.findOne({ email: email })
-       
+
         const options = {
             httpOnly: true,
             secure: isProduction,
@@ -250,7 +250,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
                 )
         }
     } catch (error) {
-        console.log('loginer',error)
+        console.log('loginer', error)
         next(error)
     }
 
@@ -259,23 +259,28 @@ const loginUser = asyncHandler(async (req, res, next) => {
 
 const forgotPassword = asyncHandler(async (req, res) => {
     const { email } = req.body;
-    if (!email) {
-        throw new ApiError(400, "Email is required.");
+    try {
+        if (!email) {
+            throw new ApiError(400, "Email is required.");
+        }
+        const user = await User.findOne({ email: email });
+        if (!user) {
+            throw new ApiError(404, "User not found with this email.");
+        }
+        const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
+        user.passwordResetCode = emailVerificationCode;
+        await user.save();
+    
+        await sendEmail(user.email, emailVerificationCode);
+        res.status(200).json(new ApiResponse(200, null, "Password reset code sent successfully."));
+        
+    } catch (error) {
+        console.error("forgotPassError",error)
     }
-    const user = await User.findOne({ email: email });
-    if (!user) {
-        throw new ApiError(404, "User not found with this email.");
-    }
-    const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
-    user.passwordResetCode = emailVerificationCode; 
-    await user.save();
-
-    await sendEmail(user.email, emailVerificationCode);
-    res.status(200).json(new ApiResponse(200, null, "Password reset code sent successfully."));
 })
 const resetPassword = asyncHandler(async (req, res) => {
     const { email, passwordResetCode, newPassword } = req.body;
-    console.log('resetPassword',req.body)
+    console.log('resetPassword', req.body)
     if (!email || !passwordResetCode || !newPassword) {
         throw new ApiError(400, "All fields are required.");
     }
@@ -283,7 +288,7 @@ const resetPassword = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(404, "User not found.");
     }
-    if (user.passwordResetCode !== Number( passwordResetCode)) {
+    if (user.passwordResetCode !== Number(passwordResetCode)) {
         throw new ApiError(400, "Invalid password reset code.");
     }
     user.password = newPassword;
@@ -309,7 +314,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     res.clearCookie("accessToken", {
         httpOnly: true,
         secure: isProduction,
-        sameSite:  isProduction ? 'None' : 'Lax',
+        sameSite: isProduction ? 'None' : 'Lax',
         // domain: process.env.FRONTEND_DOMAIN
     });
     res.status(200).json(new ApiResponse(200, null, "User logged out successfully"))
