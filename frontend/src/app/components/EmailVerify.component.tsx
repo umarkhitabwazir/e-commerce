@@ -37,7 +37,6 @@ const VerifyEmail = ({ email }: { email: string | null }) => {
   const code = searchParams.get('code')
   const router = useRouter()
   const API_URL = process.env.NEXT_PUBLIC_API_URL
-  const LOCAL_HOST = process.env.NEXT_PUBLIC_LOCAL_HOST
 
   // verifyEmailFromEmaiBox
   useEffect(() => {
@@ -70,7 +69,7 @@ const VerifyEmail = ({ email }: { email: string | null }) => {
       const emailVerificationCode = { emailVerificationCode: data.emailVerificationCode }
       await axios.post(`${API_URL}/verify-email`, emailVerificationCode, { withCredentials: true });
       setSuccess(true);
-      router.push(`${LOCAL_HOST}/`)
+      router.push(`/`)
 
     } catch (err: unknown) {
       if (err instanceof AxiosError) {

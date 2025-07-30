@@ -1,21 +1,21 @@
 "use client";
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
-import withAuth from "../utils/withAuth";
 import { UserInterface } from "../utils/user.interface";
 import SingleProductComponent from "./SingleProduct.component";
+import adminAuth from "../utils/adminAuth";
 
 const ProductReviewComponent = ({ user, productId }: { user: UserInterface, productId: string | null }) => {
-useEffect(() => {
-if (!user) {
-          return;
+    useEffect(() => {
+        if (!user) {
+            return;
         }
-    
 
-}, [user])
+
+    }, [user])
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
-   
+
     const [rating, setRating] = useState(1);
     const [reviewMessage, setReviewMessage] = useState("");
     const [loading, setLoading] = useState(false);
@@ -33,12 +33,11 @@ if (!user) {
         setSuccess(false);
 
         try {
-            const response = await axios.post(
+            await axios.post(
                 `${API_URL}/review/${productId}`,
                 { rating, reviewMessage },
                 { withCredentials: true }
             );
-            console.log("reviewResponse", response);
 
             setSuccess(true);
             setReviewMessage("");
@@ -107,4 +106,4 @@ if (!user) {
     );
 };
 
-export default withAuth( ProductReviewComponent)
+export default adminAuth(ProductReviewComponent)

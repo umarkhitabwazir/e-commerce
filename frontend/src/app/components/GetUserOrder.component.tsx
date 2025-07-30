@@ -120,4 +120,4 @@ const GetUserOrderComponent = () => {
   );
 };
 
-export default withAuth(GetUserOrderComponent);
+export default GetUserOrderComponent;

@@ -25,7 +25,7 @@ const sendEmail = async (email,image,title,price, subject) => {
 
 
     const mailOptions = {
-        from: `"UK Bazaar" <${process.env.EMAIL_USER}>`, // Use domain-based email in production
+        from: `"UK Bazaar" <${process.env.EMAIL_USER}>`, 
         to: email,
         subject: subject,
         html: `<!DOCTYPE html>

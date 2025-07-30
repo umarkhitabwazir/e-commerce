@@ -95,6 +95,7 @@ const sendEmail = async (email, emailVerificationCode) => {
     };
     return new Promise((resolve, reject) => {
         transporter.sendMail(mailOptions, (error, info) => {
+            
             if (error) {
                 console.error("Failed to send email:", error);
                 return reject(new ApiError(500, "Failed to send email"));
@@ -166,7 +167,7 @@ const createUser = asyncHandler(async (req, res) => {
     const options = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: "None",
+        sameSite:process.env.NODE_ENV === 'production'? "None":'Lax',
         // domain: process.env.FRONTEND_DOMAIN,
 
     }
