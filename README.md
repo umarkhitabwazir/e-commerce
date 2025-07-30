@@ -1,1 +1,1 @@
-[Application live gemo ](https://ukbazaar.vercel.app/)
+[Application live demo ](https://ukbazaar.vercel.app/)
