@@ -2,7 +2,6 @@
 
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import withAuth from "../utils/withAuth";
 import PendingOrderComponent from "./PendingOrder.component";
 import DeleveredOrderComponent from "./DeleveredOrder.component";
 import ProductReviewComponent from "./ProductReviewForm.component";
