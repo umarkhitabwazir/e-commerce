@@ -63,7 +63,7 @@ const withAuth = <P extends WithAuthProps>(
                           return null; 
                       }
                       if (error?.response?.status===401 && !isAuthRoutes) {
-                        
+                        console.log('error',error?.response?.status)
                         router.push(`/login?track=${trackPath}&${updatedSearchParams}`)
                       }
                   }

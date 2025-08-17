@@ -51,7 +51,7 @@ const ProductReviewComponent = ({ user, productId }: { user: UserInterface, prod
     };
 
     return (
-        <div className="p-4 bg-white shadow-md rounded-lg">
+        <div className={`${!productId&&"hidden"} p-4 bg-white shadow-md rounded-lg`}>
             <h2 className="text-lg font-semibold text-gray-400 mb-2">Write a Review</h2>
             {error && <p className="text-red-500">{error}</p>}
             {success && <p className="text-green-500">Review submitted successfully!</p>}

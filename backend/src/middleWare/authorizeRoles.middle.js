@@ -14,6 +14,7 @@ const  authorizeRoles = (...roles) => {
           }
           next();
       } catch (error) {
+        console.log('auth role error',error)
         throw new ApiError(401,"Unauthorized")
       }
     };

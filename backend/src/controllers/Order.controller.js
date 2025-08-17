@@ -72,11 +72,11 @@ const previewOrder = asyncHandler(async (req, res) => {
 
 const createOrder = asyncHandler(async (req, res) => {
     const  { products, paymentMethod } = req.body;
-    const  user = req.user;
+    const user=req.user
+    
     if (!products || !Array.isArray(products) || products.length === 0 || !paymentMethod) {
         throw new ApiError(400, "Products and payment method are required");
     }
-
     const produdsArr = [];
     let productTotalPrice = 0;
     for (const  item of products) {
@@ -184,6 +184,9 @@ const singleUserOrder = asyncHandler(async (req, res) => {
         throw new ApiError(400, null, "user must be logged in")
     }
     const order = await Order.find({ userId: user.id })
+    .populate(
+        "products.productId","_id price title description image"
+    )
     if (!order) {
         throw new ApiResponse(404, null, "order not founded")
     }

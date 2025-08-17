@@ -1,5 +1,10 @@
-interface OrderProduct {
-  productId: string;
+export interface OrderProduct {
+  productId: {
+    _id:string;
+  title:string,
+  image:string,
+  price:number,
+},
   quantity: number;
 }
 
@@ -18,4 +23,6 @@ export interface OrderInterface {
   confirmed: boolean;
   cancelled: boolean;
   createdAt: Date;
+  updatedAt: Date;
+  
 }

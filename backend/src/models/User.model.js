@@ -86,5 +86,4 @@ userSchema.methods.generateRefreshToken =async function(){
         process.env.JWT_REFRESH_TOKEN_SECRET,
         {expiresIn:process.env.JWT_REFRESH_TOKEN_EXPIRES_IN})
 }
-
 export const User = mongoose.model( "User", userSchema)

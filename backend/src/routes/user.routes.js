@@ -6,8 +6,6 @@ import {
   forgotPassword,
   resetPassword
 } from "../controllers/User.controller.js";
-
-import { createCart } from "../controllers/Cart.controller.js";
 import { transferMoney } from "../controllers/MoneyTransfer.controller.js";
 import { body, } from "express-validator";
 
@@ -72,8 +70,6 @@ userRouter.route("/get-logined-user").get(authMiddleware, getLoginUserData); // 
 
 
 
-// Cart Routes
-userRouter.route("/createCart").post(authMiddleware, createCart); // Add an item to the cart
 
 
 // Money Transfer Route

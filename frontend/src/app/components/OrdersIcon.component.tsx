@@ -27,7 +27,7 @@ const fetchOrderAccepedCancel = orders.filter((order: { cancelled: boolean }) =>
                 
             } catch (error:unknown) {
                 if (error instanceof AxiosError) {
-                    
+                    console.log('orderIconErr',error)
                    return 
                 }
             }
@@ -37,20 +37,34 @@ const fetchOrderAccepedCancel = orders.filter((order: { cancelled: boolean }) =>
 
 
     return (
-        <div>
-            <div title='Orders' onClick={() => { router.push(`/your-orders`) }} className="relative cursor-pointer">
-                <div className={`${isOrderPage ? "hidden" :orderCount===0?"hidden": ""}  bg-gray-600 rounded-full flex justify-center items-center w-6 h-6 absolute left-5 md:right-0 bottom-7 shadow-md`}>
-                    <h2 className="text-white text-sm font-bold">{orderCount}</h2>
-                </div>
-                <Image
-                    className="rounded-md"
-                    src="/order.png"
-                    width={40}
-                    height={40}
-                    alt="Order Icon"
-                />
-            </div>
-        </div>
+   <div className="relative">
+  <button
+    title="Orders"
+    onClick={() => router.push("/your-orders")}
+    className="relative p-2 rounded-lg hover:bg-gray-800 transition-colors group focus:outline-none focus:ring-2 focus:ring-cyan-500"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-6 w-6 text-gray-200 group-hover:text-white transition-colors"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+      />
+    </svg>
+    
+    {orderCount > 0 && !isOrderPage && (
+      <span className="absolute -top-1 -right-1 bg-cyan-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md transform scale-100 group-hover:scale-110 transition-transform">
+        {orderCount}
+      </span>
+    )}
+  </button>
+</div>
     )
 }
 

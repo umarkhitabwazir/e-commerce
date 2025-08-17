@@ -1,14 +1,12 @@
 "use client";
 import React, { useEffect, useState } from 'react'
 import axios, { AxiosError } from 'axios';
-import { useRouter } from 'next/navigation'
 import { UserInterface } from './user.interface';
 interface adminAuthProps {
     user:UserInterface
 }
 const adminAuth = <P extends adminAuthProps>(AdminComponent: React.ComponentType<P>) => {
     const AdminAuthComponent = (props: Omit<P, "user">) => {
-        const router = useRouter();
         const [user, setUser] = useState<adminAuthProps["user"] | null>(null);
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -36,7 +34,7 @@ const adminAuth = <P extends adminAuthProps>(AdminComponent: React.ComponentType
             };
             checkAuth();
 
-        }, [router, API_URL]);
+        }, [ API_URL]);
 
       
         return <AdminComponent {...props as P} user={user} />;

@@ -25,7 +25,7 @@ if (!category) {
 }
 const product=await Product.find({
     category:category.id
-})
+}).populate('category', 'categoryName')
 res.status(200).json(
      new ApiResponse(200,product,"search category result")
 )

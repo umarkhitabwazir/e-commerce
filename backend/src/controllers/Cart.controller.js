@@ -1,16 +1,14 @@
 import mongoose from "mongoose";
 import { Cart } from "../models/Cart.model.js";
-import { Category } from "../models/Category.model.js";
 import { Product } from "../models/Product.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { User } from "../models/User.model.js";
 
 const createCart = asyncHandler(async (req, res) => {
     const { cartItem } = req.body
     const userId = req.user
-    console.log("userId", userId)
+
     if (!Array.isArray(cartItem)) {
         throw new ApiError(400, "cartitem is required!")
     }
@@ -18,35 +16,73 @@ const createCart = asyncHandler(async (req, res) => {
         throw new ApiError(400, "user not login")
     }
     const cartArr = []
- 
-    for (const item of cartItem) {
-console.log("item.product",item.product)
+    let checkExistCartProduct
 
-        const product = await Product.findById( item.product)
-        
-        if (!product) {
-            throw new ApiError(400,"product not found!")
+    for (const item of cartItem) {
+
+        const products = await Product.findById(item.product)
+
+        if (!products) {
+            throw new ApiError(400, "product not found!")
         }
-        const productPrice=product.price * item.quantity
-        
+        const productPrice = products.price * item.quantity
+
         cartArr.push({
-            product:product.id,
-            quantity:item.quantity,
-            price:productPrice
+            product: products.id,
+            quantity: item.quantity,
+            price: productPrice
 
         })
+        checkExistCartProduct = await Cart.findOne({
+            "cartItems.product": products.id
+        });
+        if (checkExistCartProduct) {
+            await Cart.updateOne(
+                {
+                    user: userId._id,
+                    "cartItems.product": new mongoose.Types.ObjectId(products.id)
+                },
+                {
+                    $inc: {
+                        "cartItems.$.quantity": item.quantity,
+                        "cartItems.$.price": productPrice,
+
+                    }
+                }, // query
+
+            );
+  
+        }
+
     }
-   
-    const createCart=await Cart.create({
-        user:userId,
-        cartItems:cartArr
-    })
+    let createCart
+    if (!checkExistCartProduct) {
+
+        createCart = await Cart.create({
+            user: userId,
+            cartItems: cartArr
+        })
+    }
     res.status(201).json(
-        new ApiResponse(201,createCart,"item  added to cart successfully! ")
+        new ApiResponse(201, createCart, "item  added to cart successfully! ")
     )
 
 })
 
+const getCartData = asyncHandler(async (req, res) => {
+    const user = req.user
+    if (!user) {
+        throw new ApiError(401, "Unauthorized")
+    }
+    const findUserCart = await Cart.find({ user: user._id }).populate('cartItems.product', 'image title price description');
+
+    res.status(200).json(new ApiResponse(200, findUserCart, 'cart data founded'))
+})
 
 
-export { createCart }
+
+export {
+    createCart,
+    getCartData
+
+}

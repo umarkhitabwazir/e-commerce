@@ -38,7 +38,7 @@ const authMiddleware = async (req, res, next) => {
 
         }
         if (error.name === "JsonWebTokenError") {
-
+console.log('authMiddleware error',error)
             return next(new ApiError(401, "Invalid token. Please log in again."));
 
         }

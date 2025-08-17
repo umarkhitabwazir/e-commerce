@@ -2,12 +2,12 @@
 import Image from 'next/image';
 import React, { Dispatch, SetStateAction } from 'react';
 import { FaBox, FaCheck, FaPhone, FaTruck, FaUser } from 'react-icons/fa';
-import { OrderInterface } from '../utils/orderInterface';
-import { ProductInterface } from '../utils/productsInterface';
+import { OrderInterface, OrderProduct } from '../utils/orderInterface';
 
 
-const TrackOrderComponent = ({ product, order, setOpenTrackOrder }: { product: ProductInterface | null, order: OrderInterface, setOpenTrackOrder: Dispatch<SetStateAction<boolean>> }) => {
-    console.log('product',product, 'order',order);
+
+const TrackOrderComponent = ({ product, order, setOpenTrackOrder }: { product: OrderProduct[] | null, order: OrderInterface, setOpenTrackOrder: Dispatch<SetStateAction<boolean>> }) => {
+
     return (
 
         <div className={`  fixed inset-0  z-50 flex items-center justify-center bg-black/30`}>
@@ -90,21 +90,24 @@ const TrackOrderComponent = ({ product, order, setOpenTrackOrder }: { product: P
                             {/* Product List */}
                             <ul className="grid md:grid-cols-3 gap-6">
                                 {product &&
-                                    <li key={product._id} className="flex text-gray-500 items-start gap-4">
+                                product.map((product:OrderProduct)=>(
+                                      <li key={product.productId._id} className="flex text-gray-500 items-start gap-4">
                                         <Image
-                                            src={product.image}
+                                            src={product.productId.image}
                                             alt="Product"
                                             width={80}
                                             height={80}
                                             className="border rounded-md object-contain"
                                         />
                                         <div className="flex flex-col justify-center">
-                                            <p className="font-medium">Title:{product.title}</p>
-                                            <span className="text-gray-500">Price:{product.price}</span>
-                                            <span className="text-gray-500">Quantity:{order.products.map((p)=>p.quantity)}</span>
+                                            <p className="font-medium">Title:{product.productId.title}</p>
+                                            <span className="text-gray-500">Price:{product.productId.price}</span>
+                                            <span className="text-gray-500">Quantity:{product.quantity}</span>
                                         
                                         </div>
                                     </li>
+                                ))
+                                  
                                 }
                             </ul>
 

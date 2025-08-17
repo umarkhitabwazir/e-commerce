@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import cloudinary from "cloudinary"
 import { Order } from "../models/Order.model.js";
 import { Product } from "../models/Product.model.js";
 import { ApiError } from "../utils/apiError.js";
@@ -6,6 +7,8 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import { Category } from "../models/Category.model.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 dotenv.config({
     path: ".env"
@@ -14,18 +17,18 @@ dotenv.config({
 const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-        user: process.env.EMAIL_USER, 
+        user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
     },
     logger: true,
     debug: true,
 });
 
-const sendEmail = async (email,image,title,price, subject) => {
+const sendEmail = async (email, image, title, price, subject) => {
 
 
     const mailOptions = {
-        from: `"UK Bazaar" <${process.env.EMAIL_USER}>`, 
+        from: `"UK Bazaar" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: subject,
         html: `<!DOCTYPE html>
@@ -160,12 +163,103 @@ const adminProducts = asyncHandler(async (req, res) => {
         throw new ApiError(401, false, "you can't access secure route", false)
 
     }
-    const product = await Product.find({ user: user.id })
+    const product = await Product.find({ user: user.id }).populate('category', 'categoryName')
     if (!product) {
         throw new ApiError(404, false, "no product founded", false)
 
     }
     res.status(200).json(new ApiResponse(200, product, "product founded", true))
+})
+let updateProductWithCategory = asyncHandler(async (req, res) => {
+    let { categoryName, title, price, description, countInStock, brand } = req.body
+
+    let user = req.user
+
+
+    if (!user) {
+        throw new ApiError(400, "user not logged in")
+    }
+    if (!user.role === "admin") {
+        throw new ApiError(400, "only admin can update products")
+    }
+    if (!categoryName ||
+        !title || !price || !description || !countInStock
+        || !brand) {
+        throw new ApiError(400, "All fields are required")
+    }
+    let productId = req.params.productid
+    let product = await Product.findById(productId)
+    console.log('product in update route', product)
+    if (!product) {
+        throw new ApiError(404, "Product not found")
+    }
+
+    let category = await Category.findOne({ categoryName: categoryName })
+    if (!category) {
+        category = await Category.findByIdAndUpdate(
+            product.category,
+            {
+                categoryName,
+
+                user: user.id
+            })
+    }
+
+
+
+    let checkUserRole = product.user.toString() === user.id.toString()
+    if (!checkUserRole) {
+        throw new ApiError(400, "You are not authorized to update this product")
+    }
+
+    if (!product) {
+        throw new ApiError(404, "Product not found")
+    }
+    product.title = title
+    product.price = price
+    product.description = description
+    product.countInStock = countInStock
+    product.brand = brand
+
+    const file = req.file
+
+    if (!file) {
+        await product.save()
+        return res.status(200).json(new ApiResponse(200, product, "Product updated successfully"))
+    }
+    let filesize = req.file.size
+    let existimgUrl = product.image
+    let publicIdWithExtension = existimgUrl.split("/").pop()
+    let publicId = publicIdWithExtension.split(".")[0]
+    if (filesize > 10485760) {
+        throw new ApiError(402, "file too long only 10MB is allowed!")
+    }
+    const base64File = req.file.buffer;
+    if (base64File) {
+        // const base64File = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+
+        let productImg = await uploadOnCloudinary(base64File)
+        console.log('productImg', productImg)
+        if (!productImg) {
+            throw new ApiError(402, "image uploading falid!")
+        }
+
+
+        let cloudImgPath = `ecommerce/products-img/${publicId}`
+        // let result = await uploadOnCloudinary.uploader.destroy(cloudImgPath)
+        let result = await cloudinary.uploader.destroy(cloudImgPath)
+        console.log('result', result)
+        if (result.result !== "ok") {
+            throw new ApiError(500, "Failed to delete the existing image from Cloudinary");
+        }
+
+
+        product.image = productImg.url
+        console.log('product.image ', productImg.url)
+    }
+    await product.save()
+    res.status(200).json(new ApiResponse(200, product, "Product updated successfully"))
+
 })
 const getOrdersByAdminProducts = asyncHandler(async (req, res) => {
     try {
@@ -179,26 +273,26 @@ const getOrdersByAdminProducts = asyncHandler(async (req, res) => {
 
         // Get all orders
         const getAllOrdered = await Order.find()
-        .populate("userId","username email phone" )
-        .populate("products.productId", "title price image")
+            .populate("userId", "username email phone")
+            .populate("products.productId", "title price image")
 
         // Extract product IDs of admin's products
         const adminProductIds = adminProducts.map((product) => product._id);
         // Filter orders containing admin's products
         const filterAdminProducts = getAllOrdered.filter((order) =>
-            order.products.map((p) =>  adminProductIds.includes(new mongoose.Types.ObjectId( p.productId?._id)))
-        ); 
+            order.products.map((p) => adminProductIds.includes(new mongoose.Types.ObjectId(p.productId?._id)))
+        );
         const now = new Date();
         const currentTime = now.getTime();
         const halfHourInMs = 30 * 60 * 1000;
         const halfHourAgo = currentTime - halfHourInMs;
         const halfHourAgoDate = new Date(halfHourAgo);
-        
+
         const ordersOlderThanHalfHour = filterAdminProducts.filter((order) => {
-          return new Date(order.createdAt) <= halfHourAgoDate;
+            return new Date(order.createdAt) <= halfHourAgoDate;
         });
-        
-    
+
+
         res.status(200).json(new ApiResponse(200, ordersOlderThanHalfHour));
     } catch (error) {
         console.error("getOrderedProducts Error:", error);
@@ -207,26 +301,26 @@ const getOrdersByAdminProducts = asyncHandler(async (req, res) => {
 });
 
 const orderConfirmed = asyncHandler(async (req, res) => {
- const user= req.user
- const { orderId } = req.params
+    const user = req.user
+    const { orderId } = req.params
     if (!user) {
-        throw  ApiError(401, false, "user not loged in!", false)
+        throw ApiError(401, false, "user not loged in!", false)
     }
     if (!orderId) {
         throw new ApiError(401, false, "order id not provided", false)
     }
     const userRole = user.role
-    const role = [ "admin"]
+    const role = ["admin"]
     if (!role.includes(userRole)) {
         throw new ApiError(401, false, "you can't access secure route", false)
 
     }
-    const order=await Order.findById(orderId)
+    const order = await Order.findById(orderId)
     if (!order) {
         throw new ApiError(404, false, "no order founded", false)
 
     }
-    
+
 
     const orderconfirm = order.confirmed
     order.confirmed = !orderconfirm
@@ -280,7 +374,7 @@ const orderShipping = asyncHandler(async (req, res) => {
     }
     const orderShipped = order.orderShipped
     order.orderShipped = !orderShipped
-   
+
     await order.save()
     res.status(200).json(new ApiResponse(200, null, "Your order Shipped", true))
 })
@@ -305,8 +399,8 @@ const orderReadyForPickUp = asyncHandler(async (req, res) => {
 
     }
     const orderReadyForPickup = order.readyForPickup
-    order.readyForPickup = ! orderReadyForPickup 
-   
+    order.readyForPickup = !orderReadyForPickup
+
     await order.save()
     res.status(200).json(new ApiResponse(200, null, "Order ready for pickup", true))
 })
@@ -330,18 +424,18 @@ const orderDelivered = asyncHandler(async (req, res) => {
         throw new ApiError(404, false, "no order founded", false)
 
     }
-    
 
-        const orderDelivered = order.isDelivered
+
+    const orderDelivered = order.isDelivered
     order.isDelivered = !orderDelivered
-   
+
     await order.save()
     const email = order.userId.email
     const image = order.products[0].productId.image
     const title = order.products[0].productId.title
     const price = order.products[0].productId.price
     const subject = order.isDelivered ? "delivered" : "not delivered"
-    await sendEmail(email,image,title,price, subject)
+    await sendEmail(email, image, title, price, subject)
     res.status(200).json(new ApiResponse(200, null, "order delivered successfully", true))
 })
 const orderPickedByCounter = asyncHandler(async (req, res) => {
@@ -366,16 +460,17 @@ const orderPickedByCounter = asyncHandler(async (req, res) => {
     }
     const orderDelivered = order.pickedByCounter
     order.pickedByCounter = !orderDelivered
-    
-   
+
+
     await order.save()
     res.status(200).json(new ApiResponse(200, null, "order Picked By counter", true))
 })
 
 
-export { 
+export {
 
     adminProducts,
+    updateProductWithCategory,
     getOrdersByAdminProducts,
     orderConfirmed,
     paymentConfirmed,

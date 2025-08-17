@@ -5,7 +5,7 @@ const useStickyScroll = () => {
 
   const handleScroll = useCallback(() => {
     const scrollTop = window.scrollY;
-    setIsFixed(scrollTop > 50);
+    setIsFixed(scrollTop > 70);
   }, []);
 
   useEffect(() => {

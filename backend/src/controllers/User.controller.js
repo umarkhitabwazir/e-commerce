@@ -44,7 +44,7 @@ const sendEmail = async (email, emailVerificationCode) => {
     const verificationLink = `${process.env.CORS_ORIGIN}verify-email?&code=${emailVerificationCode}`;
 
     const mailOptions = {
-        from: '"UK Bazaar" <umairkhitab0308@gmail.com>', // Use domain-based email in production
+        from: `"UK Bazaar" ${process.env.EMAIL_USER}`, // Use domain-based email in production
         to: email,
         subject: "Email Verification",
         html: `

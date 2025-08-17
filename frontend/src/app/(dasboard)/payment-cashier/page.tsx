@@ -4,6 +4,7 @@ import PaymentComponent from '@/app/components/Payment.component'
 import GoBackComponent from '@/app/components/GoBack.component'
 
 const page = () => {
+  
   return (
     <div className=''>
       <GoBackComponent />

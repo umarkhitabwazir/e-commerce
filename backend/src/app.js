@@ -1,7 +1,6 @@
 import express from "express"
 import { userRouter } from "./routes/user.routes.js";
 import bodyParser from "body-parser";
-import nodemailer from 'nodemailer';
 import cookieParser from "cookie-parser";
 import cors from "cors"
 import { ApiError } from "./utils/apiError.js";
@@ -13,14 +12,16 @@ import {  orderRouters } from "./routes/order.routes.js";
 import {  addressRouters } from "./routes/address.routes.js";
 import {  reviewsRouters } from "./routes/reviews.routes.js";
 import categoryRouter from "./routes/category.routes.js";
+import { cartRouter } from "./routes/cart.rout.js";
+import favoritRouter from "./routes/favorate.routes.js";
+import sellerRequestRoutes from "./routes/sellerRequest.routes.js";
 const app = express()
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true, 
    
-//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//     allowedHeaders: "Content-Type,Authorization",
+
   })
 );
 
@@ -38,8 +39,10 @@ app.use("/api/v2",
    orderRouters,
    addressRouters,
    reviewsRouters,
-  //  categoryList,
-   categoryRouter
+  cartRouter,
+   categoryRouter,
+   favoritRouter,
+   sellerRequestRoutes
 
   )
 
