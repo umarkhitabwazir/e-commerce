@@ -40,7 +40,7 @@ const CartPanel = ({
       )
 router.push(`/your-orders?tab=cart`)
     } catch (_error: unknown) {
-
+console.log('handleAddToCart error',_error)
     }
 
     setTimeout(() => {
