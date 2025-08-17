@@ -49,11 +49,11 @@ const GetUserCartComponent = () => {
             let filterCheckOutProductsId
             if (productIdsAndQty) {
 
-                filterCheckOutProductsId = productIdsAndQty.filter((p: any) => selectedItemsIds.includes(p.productId))
+                filterCheckOutProductsId = productIdsAndQty.filter((p: {productId:string}) => selectedItemsIds.includes(p.productId))
             }
             setPoductIdsAndQtyArr(filterCheckOutProductsId!)
             const totalPrice = cartData
-                .flatMap((cart: any) =>
+                .flatMap((cart: CartDataInterface) =>
                     cart.cartItems.filter((item: CartItemInterface) =>
                         selectedItemsIds.includes(item.product._id)
                     ))
