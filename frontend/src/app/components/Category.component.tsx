@@ -1,5 +1,5 @@
 'use client'
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
@@ -20,9 +20,12 @@ const CategoryComponent = () => {
             try {
                 const res = await axios.get(`${API_URL}/all-category-list`);
                 setCategory(res.data.data || []);
-                console.log('category-copm',res.data.data)
-            } catch (error: any) {
-                setError(error.response?.data?.message || 'Failed to load categories');
+                console.log('category-copm', res.data.data)
+            } catch (error: unknown) {
+                if (error instanceof AxiosError) {
+
+                    setError(error.response?.data?.message || 'Failed to load categories');
+                }
             } finally {
                 setLoading(false);
             }

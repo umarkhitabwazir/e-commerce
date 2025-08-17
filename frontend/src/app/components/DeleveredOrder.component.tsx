@@ -44,7 +44,7 @@ useEffect(()=>{
      {deleveredOders.length === 0 && (
   <div className="flex flex-col items-center justify-center p-8  rounded-2xl ">
     <h3 className="text-lg font-semibold text-gray-700">No Order History</h3>
-    <p className="text-sm text-gray-500 mt-2">You haven't placed any orders yet.</p>
+    <p className="text-sm text-gray-500 mt-2">You haven not placed any orders yet.</p>
   </div>
 )}
 

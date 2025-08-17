@@ -2,7 +2,6 @@
 import { usePathname, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import axios, { AxiosError } from 'axios';
-import Image from 'next/image';
 import adminAuth from '../utils/adminAuth';
 
 const OrderIconComponent = () => {

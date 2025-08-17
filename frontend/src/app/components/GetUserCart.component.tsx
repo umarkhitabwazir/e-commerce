@@ -39,8 +39,8 @@ const GetUserCartComponent = () => {
 
             const res = await axios.get(`${API}/get-cart-data`, { withCredentials: true })
             const cartData = res.data.data
-            const productIdsAndQty = cartData.flatMap((cart: any) =>
-    cart.cartItems.map((p: any) => ({
+            const productIdsAndQty = cartData.flatMap((cart:CartDataInterface) =>
+    cart.cartItems.map((p: CartItemInterface) => ({
       productId: p.product._id,
       quantity: p.quantity,
     }))
@@ -54,15 +54,15 @@ const GetUserCartComponent = () => {
             setPoductIdsAndQtyArr(filterCheckOutProductsId!)
             const totalPrice = cartData
                 .flatMap((cart: any) =>
-                    cart.cartItems.filter((item: any) =>
+                    cart.cartItems.filter((item: CartItemInterface) =>
                         selectedItemsIds.includes(item.product._id)
                     ))
-                .reduce((sum: number, item: any) => sum + item.price, 0);
+                .reduce((sum: number, item: CartItemInterface) => sum + item.price, 0);
            
             setTotalPrice(totalPrice)
             setUserCart(res.data.data)
-        } catch (error) {
-            console.log('get cart error', error)
+        } catch (_error) {
+            console.log('get cart error', _error)
         }
     }
     useEffect(() => {

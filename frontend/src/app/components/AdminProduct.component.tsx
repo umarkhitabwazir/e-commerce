@@ -60,7 +60,7 @@ const AdminProductComponent = () => {
         await axios.delete(`${API_URL}/product/delete/${deleteConfirm}`, {
           withCredentials: true,
         });
-        setProducts(products.filter((product: { _id: string }) => { product._id !== deleteConfirm }));
+        setProducts(products.filter((product: { _id: string }) =>  product._id !== deleteConfirm ));
         setDeleteConfirm(null)
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
@@ -255,7 +255,7 @@ const AdminProductComponent = () => {
                       <span className="text-blue-600 font-medium truncate max-w-[260px] md:max-w-md">
                         {searchTerm ? (
                           <>
-                            "<span className="text-blue-700 font-semibold">{searchTerm}</span>"
+                            <span className="text-blue-700 font-semibold">{searchTerm}</span>
                           </>
                         ) : sortOption === 'oldest' ? (
                           'Oldest First'

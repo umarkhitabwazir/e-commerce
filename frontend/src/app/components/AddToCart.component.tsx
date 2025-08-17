@@ -39,7 +39,7 @@ const CartPanel = ({
         }
       )
 router.push(`/your-orders?tab=cart`)
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
 
     }
 

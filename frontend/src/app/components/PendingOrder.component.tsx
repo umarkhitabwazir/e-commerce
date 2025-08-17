@@ -66,10 +66,10 @@ const PendingOrderComponent = ({
           const timeDiff = (now.getTime() - orderDate.getTime()) / 1000 / 60;
           const remainingTime = Math.max(15 - timeDiff, 0);
 
-          let openTrackOrder = openTrackOrderMap[order._id] || false;
+          const openTrackOrder = openTrackOrderMap[order._id] || false;
 
 
-          let product = productMap[order._id] || null;
+          const product = productMap[order._id] || null;
 
           const isCancelling = isCancellingMap[order._id] || false;
           const loading = loadingMap[order._id] || false;

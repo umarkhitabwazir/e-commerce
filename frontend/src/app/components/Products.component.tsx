@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { ProductInterface } from '../utils/productsInterface';
 import Loading from './Loading.component';
 import AddToCartComponent from './AddToCart.component';
+import FavInterface from '../utils/favInterface';
 
 const Products = () => {
   const [sort, setSort] = useState<string | null>(null);
@@ -106,7 +107,7 @@ const Products = () => {
     try {
       const res = await axios.get(`${API_URL}/get-fav-product`, { withCredentials: true })
 
-      const productIds = res.data.data.map((fav: any) => fav.item._id)
+      const productIds = res.data.data.map((fav: FavInterface) => fav.item._id)
       setFavProductsIds(productIds)
 
     } catch (error: unknown) {
