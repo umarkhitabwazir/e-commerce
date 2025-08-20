@@ -63,7 +63,7 @@ const LoginComponent = () => {
                 router.push(`${trackedPath || "/"}?${updatedSearchParams} `);
                 setTimeout(() => {
                    window.location.reload()
-                }, 500)
+                }, 700)
             }
 
         } catch (err: unknown) {

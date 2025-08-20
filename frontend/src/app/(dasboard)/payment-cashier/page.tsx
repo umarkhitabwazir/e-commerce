@@ -6,9 +6,15 @@ import GoBackComponent from '@/app/components/GoBack.component'
 const page = () => {
   
   return (
-    <div className=''>
+    <div className='flex  '>
+      <div>
+        
       <GoBackComponent />
+      </div>
+      <div>
+
       <PaymentComponent />
+      </div>
 
     </div>
   )

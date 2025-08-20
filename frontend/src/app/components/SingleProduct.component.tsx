@@ -8,29 +8,30 @@ import { ProductInterface } from "../utils/productsInterface";
 const SingleProductComponent = ({ productId }: { productId: string | null }) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const searchParams = useSearchParams();
-  const ids = JSON.parse(searchParams.get('ids') || "[]")
-  const productIdsArr = ids
+  const idsAndQuantityArr = JSON.parse(searchParams.get('ids') || "[]")
+  const productIdsArr = idsAndQuantityArr.length !== 0 ? idsAndQuantityArr.map((id:any)=>id.productId)  : [];
   const rating = Number(searchParams.get("rating")) || 0;
   const [product, setProduct] = useState<ProductInterface[]>([]);
   
   const router = useRouter();
   
+  const getSingleProduct = async () => {
+    
+    try {
+      const res = await axios.post(`${API_URL}/get-single-product/${productId}`, {
+        productIdsArr: productIdsArr&& productIdsArr
+      });
+      console.log("Single Product Response:", res.data);
+      setProduct(res.data.data);
+    } catch (error: unknown) {
+      console.log("Error fetching product:", error);
+    }
+  };
   useEffect(() => {
    
-    const getSingleProduct = async () => {
-      
-      try {
-        const res = await axios.post(`${API_URL}/get-single-product/${productId}`, {
-          productIdsArr: productIdsArr&& productIdsArr
-        });
-        setProduct(res.data.data);
-      } catch (error: unknown) {
-        console.error("Error fetching product:", error);
-      }
-    };
 
     getSingleProduct();
-  }, [API_URL, router, productId]);
+  }, []);
 
   return (
     (

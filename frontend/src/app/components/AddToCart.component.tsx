@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { FiX, FiMinus, FiPlus, FiShoppingCart, FiHeart } from 'react-icons/fi';
 import { ProductInterface } from '../utils/productsInterface';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 
 const CartPanel = ({
@@ -15,16 +15,16 @@ const CartPanel = ({
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const router=useRouter()
+  const router = useRouter()
   const API = process.env.NEXT_PUBLIC_API_URL
 
   const handleAddToCart = async () => {
     if (quantity < 1 || product.countInStock < 1) return;
 
     setIsAdding(true);
- 
+
     try {
-       await axios.post(
+      await axios.post(
         `${API}/createCart`,
         {
           cartItem: [
@@ -38,9 +38,15 @@ const CartPanel = ({
           withCredentials: true
         }
       )
-router.push(`/your-orders?tab=cart`)
-    } catch (_error: unknown) {
-console.log('handleAddToCart error',_error)
+      router.push(`/your-orders?tab=cart`)
+    } catch (error: unknown) {
+
+      if (error instanceof AxiosError) {
+        if (error.response?.data.success === false) {
+          router.push(`/login`)
+        }
+      }
+      console.log('handleAddToCart error', error)
     }
 
     setTimeout(() => {
