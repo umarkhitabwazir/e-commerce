@@ -1,7 +1,7 @@
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { ProductInterface } from "../utils/productsInterface";
 
@@ -9,11 +9,11 @@ const SingleProductComponent = ({ productId }: { productId: string | null }) => 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const searchParams = useSearchParams();
   const idsAndQuantityArr = JSON.parse(searchParams.get('ids') || "[]")
-  const productIdsArr = idsAndQuantityArr.length !== 0 ? idsAndQuantityArr.map((id:any)=>id.productId)  : [];
+  const productIdsArr = idsAndQuantityArr.length !== 0 ? idsAndQuantityArr.map((id:{productId:string})=>id.productId)  : [];
   const rating = Number(searchParams.get("rating")) || 0;
   const [product, setProduct] = useState<ProductInterface[]>([]);
   
-  const router = useRouter();
+  
   
   const getSingleProduct = async () => {
     
