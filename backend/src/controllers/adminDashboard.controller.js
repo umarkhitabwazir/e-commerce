@@ -164,6 +164,7 @@ const adminProducts = asyncHandler(async (req, res) => {
 
     }
     const product = await Product.find({ user: user.id }).populate('category', 'categoryName')
+    
     if (!product) {
         throw new ApiError(404, false, "no product founded", false)
 
@@ -268,10 +269,10 @@ const getOrdersByAdminProducts = asyncHandler(async (req, res) => {
             throw new ApiError(401, "User not logged in");
         }
 
-        // Fetch products belonging to the admin
+      
         const adminProducts = await Product.find({ user: user })
 
-        // Get all orders
+    
         const getAllOrdered = await Order.find()
             .populate("userId", "username email phone")
             .populate("products.productId", "title price image")
@@ -282,18 +283,19 @@ const getOrdersByAdminProducts = asyncHandler(async (req, res) => {
         const filterAdminProducts = getAllOrdered.filter((order) =>
             order.products.map((p) => adminProductIds.includes(new mongoose.Types.ObjectId(p.productId?._id)))
         );
-        const now = new Date();
-        const currentTime = now.getTime();
-        const halfHourInMs = 30 * 60 * 1000;
-        const halfHourAgo = currentTime - halfHourInMs;
-        const halfHourAgoDate = new Date(halfHourAgo);
+        // console.log('filterAdminProducts', filterAdminProducts)
+        // const now = new Date();
+        // const currentTime = now.getTime();
+        // const halfHourInMs = 30 * 60 * 1000;
+        // const halfHourAgo = currentTime - halfHourInMs;
+        // const halfHourAgoDate = new Date(halfHourAgo);
 
-        const ordersOlderThanHalfHour = filterAdminProducts.filter((order) => {
-            return new Date(order.createdAt) <= halfHourAgoDate;
-        });
+        // const ordersOlderThanHalfHour = filterAdminProducts.filter((order) => {
+        //     return new Date(order.createdAt) <= halfHourAgoDate;
+        // });
 
 
-        res.status(200).json(new ApiResponse(200, ordersOlderThanHalfHour));
+        res.status(200).json(new ApiResponse(200, filterAdminProducts));
     } catch (error) {
         console.error("getOrderedProducts Error:", error);
         res.status(500).json(new ApiResponse(500, null, "Internal Server Error"));

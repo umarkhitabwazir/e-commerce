@@ -24,11 +24,10 @@ const AdminOrdersComponent = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData])
-  const fetchAdminOdersPrpoducts = async () => {
+  const fetchAdminOderspoducts = async () => {
     try {
       const response = await axios.get(`${API_URL}/admin/get-ordered-products`, { withCredentials: true })
       const data = await response.data.data
-
       setAdminOrders(data)
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -47,7 +46,7 @@ const AdminOrdersComponent = () => {
 
   useEffect(() => {
 
-    fetchAdminOdersPrpoducts()
+    fetchAdminOderspoducts()
   }, [API_URL])
 
   // handleOrderConfirmation
@@ -56,7 +55,7 @@ const AdminOrdersComponent = () => {
     try {
       await axios.patch(`${API_URL}/order-confirmation/${orderId}`, {}, { withCredentials: true })
 
-      await fetchAdminOdersPrpoducts()
+      await fetchAdminOderspoducts()
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
 
@@ -73,7 +72,7 @@ const AdminOrdersComponent = () => {
     try {
       await axios.patch(`${API_URL}/payment-confirmation/${orderId}`, {}, { withCredentials: true })
 
-      await fetchAdminOdersPrpoducts()
+      await fetchAdminOderspoducts()
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -91,7 +90,7 @@ const AdminOrdersComponent = () => {
     try {
       await axios.patch(`${API_URL}/order-shipping/${orderId}`, {}, { withCredentials: true })
 
-      await fetchAdminOdersPrpoducts()
+      await fetchAdminOderspoducts()
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -109,7 +108,7 @@ const AdminOrdersComponent = () => {
     try {
       await axios.patch(`${API_URL}/orderReadyForPickUp/${orderId}`, {}, { withCredentials: true })
 
-      await fetchAdminOdersPrpoducts()
+      await fetchAdminOderspoducts()
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -127,7 +126,7 @@ const AdminOrdersComponent = () => {
 
     try {
       await axios.patch(`${API_URL}/order-delivered/${orderId}`, {}, { withCredentials: true })
-      await fetchAdminOdersPrpoducts()
+      await fetchAdminOderspoducts()
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -144,7 +143,7 @@ const AdminOrdersComponent = () => {
     try {
       await axios.patch(`${API_URL}/orderPickedByCounte/${orderId}`, {}, { withCredentials: true })
 
-      await fetchAdminOdersPrpoducts()
+      await fetchAdminOderspoducts()
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {

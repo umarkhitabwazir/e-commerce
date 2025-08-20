@@ -11,7 +11,7 @@ import SearchComponent from "./search.component";
 import CategoryComponent from "./Category.component";
 import useStickyScroll from "./UseStickyScroll.component";
 import AdminNavbarComponent from "./AdminNavbar.component";
-
+import { logOut } from "../utils/LogOut";
 const Navbar = ({ user }: { user: UserInterface }) => {
 
     const [sortOption, setSortOption] = useState("");
@@ -93,18 +93,12 @@ const Navbar = ({ user }: { user: UserInterface }) => {
         router.push(`/?sort=${e.target.value}`);
     };
 
-    const logOut = async () => {
-        try {
-
-            await axios.post(`${API_URL}/user/logout`, {}, { withCredentials: true })
-            router.push(`/login`)
-        } catch (error) {
-            console.log('logOutError', error)
-        }
-    }
-    const handleSitting = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  
+    const handleSitting =async (e: React.ChangeEvent<HTMLSelectElement>) => {
         if (e.target.value === 'log-out') {
-            return logOut()
+            await logOut()
+           return   router.push(`/login`)
+
         }
         router.push(`/${e.target.value}`);
     };
