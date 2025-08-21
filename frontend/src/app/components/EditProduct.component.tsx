@@ -98,8 +98,9 @@ const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh:
           &times;
         </button>
 
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Edit Product</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">EDIT PRODUCT</h2>
         <div className="space-y-4">
+          <label className='text-gray-400 text-sm' htmlFor="categoryName">CATEGORY NAME</label>
           <input
             type="text"
             name="categoryName"
@@ -108,6 +109,7 @@ const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh:
             placeholder="Category Name"
             className="w-full p-2 border border-gray-300 rounded text-black"
           />
+          <label className='text-gray-400 text-sm' htmlFor="title">TITLE</label>
           <input
             type="text"
             name="title"
@@ -116,6 +118,7 @@ const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh:
             placeholder="Title"
             className="w-full p-2 border border-gray-300 rounded text-black"
           />
+          <label className='text-gray-400 text-sm' htmlFor="price">PRICE</label>
           <input
             type="number"
             name="price"
@@ -124,6 +127,7 @@ const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh:
             placeholder="Price"
             className="w-full p-2 border border-gray-300 rounded text-black"
           />
+          <label className='text-gray-400 text-sm' htmlFor="description">DESCRIPTION</label>
           <textarea
             name="description"
             value={formData.description}
@@ -131,6 +135,7 @@ const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh:
             placeholder="Description"
             className="w-full p-2 border border-gray-300 rounded h-24 text-black resize-none"
           />
+          <label className='text-gray-400 text-sm' htmlFor="countInStock">COUNT IN STACK</label>
           <input
             type="number"
             name="countInStock"
@@ -139,6 +144,7 @@ const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh:
             placeholder="Stock Count"
             className="w-full p-2 border border-gray-300 rounded text-black"
           />
+          <label className='text-gray-400 text-sm ' htmlFor="brand">BRAND</label>
           <input
             type="text"
             name="brand"

@@ -16,6 +16,7 @@ const AdminProductComponent = () => {
   const [editProductId, setEditProductId] = useState<string | ''>("");
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOption, setSortOption] = useState('newest');
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const router = useRouter();
@@ -60,18 +61,18 @@ const AdminProductComponent = () => {
         await axios.delete(`${API_URL}/product/delete/${deleteConfirm}`, {
           withCredentials: true,
         });
-        setProducts(products.filter((product: { _id: string }) =>  product._id !== deleteConfirm ));
+        setProducts(products.filter((product: { _id: string }) => product._id !== deleteConfirm));
         setDeleteConfirm(null)
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
-          console.log(error)
+          setError(error.response?.data.error || "Failed to delete product");
           setDeleteConfirm(null)
-
-
-          alert("Failed to delete product. Please try again.");
+          setTimeout(() => {
+            setError(null);
+          }, 3000)
+          return;
         }
-        setProducts(products.filter(p => p._id !== deleteConfirm));
-        setDeleteConfirm(null);
+
       }
     };
   }
@@ -146,7 +147,9 @@ const AdminProductComponent = () => {
         />
       }
       {/* Dashboard Header */}
+
       <div className="max-w-7xl mx-auto">
+
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Admin Products Dashboard</h1>
@@ -216,7 +219,12 @@ const AdminProductComponent = () => {
             </p>
           </div>
         </div>
-
+        {
+          error &&
+          <div className="z-50 inset-x-56 fixed bg-red-300  bottom-0 right-0  p-4 rounded-lg shadow-md mb-6">
+            <p className="text-red-600 ">{error}</p>
+          </div>
+        }
         {/* Products Grid */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
@@ -272,7 +280,7 @@ const AdminProductComponent = () => {
 
             )}
 
-          
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
               {(searchTerm ? filteredProducts : sortedProducts).map((product) => (

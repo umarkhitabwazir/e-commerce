@@ -1,9 +1,15 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleWare/auth.Middle.js";
 import { authorizeRoles } from "../middleWare/authorizeRoles.middle.js";
-import { adminProducts,getOrdersByAdminProducts, orderConfirmed, orderDelivered, orderPickedByCounter, orderReadyForPickUp, updateProductWithCategory, orderShipping, paymentConfirmed } from "../controllers/adminDashboard.controller.js";
+import { adminProducts,getOrdersByAdminProducts, 
+  orderConfirmed, orderDelivered, 
+  orderPickedByCounter, orderReadyForPickUp,
+  createProductsWithCategory,
+  updateProductWithCategory, orderShipping, 
+  paymentConfirmed,deleteProductWithCategory
+ } from "../controllers/adminDashboard.controller.js";
 import { upload } from "../middleWare/multer.middle.js";
-import { createProductsWithCategory, deleteProductWithCategory } from "../controllers/Product.controller.js";
+
 
 const adminRouter = Router()
 adminRouter.route("/admin-products").get(authMiddleware, adminProducts)
