@@ -9,6 +9,7 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { Category } from "../models/Category.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { User } from "../models/User.model.js";
 
 dotenv.config({
     path: ".env"
