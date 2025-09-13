@@ -66,8 +66,8 @@ const Products = () => {
   };
   const fetchSearchedProducts = async () => {
     try {
-      const response = await axios.get(`${API_URL}/get-searched-products?search=${searchedProducts}`);
-      setProducts(response.data.data);
+      const response = await axios.get(`${API_URL}/search-products?search=${searchedProducts}`);
+         setProducts(response.data.data);
       setSearchResult(response.data.data.length);
       setError(null);
     } catch (err: unknown) {
@@ -83,8 +83,10 @@ const Products = () => {
       fetchSearchedProducts();
     }
 
+if (!searchedProducts && !categoryName){
 
-    fetchProducts();
+  fetchProducts();
+}
 
   }, [API_URL, sort, searchedProducts]);
   const fetchAllReviews = async () => {

@@ -16,17 +16,7 @@ let searchProduct = asyncHandler(async (req, res) => {
     }
     res.status(200).json(new ApiResponse(200, product, "Product found"))
 })
-let getSearchedProduct = asyncHandler(async (req, res) => {
-    let { search } = req.query
-    if (!search) {
-        throw new ApiError(400, "search query is required")
-    }
-    let product = await Product.find({ title: { $regex: search, $options: "i" } })
-    if (!product) {
-        throw new ApiError(404, "Product not found")
-    }
-    res.status(200).json(new ApiResponse(200, product, "Product found"))
-})
+
 
 let getAllProducts = asyncHandler(async (req, res) => {
     let product = await Product.find()
@@ -72,7 +62,6 @@ let getSingleProduct = asyncHandler(async (req, res) => {
 
 export {
     searchProduct,
-    getSearchedProduct,
     getAllProducts,
     getSingleProduct,
    

@@ -83,8 +83,11 @@ const Navbar = ({ user }: { user: UserInterface }) => {
             router.push(`?${updatedSearchParams.toString()}`);
             return
         }
-
-        search(value)
+        setTimeout(() => {
+            if (value) {
+                search(value)
+            }
+        }, 600);
     };
 
     const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -93,11 +96,11 @@ const Navbar = ({ user }: { user: UserInterface }) => {
         router.push(`/?sort=${e.target.value}`);
     };
 
-  
-    const handleSitting =async (e: React.ChangeEvent<HTMLSelectElement>) => {
+
+    const handleSitting = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         if (e.target.value === 'log-out') {
             await logOut()
-           return   router.push(`/login`)
+            return router.push(`/login`)
 
         }
         router.push(`/${e.target.value}`);
@@ -138,7 +141,7 @@ const Navbar = ({ user }: { user: UserInterface }) => {
                                 </div>
 
                                 <button
-                                onClick={()=>router.push('/request-store')}
+                                    onClick={() => router.push('/request-store')}
                                     className="inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-indigo-700 font-medium transition
                                   hover:bg-indigo-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2
                                    active:scale-[.98]"
