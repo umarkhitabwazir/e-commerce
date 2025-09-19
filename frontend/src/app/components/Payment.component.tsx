@@ -1,21 +1,20 @@
 "use client";
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 import withAuth from '../utils/withAuth';
-import SingleProductComponent from './SingleProduct.component';
+import SingleProductComponent from './GetProductsByIds.component';
 
 const PaymentComponent = () => {
   const [selectedPayment, setSelectedPayment] = useState('');
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const searchParams = useSearchParams();
-  const price = searchParams.get('p')
-
-  const productId = searchParams.get("product");
-  const productIdArr=JSON.parse(searchParams.get("ids") || '[]')
+  const decoded = searchParams.get('query') !== null && JSON.parse(atob(searchParams.get('query') || ''))
+  const productIds=decoded.productIdsAndQtyArr ? decoded.productIdsAndQtyArr.map((item: { productId: string; quantity: number }) => item.productId) : []
   const [loading, setLoading] = useState(false)
-  const quantity: number = parseInt(searchParams.get("q") || "1");
   const router = useRouter()
+
+
 
   const handlePaymentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedPayment(event.target.value);
@@ -27,33 +26,22 @@ const PaymentComponent = () => {
       try {
 
         const paymentMethod = selectedPayment;
-        if (productIdArr.length!==0 ) {
-          
+        if (decoded) {
           await axios.post(`${API_URL}/create-order`, {
-            "products":productIdArr,
+            "products": decoded.productIdsAndQtyArr,
             "paymentMethod": paymentMethod,
           }, { withCredentials: true });
-          
-         return router.push(`/your-orders?product=${productId}`)
-        }
-        if (productId  ) {
-          
-         await axios.post(`${API_URL}/create-order`, {
-            "products": [{
-              "productId": productId,
-              "quantity": quantity,
-            }
-  
-            ],
-            "paymentMethod": paymentMethod,
-          }, { withCredentials: true });
-         
-       return   router.push(`/your-orders?product=${productId}`)
-        }
-      } catch (error) {
-        setLoading(false)
 
-        console.log("error", error)
+          return router.push(`/your-orders?decoded=${btoa(JSON.stringify(decoded))}`)
+        }
+
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+
+          console.log("proceed order  error", error)
+
+        }
+        setLoading(false)
       } finally {
         setLoading(false)
       }
@@ -64,16 +52,17 @@ const PaymentComponent = () => {
 
   return (
     <div className='flex md:flex-row flex-col  gap-2'>
-      <div className="text-gray-800 max-w-lg mx-auto bg-white p-8  rounded-xl shadow-lg">
+      <div className="text-gray-800 max-w-lg mx-auto bg-transparent p-8  rounded-xl shadow-lg">
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-900">Select Payment Method</h1>
 
-        {price && (
-          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
-            <p className="text-center font-medium">
-              Total Amount: <span className="font-bold text-blue-700">{price}</span>
-            </p>
-          </div>
-        )}
+        {decoded.totalPrice
+          && (
+            <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
+              <p className="text-center font-medium">
+                Total Amount: <span className="font-bold text-blue-700">{decoded.totalPrice}</span>
+              </p>
+            </div>
+          )}
 
         <div className="space-y-4 mb-8">
           {[
@@ -149,11 +138,11 @@ const PaymentComponent = () => {
       </div>
       <div>
 
-     <h3 className="text-xl font-semibold text-gray-900 tracking-tight">
-  Selected Items for Checkout
-</h3>
+        <h3 className="text-xl font-semibold text-gray-900 tracking-tight">
+          Selected Items for Checkout
+        </h3>
 
-      <SingleProductComponent productId={productId} />
+        <SingleProductComponent productIds={productIds} />
       </div>
     </div>
   );

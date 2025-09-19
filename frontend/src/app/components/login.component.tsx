@@ -94,9 +94,9 @@ const LoginComponent = () => {
                 networkError && <NoInternetComponent />
             }
 
-            <div className="flex justify-center items-center min-h-screen bg-gray-100">
-                <div className="w-full max-w-4xl bg-white p-8 rounded-lg shadow-lg">
-                    <h2 className="text-3xl font-bold text-gray-600 text-center mb-8">Login</h2>
+            <div className="flex justify-center items-center min-h-screen bg-login-bg bg-cover bg-center">
+                <div className="w-full max-w-4xl bg-transparent p-8 rounded-lg shadow-lg">
+                    <h2 className="text-3xl font-bold text-white text-center mb-8">Login</h2>
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
 
                         {/* Email Field */}
@@ -106,7 +106,7 @@ const LoginComponent = () => {
 
                                 {...register('email')}
                                 type="email"
-                                className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.email ? 'border-red-500' : 'border-gray-300'
+                                className={`w-full p-3 text-white bg-transparent border rounded-lg focus:outline-none ${errors.email ? 'border-red-500' : 'border-gray-300'
                                     }`}
                                 placeholder="Enter your email"
                             />
@@ -123,7 +123,7 @@ const LoginComponent = () => {
                                 <input
                                     {...register('password')}
                                     type={passwordVisible ? 'text' : 'password'}
-                                    className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.password ? 'border-red-500' : 'border-gray-300'
+                                    className={`w-full p-3  border text-white bg-transparent rounded-lg focus:outline-none ${errors.password ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     placeholder="Enter your password"
                                 />
@@ -171,7 +171,7 @@ const LoginComponent = () => {
 
                         <Link
                             href="/sign-up"
-                            className="text-blue-500 hover:text-blue-700 underline text-lg font-extrabold"
+                            className="text-white hover:text-blue-700 underline text-lg font-extrabold"
                         >
                             Sign up
                         </Link>
@@ -184,7 +184,7 @@ const LoginComponent = () => {
 
                             <Link
                                 href="/reset-password"
-                                className="text-blue-500 hover:text-blue-700 underline text-lg font-bold"
+                                className="text-white hover:text-blue-700 underline text-lg font-bold"
                             >
                                 Forgot Password ?
                             </Link>
@@ -192,7 +192,7 @@ const LoginComponent = () => {
                         <div>
 
                             <Link
-                                className="w-full  hover:text-gray-500 text-gray-600 font-semibold underline py-2 px-4 rounded mt-3"
+                                className="w-full  hover:text-gray-500 text-white font-semibold underline py-2 px-4 rounded mt-3"
                                 href="/"
                             >
                                 Return to Home Page↗

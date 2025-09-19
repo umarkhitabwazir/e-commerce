@@ -10,6 +10,7 @@ import dotenv from "dotenv";
 import { Category } from "../models/Category.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { User } from "../models/User.model.js";
+import { Cart } from "../models/Cart.model.js"
 
 dotenv.config({
     path: ".env"
@@ -331,18 +332,30 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(400, "user not login")
     }
-    if (!user.role === "admin" | "superadmin") {
+    if (user.role !== "admin" && user.role !== "superadmin") {
         throw new ApiError(400, "only admin can delete products")
     }
     let productId = req.params.productid
     let product = await Product.findById(productId)
+
+
+
     if (!product) {
         throw new ApiError(404, "Product not found")
     }
+
     const existOrder = await Order.findOne({ "products.productId": productId });
     if (existOrder) {
-        throw new ApiError(400, "Cannot delete product as it is part of an existing order");   
+        throw new ApiError(400, "Cannot delete product as it is part of an existing order");
     }
+        await Cart.updateMany(
+        {
+            "cartItems.product": new mongoose.Types.ObjectId(product.id)
+        },
+        {
+            $set: { deleted: true }
+        }
+    );
     let existimgUrl = product.image
     let publicIdWithExtension = existimgUrl.split("/").pop()
     let publicId = publicIdWithExtension.split(".")[0]
@@ -364,6 +377,7 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
     if (findProductCategory.length === 1) {
         await category.deleteOne()
     }
+
     await product.deleteOne()
 
     res.status(200).json(new ApiResponse(200, product, "Product deleted successfully"))
@@ -389,16 +403,7 @@ const getOrdersByAdminProducts = asyncHandler(async (req, res) => {
         const filterAdminProducts = getAllOrdered.filter((order) =>
             order.products.map((p) => adminProductIds.includes(new mongoose.Types.ObjectId(p.productId?._id)))
         );
-        // console.log('filterAdminProducts', filterAdminProducts)
-        // const now = new Date();
-        // const currentTime = now.getTime();
-        // const halfHourInMs = 30 * 60 * 1000;
-        // const halfHourAgo = currentTime - halfHourInMs;
-        // const halfHourAgoDate = new Date(halfHourAgo);
-
-        // const ordersOlderThanHalfHour = filterAdminProducts.filter((order) => {
-        //     return new Date(order.createdAt) <= halfHourAgoDate;
-        // });
+   
 
 
         res.status(200).json(new ApiResponse(200, filterAdminProducts));

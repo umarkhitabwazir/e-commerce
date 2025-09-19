@@ -1,50 +1,61 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { ProductInterface } from "../utils/productsInterface";
 
-const SingleProductComponent = ({ productId }: { productId: string | null }) => {
+const GetProductsByIdsComponent = ({ productIds }: { productIds: string[] | [] }) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const searchParams = useSearchParams();
-  const idsAndQuantityArr = JSON.parse(searchParams.get('ids') || "[]")
-  const productIdsArr = idsAndQuantityArr.length !== 0 ? idsAndQuantityArr.map((id:{productId:string})=>id.productId)  : [];
+  const router = useRouter();
+  const decoded = searchParams.get('query') && JSON.parse(atob(searchParams.get('query') || ''))
+  const idsAndQuantityArr = decoded && decoded.productIds
+ || [];
+  const queryProductIds = idsAndQuantityArr || [];
   const rating = Number(searchParams.get("rating")) || 0;
   const [product, setProduct] = useState<ProductInterface[]>([]);
-  
-  
-  
-  const getSingleProduct = async () => {
+
+
+
+  const getProductsByIds = async () => {
     
     try {
-      const res = await axios.post(`${API_URL}/get-single-product/${productId}`, {
-        productIdsArr: productIdsArr&& productIdsArr
+      const res = await axios.post(`${API_URL}/getProductsByIds`, {
+        productIdsArr: queryProductIds && queryProductIds.length !== 0 ? queryProductIds : productIds,
       });
-      console.log("Single Product Response:", res.data);
+
       setProduct(res.data.data);
     } catch (error: unknown) {
-      console.log("Error fetching product:", error);
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 404) {
+          alert("Product not found, it may have been removed.");
+          router.back();
+          return;
+        }
+        console.log("Error fetching product:", error);
+      }
     }
   };
   useEffect(() => {
-   
 
-    getSingleProduct();
+
+    getProductsByIds();
   }, []);
 
   return (
     (
       product &&
       product.map((products: ProductInterface) => (
-        <div key={products._id} className={`rounded-lg p-6 w-full mt-9 grid grid-flow-row grid-cols-3 md:flex-row items-center gap-6`}>
+        <div key={products._id} className={`rounded-lg bg-transparent  p-6 w-full mt-9 grid grid-flow-row grid-cols-3 md:flex-row items-center gap-6`}>
           {/* Product Image */}
           <div className="flex-shrink-0">
             {products.image ? (
               <Image
                 src={products.image}
                 alt={products.title}
-                className="rounded-lg object-cover shadow-md"
+                onClick={() => window.open(products.image, "_self")}
+                className={`rounded-lg object-cover  shadow-md cursor-pointer`}
                 width={400}
                 height={400}
               />
@@ -56,7 +67,7 @@ const SingleProductComponent = ({ productId }: { productId: string | null }) => 
           </div>
 
           {/* Product Details */}
-          <div className="flex flex-col space-y-4 w-full">
+          <div className="flex  flex-col space-y-4 w-full">
             <h1 className="text-2xl font-bold text-gray-900">{products.title || "Untitled Product"}</h1>
             <p className="text-sm text-gray-700">{products.description || "No description available."}</p>
 
@@ -96,4 +107,4 @@ const SingleProductComponent = ({ productId }: { productId: string | null }) => 
   );
 };
 
-export default SingleProductComponent;
+export default GetProductsByIdsComponent;

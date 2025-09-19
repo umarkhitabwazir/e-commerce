@@ -6,7 +6,7 @@ import GoBackComponent from '@/app/components/GoBack.component'
 const page = () => {
   
   return (
-    <div className='flex  '>
+    <div className='flex bg-payment-cashier-bg bg-cover w-full min-h-screen '>
       <div>
         
       <GoBackComponent />

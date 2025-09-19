@@ -17,6 +17,7 @@ const addressSchema = new Schema({
         required: [true, "Province is required"],
         enum: [
             "Punjab",
+            "Islamabad",
             "Sindh",
             "Khyber Pakhtunkhwa",
             "Balochistan",

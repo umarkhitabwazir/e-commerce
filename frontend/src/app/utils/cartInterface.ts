@@ -16,6 +16,7 @@ export interface CartItemInterface {
 export interface CartDataInterface {
   _id: string;
   user: string;
+  deleted:boolean;
   cartItems: CartItemInterface[];
   createdAt: Date;
   updatedAt: Date;

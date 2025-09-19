@@ -7,6 +7,10 @@ const cartSchema = new Schema(
             ref: "User",
             required: [true, "user is required"],
         },
+        deleted: {
+            type: Boolean,
+            default: false,
+        },
         cartItems: [
             {
                 product: {

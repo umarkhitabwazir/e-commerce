@@ -34,7 +34,7 @@ try {
 })
 const getFavProducts=asyncHandler(async(req,res)=>{
 const user=req.user
-const findFavProducts=await Favorite.find({user:user._id}).populate("item",'image title price description')
+const findFavProducts=await Favorite.find({user:user._id}).populate("item",'image title price description rating countInStock')
 
 if (!findFavProducts) {
     throw new ApiError(404,'not found ')

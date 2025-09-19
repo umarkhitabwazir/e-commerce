@@ -51,7 +51,7 @@ const createCart = asyncHandler(async (req, res) => {
                 }, // query
 
             );
-  
+
         }
 
     }
@@ -68,6 +68,30 @@ const createCart = asyncHandler(async (req, res) => {
     )
 
 })
+const deleteCart = asyncHandler(async (req, res) => {
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(401, "User not logged in");
+  }
+
+  const cartId = req.params.cartId;
+
+  if (!cartId) {
+    throw new ApiError(400, "cart ID is required");
+  }
+  const ObjectId=new mongoose.Types.ObjectId(cartId)
+
+
+  const cart = await Cart.deleteOne(ObjectId)
+
+  if (!cart) {
+    throw new ApiError(404, "Cart not found or product not in cart");
+  }
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, cart, " cart removed successfully"));
+});
 
 const getCartData = asyncHandler(async (req, res) => {
     const user = req.user
@@ -83,6 +107,7 @@ const getCartData = asyncHandler(async (req, res) => {
 
 export {
     createCart,
+    deleteCart,
     getCartData
 
 }

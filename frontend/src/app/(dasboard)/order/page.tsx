@@ -7,7 +7,7 @@ const order = () => {
 
 
   return (
-    <div className=''>
+    <div className='bg-product-bg bg-cover'>
       <GoBackComponent />
 
       <OrderComponent />

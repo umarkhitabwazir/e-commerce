@@ -74,8 +74,8 @@ const SignupComponent = () => {
         <>
 
 
-            <div className="flex justify-center items-center p-20 min-h-screen bg-gray-100">
-                <div className="w-full max-w-4xl bg-white p-8 rounded-lg shadow-lg">
+            <div className="flex justify-center items-center p-20 min-h-screen bg-sign-up-bg bg-cover bg-center">
+                <div className="w-full max-w-4xl  bg-transparent p-8 rounded-lg shadow-lg">
                     <h2 className="text-3xl font-bold text-gray-600 text-center mb-8">Sign Up</h2>
                     <form onSubmit={handleSubmit(onSubmit)} className=" flex  flex-wrap justify-center gap-2">
                         {/* Username Field */}
@@ -83,7 +83,7 @@ const SignupComponent = () => {
                             <label className="block text-sm font-medium text-black mb-1">Username</label>
                             <input
                                 {...register('username')}
-                                className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.username ? 'border-red-500' : 'border-gray-300'
+                                className={`w-full p-3 placeholder:text-gray-600 text-white bg-transparent border rounded-lg focus:outline-none ${errors.username ? 'border-red-500' : 'border-gray-300'
                                     }`}
                                 placeholder="Enter your username"
                             />
@@ -97,7 +97,7 @@ const SignupComponent = () => {
                             <label className="block text-sm font-medium text-black mb-1">Full Name</label>
                             <input
                                 {...register('fullName')}
-                                className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.fullName ? 'border-red-500' : 'border-gray-300'
+                                className={`w-full p-3 placeholder:text-gray-600 text-white bg-transparent border rounded-lg focus:outline-none ${errors.fullName ? 'border-red-500' : 'border-gray-300'
                                     }`}
                                 placeholder="Enter your full name"
                             />
@@ -112,7 +112,7 @@ const SignupComponent = () => {
                             <input
                                 {...register('email')}
                                 type="email"
-                                className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.email ? 'border-red-500' : 'border-gray-300'
+                                className={`w-full p-3 text-white placeholder:text-gray-600 bg-transparent border rounded-lg focus:outline-none ${errors.email ? 'border-red-500' : 'border-gray-300'
                                     }`}
                                 placeholder="Enter your email"
                             />
@@ -129,7 +129,7 @@ const SignupComponent = () => {
                                 <input
                                     {...register('password')}
                                     type={passwordVisible ? 'text' : 'password'}
-                                    className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.password ? 'border-red-500' : 'border-gray-300'
+                                    className={`w-full p-3 text-white placeholder:text-gray-600 bg-transparent border rounded-lg focus:outline-none ${errors.password ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     placeholder="Enter your password"
                                 />
@@ -154,7 +154,7 @@ const SignupComponent = () => {
                             <label className="block text-sm font-medium text-black mb-1">Phone</label>
                             <input
                                 {...register('phone')}
-                                className={`w-full p-3 text-black border rounded-lg focus:outline-none ${errors.phone ? 'border-red-500' : 'border-gray-300'
+                                className={`w-full p-3 text-white bg-transparent border placeholder:text-gray-600 rounded-lg focus:outline-none ${errors.phone ? 'border-red-500' : 'border-gray-300'
                                     }`}
                                 placeholder="Enter your phone number"
                             />

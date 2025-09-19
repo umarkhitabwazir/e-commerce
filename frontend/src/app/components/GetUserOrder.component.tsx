@@ -108,7 +108,7 @@ const GetUserOrderComponent = () => {
 
 
   return (
-    <div className="p-3 bg-bgGray flex flex-wrap min-h-screen">
+    <div className="p-3 bg-order-bg bg-cover flex flex-wrap min-h-screen">
 
       {/* Order Management*/}
       <div className="w-screen mx-auto p-6">

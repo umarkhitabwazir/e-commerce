@@ -22,7 +22,6 @@ const Products = () => {
   const routePath = usePathname();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
-
   const searchedProducts = searchParams.get("search")
   const categoryName = searchParams.get("category")
   const [showAddTocart, setShowAddTocart] = useState<boolean>(false)
@@ -123,10 +122,16 @@ if (!searchedProducts && !categoryName){
   }, [])
   const categoryBaseProducts = async () => {
     try {
+      setError(null)
       const res = await axios.post(`${API_URL}/find-Category-Products?category=${categoryName}`)
       setProducts(res.data.data)
 
     } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        
+        setError(error.response?.data.error || "An error occurred while fetching products.");
+      }
+      console.log('categoryBaseProducts error', error)
       if (error) {
         return null
       }
@@ -190,7 +195,7 @@ try {
   }, [favIdInParams])
   return (
 
-    <div className="bg-gray-100 min-h-screen px-6 py-10">
+    <div className="bg-product-bg bg-cover  h-full px-6 py-10">
       {loading && <Loading />}
 
       {searchedProducts && (
@@ -202,7 +207,7 @@ try {
       {error ? (
         <p className="text-red-500 text-center text-lg">{error}</p>
       ) : (
-        <div className="grid  grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid bg-transparent  grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product: ProductInterface) => {
             const productId = product._id;
             const averageRating = parseFloat(getAverageRating(productId));
@@ -212,7 +217,7 @@ try {
               <div
                 key={product._id}
 
-                className="group relative bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-gray-200"
+                className="group relative bg-transparent rounded-xl border border-gray-100 shadow-sm overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-gray-200"
               >
                 {isOutOfStock && (
                   <div className="absolute top-4 right-4 bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
@@ -223,8 +228,10 @@ try {
                 {/* Product Image */}
                 <div
                   onClick={() =>
-                    router.push(`/order?product=${product._id}&p=${product.price}&stock=${product.countInStock}&rating=${averageRating}`)
-                  } className="relative pt-[75%] overflow-hidden">
+             
+                    router.push(`/order?query=${btoa(JSON.stringify({ productId: product._id, price: product.price, stock: product.countInStock, rating: averageRating }))}`)
+                  } 
+                  className="relative pt-[75%] overflow-hidden">
                   <Image
                     className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     src={product.image}

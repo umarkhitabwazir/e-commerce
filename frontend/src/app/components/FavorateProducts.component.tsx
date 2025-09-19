@@ -3,14 +3,17 @@ import axios, { AxiosError } from 'axios'
 import React, { useEffect, useState } from 'react'
 import FavInterface from '../utils/favInterface'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 const FavouriteProductsComponent = () => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL
   const [favProducts, setFavProducts] = useState<FavInterface[]>([])
+  const router=useRouter();
   const getFavProducts = async () => {
     try {
       const res = await axios.get(`${API_URL}/get-fav-product`, { withCredentials: true })
       setFavProducts(res.data.data)
+      console.log('fav product', res.data.data)
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -48,7 +51,12 @@ const FavouriteProductsComponent = () => {
     <div className="animate-fadeIn">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {favProducts.map((fav: FavInterface) => (
-          <div key={fav._id} className="bg-white rounded-xl p-4">
+          <div
+           key={fav._id}
+            onClick={() =>
+                    router.push(`/order?product=${fav.item._id}&p=${fav.item.price}&stock=${fav.item.countInStock}&rating=${fav.item.rating}`)
+                  } 
+            className="bg-transparent border rounded-xl p-4">
             <Image
               className='w-auto h-auto bg-transparent'
               src={fav.item.image}

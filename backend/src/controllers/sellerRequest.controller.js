@@ -20,7 +20,7 @@ const sendEmail = async (StoreName,OwnerName,ContactEmail,SubmissionDate,Referen
     const mailOptions = {
         from: `"UK Bazaar" ${process.env.EMAIL_USER}`, // Use domain-based email in production
         to: ContactEmail,
-        subject: "Email Verification",
+        subject: "seller store request",
         html: sellerRequestTemplate(StoreName,OwnerName,ContactEmail,SubmissionDate,ReferenceID)
     };
     return new Promise((resolve, reject) => {

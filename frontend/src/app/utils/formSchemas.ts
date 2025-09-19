@@ -52,6 +52,7 @@ const AddressSchema = z.object({
     Province: z.enum(
         [
             "Punjab",
+            "Islamabad",
             "Sindh",
             "Khyber Pakhtunkhwa",
             "Balochistan",

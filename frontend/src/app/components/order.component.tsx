@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
-import SingleProductComponent from "./SingleProduct.component";
+import SingleProductComponent from "./GetProductsByIds.component";
 import ReviewComponent from "./Review.component";
 
 
@@ -17,16 +17,16 @@ const OrderPage = () => {
   const [loading, setLoading] = useState(false);
   const [selectedQuantity, setSelectedQuantity] = useState<number | null>(1);
   const searchParams = useSearchParams();
-  const productId = searchParams.get("product");
-  const productPrice = searchParams.get("p");
-  const stock: number = parseInt(searchParams.get("stock") || "1");
+  const decoded = JSON.parse(atob(searchParams.get("query") || ""));
+
   const router = useRouter();
 
   useEffect(() => {
-    if (!productId || !productPrice) {
-      router.push("/");
-    }
-  }, [router, productId, productPrice]);
+if (!searchParams.get("query")) {
+  console.log("no query param");
+  return;
+}
+  }, [router, decoded]);
 
   const onSubmit: SubmitHandler<FormData> = async () => {
     if (!selectedQuantity) {
@@ -34,7 +34,7 @@ const OrderPage = () => {
       return;
     }
 
-    if (stock < selectedQuantity) {
+    if (decoded.stock < selectedQuantity) {
       setError("quantity", { type: "manual", message: "Quantity exceeds available stock" });
       return;
     }
@@ -42,9 +42,11 @@ const OrderPage = () => {
     try {
       setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      router.push(`/shipping?product=${productId}&q=${selectedQuantity}&p=${productPrice}`);
-    } catch (error) {
-      console.error("Error processing order:", error);
+      router.push(`/shipping?query=${btoa(JSON.stringify({ productId: decoded.productId, quantity: selectedQuantity, price: decoded.price }))}`);
+    } catch (error:unknown) {
+      if (error instanceof Error) {
+        console.error("Error processing order:", error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -64,19 +66,17 @@ const OrderPage = () => {
           <p className="text-black text-lg mt-4 font-medium">Processing Order...</p>
         </div>
       ) : (       
-        <div className="flex flex-col absolute top-0 justify-center items-center  min-h-screen w-full p-6">
+        <div className="flex flex-col    justify-center items-center  min-h-screen w-full p-6">
           {/* Order Form */}
          
           <form onSubmit={handleSubmit(onSubmit)} className="rounded-lg p-8 w-full max-w-lg">
-            {/* Error Message */}
-            {errors.quantity && (
-              <p className="text-red-500 text-sm text-center mb-4">{errors.quantity.message}</p>
-            )}
+        
 
             {/* Product Details */}
-            <SingleProductComponent productId={productId} />
+            <SingleProductComponent productIds={[decoded.productId]} />
 
             {/* Quantity Buttons */}
+
             <h1 className="text-2xl font-bold text-gray-900 text-center mb-6">Select Quantity</h1>
 
             <div className="flex justify-center w-full gap-4 mb-6">
@@ -101,11 +101,16 @@ const OrderPage = () => {
             >
               Buy Now
             </button>
+                {/* Error Message */}
+            {errors.quantity && (
+              <p className="text-red-500 text-sm text-center mb-4">{errors.quantity.message}</p>
+            )}
           </form>
 
           {/* Reviews Section */}
           <h1 id="review" className="text-gray-500 mt-10 text-xl font-medium">Reviews for this Product</h1>
-          <ReviewComponent productId={productId} />
+          <ReviewComponent productId={decoded.productId} />
+        
         </div>
        
       )}

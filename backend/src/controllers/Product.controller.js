@@ -26,26 +26,15 @@ let getAllProducts = asyncHandler(async (req, res) => {
     )
 })
 
-let getSingleProduct = asyncHandler(async (req, res) => {
-
-    let productId = req.params.productId
+let getProductsByIds = asyncHandler(async (req, res) => {
 
     const { productIdsArr } = req.body
-
-    if (productId !== 'null') {
-    const singleProduct=await Product.findById(productId)
-           if (!singleProduct) {
-            throw new ApiError(404, "Product not found")    
-            
-           }
-        return res.status(200).json(
-            new ApiResponse(200, [singleProduct], "product founded"))
-    }
-    if (productIdsArr) {
-        const objectIds = productIdsArr.map((p) => new mongoose.Types.ObjectId(p.productId));
+  console.log("productIdsArr", productIdsArr)
+    if (productIdsArr.length > 0) {
+        const objectIds = productIdsArr.map((p) => new mongoose.Types.ObjectId(p));
       console.log("objectIds", objectIds)
         const productArr = await Product.find({
-            _id: { $in: productIdsArr }
+            _id: { $in: objectIds }
         });
     if (productArr.length === 0) {
             throw new ApiError(404, "No products found for the provided IDs")
@@ -63,7 +52,7 @@ let getSingleProduct = asyncHandler(async (req, res) => {
 export {
     searchProduct,
     getAllProducts,
-    getSingleProduct,
+    getProductsByIds,
    
 
 }

@@ -125,7 +125,7 @@ const Navbar = ({ user }: { user: UserInterface }) => {
             {!isAuthRoute && (
                 <nav
                     className={`${isSticky
-                        ? "fixed top-0 bg-opacity-90  bg-gray-500 backdrop-blur-sm shadow-lg"
+                        ? "fixed  top-1 bg-opacity-90  bg-gray-500 backdrop-blur-sm shadow-lg"
                         : "text-white relative bg-gray-900"
                         } flex flex-wrap   transition-all duration-400 w-screen z-50 py-3`}
                 >

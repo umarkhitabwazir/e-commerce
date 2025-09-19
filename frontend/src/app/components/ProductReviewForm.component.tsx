@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { UserInterface } from "../utils/user.interface";
-import SingleProductComponent from "./SingleProduct.component";
+import SingleProductComponent from "./GetProductsByIds.component";
 import adminAuth from "../utils/adminAuth";
 
 const ProductReviewComponent = ({ user, productId }: { user: UserInterface, productId: string | null }) => {
@@ -55,7 +55,7 @@ const ProductReviewComponent = ({ user, productId }: { user: UserInterface, prod
             <h2 className="text-lg font-semibold text-gray-400 mb-2">Write a Review</h2>
             {error && <p className="text-red-500">{error}</p>}
             {success && <p className="text-green-500">Review submitted successfully!</p>}
-            <SingleProductComponent productId={productId} />
+            <SingleProductComponent productIds={[productId || ''] } />
             <form onSubmit={handleSubmit}>
                 {/* Star Rating Input */}
                 <label className="block text-sm font-medium text-gray-700">Rating</label>

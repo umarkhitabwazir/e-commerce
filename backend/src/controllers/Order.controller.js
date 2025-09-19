@@ -60,7 +60,6 @@ const previewOrder = asyncHandler(async (req, res) => {
             shippingPrice,
             totalPrice,
         }
-        console.log("previewOrder", previewOrder)
         res.status(201).json(
             new ApiResponse(201, previewOrder, "previewOrder created successfully")
         );
