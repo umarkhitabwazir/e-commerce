@@ -5,7 +5,7 @@ import GoBackComponent from '@/app/components/GoBack.component'
 const buying = () => {
 
   return (
-    <div  className='bg-shipping-bg w-screen  bg-cover'>
+    <div  className='bg-shipping-bg w-full  bg-cover'>
        <GoBackComponent/>
       <BuyingComponent/>
     </div>

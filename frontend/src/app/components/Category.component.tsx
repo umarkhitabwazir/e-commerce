@@ -34,7 +34,7 @@ const CategoryComponent = () => {
     }, [API_URL]);
 
     return (
-        <div className="absolute z-10 w-64 rounded-lg shadow-xl overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700">
+        <div className="absolute  right-0 z-10 w-64 rounded-lg shadow-xl overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700">
             <div className="p-4 border-b border-gray-700">
                 <h2 className="text-lg font-semibold text-white flex items-center">
                     <span className="mr-2">📋</span> Product Categories

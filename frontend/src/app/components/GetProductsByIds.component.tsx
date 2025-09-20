@@ -47,15 +47,15 @@ const GetProductsByIdsComponent = ({ productIds }: { productIds: string[] | [] }
     (
       product &&
       product.map((products: ProductInterface) => (
-        <div key={products._id} className={`rounded-lg bg-transparent  p-6 w-full mt-9 grid grid-flow-row grid-cols-3 md:flex-row items-center gap-6`}>
+        <div key={products._id} className={`rounded-lg bg-transparent  w-full p-6  mt-9 flex flex-wrap flex-col justify-center   md:flex-row items-center gap-6`}>
           {/* Product Image */}
-          <div className="flex-shrink-0">
+          <div className="flex flex-shrink-0 ">
             {products.image ? (
               <Image
                 src={products.image}
                 alt={products.title}
                 onClick={() => window.open(products.image, "_self")}
-                className={`rounded-lg object-cover  shadow-md cursor-pointer`}
+                className={`rounded-lg object-cover w-full h-auto  shadow-md cursor-pointer`}
                 width={400}
                 height={400}
               />
@@ -67,7 +67,7 @@ const GetProductsByIdsComponent = ({ productIds }: { productIds: string[] | [] }
           </div>
 
           {/* Product Details */}
-          <div className="flex  flex-col space-y-4 w-full">
+          <div className="flex flex-wrap  flex-col justify-between space-y-4 w-full">
             <h1 className="text-2xl font-bold text-gray-900">{products.title || "Untitled Product"}</h1>
             <p className="text-sm text-gray-700">{products.description || "No description available."}</p>
 

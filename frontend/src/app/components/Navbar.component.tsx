@@ -122,14 +122,15 @@ const Navbar = ({ user }: { user: UserInterface }) => {
 
     return (
         <>
-            {!isAuthRoute && (
+
+            {!admin ? !isAuthRoute && (
                 <nav
-                    className={`${isSticky
-                        ? "fixed  top-1 bg-opacity-90  bg-gray-500 backdrop-blur-sm shadow-lg"
-                        : "text-white relative bg-gray-900"
-                        } flex flex-wrap   transition-all duration-400 w-screen z-50 py-3`}
+                    className={
+                        `${isSticky
+                            ? "fixed top-0 bg-opacity-70 bg-gray-800 backdrop-blur-sm shadow-lg"
+                            : "relative bg-gray-800"} text-white transition-all duration-300 w-full z-50 py-3`}
                 >
-                    {!admin && (
+                    {(
                         <div className="container mx-auto  px-4">
                             <div className="flex  flex-wrap gap-2 items-center justify-between">
                                 {/* Logo */}
@@ -342,7 +343,7 @@ const Navbar = ({ user }: { user: UserInterface }) => {
 
                             {/* Mobile Navigation */}
                             {isMenuOpen && (
-                                <div className="md:hidden py-4 space-y-4 border-t border-gray-700 mt-3">
+                                <div className="md:hidden relative py-4 space-y-4 border-t border-gray-700 mt-3">
                                     <div className="relative">
                                         <div className="flex rounded-lg bg-white/10">
                                             <input
@@ -480,8 +481,11 @@ const Navbar = ({ user }: { user: UserInterface }) => {
                         </div>
                     )}
                 </nav>
-            )}
-            {admin && <AdminNavbarComponent />}
+            )
+                :
+                <AdminNavbarComponent />
+            }
+
         </>
     );
 };

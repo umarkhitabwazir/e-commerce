@@ -70,7 +70,7 @@ const CreateProductComponent = () => {
     };
 
     return (
-        <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="w-screen  bg-white rounded-xl  shadow-lg overflow-hidden">
             <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
                 <h2 className="text-2xl font-bold text-center text-white">Create New Product</h2>
             </div>
@@ -149,7 +149,7 @@ const CreateProductComponent = () => {
                         </div>
 
                         {/* Image Upload with Preview */}
-                        <div className="md:col-span-2 space-y-1">
+                        <div className="md:col-span-2 space-y-1 flex flex-col  gap-16">
                             <label htmlFor="productImg" className="block text-sm font-medium text-gray-700">
                                 Product Image
                             </label>

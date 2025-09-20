@@ -66,10 +66,10 @@ if (!searchParams.get("query")) {
           <p className="text-black text-lg mt-4 font-medium">Processing Order...</p>
         </div>
       ) : (       
-        <div className="flex flex-col    justify-center items-center  min-h-screen w-full p-6">
+        <div className="flex flex-col    justify-center items-center  min-h-screen w-full ">
           {/* Order Form */}
          
-          <form onSubmit={handleSubmit(onSubmit)} className="rounded-lg p-8 w-full max-w-lg">
+          <form onSubmit={handleSubmit(onSubmit)} className="rounded-lg p-8 w-full ">
         
 
             {/* Product Details */}
@@ -85,7 +85,7 @@ if (!searchParams.get("query")) {
                   key={qty}
                   type="button"
                   onClick={() => handleQuantityChange(qty)}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-lg ${selectedQuantity === qty
+                  className={`px-6 py-3 rounded-lg  font-semibold transition-all duration-200 text-lg ${selectedQuantity === qty
                     ? "bg-blue-600 text-white shadow-md transform scale-105"
                     : "bg-gray-200 text-gray-700 hover:bg-blue-100 hover:shadow-md"
                     }`}
@@ -97,7 +97,7 @@ if (!searchParams.get("query")) {
             {/* Buy Now Button */}
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-200 shadow-lg transform hover:scale-105 active:scale-95"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-200 shadow-lg transform  active:scale-95"
             >
               Buy Now
             </button>

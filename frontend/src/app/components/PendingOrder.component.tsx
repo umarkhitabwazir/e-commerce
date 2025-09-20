@@ -75,8 +75,8 @@ const PendingOrderComponent = ({
           const loading = loadingMap[order._id] || false;
 
           return (
-            <div key={order._id} className="border p-4 rounded-md bg-white shadow">
-              <div className="flex justify-between items-center">
+            <div key={order._id} className="border w-auto p-3   rounded-md bg-white shadow">
+              <div className="flex flex-wrap justify-between items-center">
                 <h2 className="font-bold text-gray-700">
                   Order #{order._id.slice(-6).toUpperCase()}
                 </h2>
@@ -101,7 +101,7 @@ const PendingOrderComponent = ({
                       SetDetailToggleBtn((prev) => !prev)
                     }
                   }}
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  className="bg-blue-500 text-white px-4 py-2 w-full rounded hover:bg-blue-600"
                 >
                   {selectedOrderId === order._id && detailToggleBtn ?
                     'Close Details' :
@@ -111,7 +111,7 @@ const PendingOrderComponent = ({
 
               {detailToggleBtn && selectedOrderId === order._id && (
                 <div ref={detailRef} className="mt-6 p-6  rounded-xl  ">
-                  <div className="flex justify-between items-center mb-4">
+                  <div className="flex flex-wrap justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold text-gray-700">
                       Order #{order._id.slice(-6).toUpperCase()}
                     </h2>
@@ -142,7 +142,7 @@ const PendingOrderComponent = ({
                     (Tax: ${order.taxPrice.toFixed(2)}, Shipping: ${order.shippingPrice.toFixed(2)})
                   </p>
 
-                  <div className=" flex gap-2 items-center flex-wrap">
+                  <div className=" flex gap-2 items-center justify-center flex-wrap">
                     {order.products.map((orderProduct) => {
                       const product = products.find((p) => p._id === orderProduct.productId._id);
                       if (!product) return null;
@@ -150,13 +150,13 @@ const PendingOrderComponent = ({
                       return (
                         <div
                           key={orderProduct.productId._id}
-                          className="md:flex   justify-between items-end"
+                          className=""
                         >
-                          <div className="flex items-center gap-4 p-4     transition">
+                          <div className="flex flex-wrap items-center gap-4 p-4 justify-center      transition">
                             <Image
                               src={product.image}
                               alt={product.title}
-                              className="rounded-lg object-cover"
+                              className="rounded-lg object-cover w-full h-auto"
                               width={120}
                               height={120}
                             />

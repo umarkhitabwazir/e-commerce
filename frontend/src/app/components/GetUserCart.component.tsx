@@ -27,12 +27,12 @@ const GetUserCartComponent = () => {
 
   const proceedHandler = () => {
     if (totalPrice > 0 && productIdsAndQtyArr.length > 0) {
-   
+
       router.push(
-        `/payment-cashier?query=${btoa( JSON.stringify({ totalPrice,productIdsAndQtyArr }) )} `
+        `/payment-cashier?query=${btoa(JSON.stringify({ totalPrice, productIdsAndQtyArr }))} `
       );
-    
-      
+
+
     }
   };
 
@@ -95,7 +95,7 @@ const GetUserCartComponent = () => {
   return (
     <>
       {userCart.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-8 rounded-2xl border border-gray-200 bg-gray-50 shadow-sm">
+        <div className="flex flex-wrap flex-col items-center justify-center p-8 rounded-2xl border border-gray-200 bg-gray-50 shadow-sm">
           <h3 className="text-lg font-semibold text-gray-700">
             Your cart is empty
           </h3>
@@ -110,10 +110,13 @@ const GetUserCartComponent = () => {
           </button>
         </div>
       ) : (
-        <div className="animate-fadeIn">
+        <div className="animate-fadeIn ">
           {userCart.map((cart: CartDataInterface) => (
             <div key={cart._id}
-              className={`  ${cart.deleted ? "bg-red-100 border border-red-400" : 'bg-purple-50'}   rounded-xl p-4 mb-4`}>
+              className={`
+                ${cart.deleted
+                  ? "bg-red-100 border border-red-400"
+                  : 'bg-purple-50'}   rounded-xl p-4 mb-4`}>
 
               {
                 cart.deleted
@@ -135,7 +138,7 @@ const GetUserCartComponent = () => {
                   cart.cartItems.map((cartItem: CartItemInterface) => (
                     <div
                       key={cartItem._id}
-                      className="flex items-center gap-3 border-b border-gray-200 py-2"
+                      className="flex justify-between  flex-wrap items-center gap-3 border-b border-gray-200 "
                     >
                       <input
                         checked={selectedItemsIds.length !== 0 && selectedItemsIds.includes(cartItem.product._id)}
@@ -146,12 +149,13 @@ const GetUserCartComponent = () => {
                         type="checkbox"
                       />
                       <Image
+                      className="md:w-auto w-full h-auto rounded-lg"
                         src={cartItem.product.image}
                         width={60}
                         height={60}
                         alt="product-img"
                       />
-                      <div className="ml-4 flex-1">
+                      <div className="ml-4 flex flex-1 flex-col">
                         <p className="font-medium text-gray-800">
                           {cartItem.product.title}
                         </p>
@@ -162,13 +166,11 @@ const GetUserCartComponent = () => {
                           price: ${cartItem.product.price}
                         </p>
                       </div>
-                      <span className="ml-6 font-bold text-gray-900">
-                        ${cartItem.price}
-                      </span>
+                      
                       <div >
                         <button
                           onClick={() => removeCartHandler(cart._id)}
-                          className="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors">
+                          className="text-sm font-semibold w-full text-red-600 hover:text-red-800 transition-colors">
                           Remove
                         </button>
                       </div>
@@ -178,7 +180,7 @@ const GetUserCartComponent = () => {
             </div>
           ))}
 
-          <div className="mt-6 pt-4 border-t border-gray-200 flex justify-between items-center">
+          <div className="mt-6 pt-4 border-t border-gray-200 flex justify-between flex-col items-center">
             <p className="font-medium text-gray-800">
               Total:{" "}
               <span className="font-bold text-lg text-purple-700">
