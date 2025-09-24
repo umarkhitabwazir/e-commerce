@@ -74,8 +74,8 @@ const SignupComponent = () => {
         <>
 
 
-            <div className="flex justify-center items-center p-20 min-h-screen bg-sign-up-bg bg-cover bg-center">
-                <div className="w-full max-w-4xl  bg-transparent p-8 rounded-lg shadow-lg">
+            <div className="flex flex-wrap w-full h-auto justify-between items-center ">
+                <div className="w-full  h-auto  bg-transparent p-8 ">
                     <h2 className="text-3xl font-bold text-gray-600 text-center mb-8">Sign Up</h2>
                     <form onSubmit={handleSubmit(onSubmit)} className=" flex  flex-wrap justify-center gap-2">
                         {/* Username Field */}
@@ -92,20 +92,7 @@ const SignupComponent = () => {
                             )}
                         </div>
 
-                        {/* Full Name Field */}
-                        <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-black mb-1">Full Name</label>
-                            <input
-                                {...register('fullName')}
-                                className={`w-full p-3 placeholder:text-gray-600 text-white bg-transparent border rounded-lg focus:outline-none ${errors.fullName ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                placeholder="Enter your full name"
-                            />
-                            {errors.fullName && (
-                                <p className="text-red-500 text-sm mt-1">{errors.fullName.message}</p>
-                            )}
-                        </div>
-
+                      
                         {/* Email Field */}
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-black mb-1">Email</label>
@@ -121,6 +108,7 @@ const SignupComponent = () => {
                             )}
                         </div>
 
+                      
                         {/* Password Field */}
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-black mb-1">Password</label>
@@ -149,19 +137,6 @@ const SignupComponent = () => {
 
 
 
-                        {/* Phone Field */}
-                        <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-black mb-1">Phone</label>
-                            <input
-                                {...register('phone')}
-                                className={`w-full p-3 text-white bg-transparent border placeholder:text-gray-600 rounded-lg focus:outline-none ${errors.phone ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                placeholder="Enter your phone number"
-                            />
-                            {errors.phone && (
-                                <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
-                            )}
-                        </div>
 
                         {/* Submit Button */}
                      
@@ -187,12 +162,23 @@ const SignupComponent = () => {
                         <h4 className="text-center text-gray-500 text-sm">
                             or
                         </h4>
-                        <Link
-                            href="/login"
-                            className="text-blue-500 hover:text-blue-700 underline text-lg font-extrabold"
-                        >
-                            Login
-                        </Link>
+                        <div className='flex flex-col justify-center items-center gap-3'>
+
+                 <Link
+  href="/login"
+  className="mt-3 inline-block px-6 py-2 rounded-lg bg-gray-800 text-white font-medium text-sm hover:bg-gray-900 transition-colors duration-200"
+>
+  Login
+</Link>
+  <Link
+    href="/"
+    className="text-sm font-medium text-gray-600 hover:text-white transition-colors duration-200"
+  >
+    Home Page ↗
+  </Link>
+                        </div>
+
+
                     </div>
 
                 </div>

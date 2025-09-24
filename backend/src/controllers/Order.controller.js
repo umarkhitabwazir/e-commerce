@@ -3,6 +3,7 @@ import { Product } from "../models/Product.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendEmail } from "./User.controller.js";
 
 
 const  TAX_RATE = parseFloat(process.env.TAX_RATE);
@@ -75,6 +76,11 @@ const createOrder = asyncHandler(async (req, res) => {
     
     if (!products || !Array.isArray(products) || products.length === 0 || !paymentMethod) {
         throw new ApiError(400, "Products and payment method are required");
+    }
+    
+    if (!user.isVerified) {
+        sendEmail(user.email, user.emailVerificationCode)
+        throw new ApiError(403, "we sended a verification code to your email, please verify your email and try again");
     }
     const produdsArr = [];
     let productTotalPrice = 0;

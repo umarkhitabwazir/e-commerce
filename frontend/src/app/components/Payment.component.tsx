@@ -1,7 +1,7 @@
 "use client";
 import axios, { AxiosError } from 'axios';
-import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import React, {  useState } from 'react';
 import withAuth from '../utils/withAuth';
 import SingleProductComponent from './GetProductsByIds.component';
 
@@ -9,16 +9,27 @@ const PaymentComponent = () => {
   const [selectedPayment, setSelectedPayment] = useState('');
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const searchParams = useSearchParams();
+  const trackPath = usePathname();
+  const updatedSearchParams = new URLSearchParams(searchParams.toString())
   const decoded = searchParams.get('query') !== null && JSON.parse(atob(searchParams.get('query') || ''))
-  const productIds=decoded.productIdsAndQtyArr ? decoded.productIdsAndQtyArr.map((item: { productId: string; quantity: number }) => item.productId) : []
+  const productIds = decoded.productIdsAndQtyArr ? decoded.productIdsAndQtyArr.map((item: { productId: string; quantity: number }) => item.productId) : []
   const [loading, setLoading] = useState(false)
+ const paymentMethods=[
+            { id: "JazzCash", label: "JazzCash" },
+            { id: "credit", label: "Credit Card" },
+            { id: "cod", label: "Cash on Delivery" }
+          ]
+     
+  const [error, setError] = useState<string | undefined>(undefined);
   const router = useRouter()
 
 
 
   const handlePaymentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setError(undefined)
     setSelectedPayment(event.target.value);
   };
+
 
   const handleProceed = async () => {
     setLoading(true)
@@ -32,22 +43,25 @@ const PaymentComponent = () => {
             "paymentMethod": paymentMethod,
           }, { withCredentials: true });
 
-          return router.push(`/your-orders?decoded=${btoa(JSON.stringify(decoded))}`)
-        }
-
-      } catch (error: unknown) {
-        if (error instanceof AxiosError) {
-
-          console.log("proceed order  error", error)
-
-        }
-        setLoading(false)
-      } finally {
-        setLoading(false)
+        return router.push(`/your-orders?decoded=${btoa(JSON.stringify(decoded))}`)
       }
-    } else {
-      alert('Please select a payment method.');
+
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 403) {
+          console.log("proceed order 403 error", trackPath, updatedSearchParams.toString())
+          router.push(`/verify-email?track=${trackPath}&${updatedSearchParams}`)
+
+        }
+        setError(error.response?.data?.error);
+        console.log("proceed order  error", error)
+
+      }
+      setLoading(false)
+    } finally {
+      setLoading(false)
     }
+  };
   };
 
   return (
@@ -65,11 +79,7 @@ const PaymentComponent = () => {
           )}
 
         <div className="space-y-4 mb-8">
-          {[
-            { id: "JazzCash", label: "JazzCash" },
-            { id: "credit", label: "Credit Card" },
-            { id: "cod", label: "Cash on Delivery" }
-          ].map((method) => (
+          {paymentMethods.map((method) => (
             <div
               key={method.id}
               className={`
@@ -109,7 +119,9 @@ const PaymentComponent = () => {
             </div>
           ))}
         </div>
-
+{error && (
+          <p className="text-red-500 text-center mb-4">{error}</p>
+        )}
         <div className={`transition-opacity duration-300 ${selectedPayment ? "opacity-100" : "opacity-0 h-0"}`}>
           <button
             className={`

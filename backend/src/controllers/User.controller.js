@@ -40,7 +40,7 @@ const transporter = nodemailer.createTransport({
     debug: true,
 });
 
-const sendEmail = async (email, emailVerificationCode) => {
+export const sendEmail = async (email, emailVerificationCode) => {
     const verificationLink = `${process.env.CORS_ORIGIN}verify-email?&code=${emailVerificationCode}`;
 
     const mailOptions = {
@@ -123,10 +123,10 @@ const sendEmail = async (email, emailVerificationCode) => {
 // };
 
 const createUser = asyncHandler(async (req, res) => {
-    const { username, email, fullName, role, phone, password } = req.body
+    const { username, email, role, password } = req.body
 
 
-    if ([username, email, fullName, phone, password].some((field) => field?.trim() === "")) {
+    if ([username, email, password].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "All fields are required")
     }
     const errors = validationResult(req);
@@ -154,9 +154,7 @@ const createUser = asyncHandler(async (req, res) => {
     const user = new User({
         username,
         email,
-        fullName,
-        role,
-        phone,
+       role,
         password,
         emailVerificationCode,
 
@@ -186,16 +184,21 @@ const createUser = asyncHandler(async (req, res) => {
 
 const updateUser = asyncHandler(async (req, res) => {
     const user = req.user
-    const { fullName, username, phone } = req.body
+    const { username} = req.body
     if (!user.id) {
         throw new ApiError(401, "Unauthorized. Please log in first.")
     }
-    if (fullName, username, phone) {
-
+    if (username) {
+const existingUser = await User.find({ username: username });
+if (existingUser.length > 0 && existingUser[0]._id.toString() !== user._id.toString()) {
+    throw new ApiError(400, "Username already exists. Please choose a different username.");
+}
+const updatedUser = await User.findById(user._id);
+if (!updatedUser) {
+    throw new ApiError(404, "User not found.");
+}
         user.username = username
-        user.fullName = fullName
-
-        user.phone = phone
+        
         await user.save()
     }
 
@@ -379,6 +382,11 @@ const getLoginUserData = asyncHandler(async (req, res) => {
     const user = req.user
     if (!user) {
         throw new ApiError(400, null, "user not logined!", false)
+    }
+    const verified = user.isVerified
+    if (!verified) {
+        sendEmail(user.email, user.emailVerificationCode)
+        throw new ApiError(403, null, "Please verify your email to access this resource.", false)
     }
     res.status(200).json({ status: 200, data: user, message: "user founded" })
 })

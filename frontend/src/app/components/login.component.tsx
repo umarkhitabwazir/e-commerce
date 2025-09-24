@@ -168,36 +168,31 @@ const LoginComponent = () => {
                             or
                         </h4>
 
+<div className="flex items-center justify-center flex-col mt-6 space-y-4">
+  <Link
+    href="/sign-up"
+    className="w-full text-center py-2 px-4 rounded-lg bg-gray-800 text-white font-medium hover:bg-gray-900 transition-colors duration-200"
+  >
+    Sign Up
+  </Link>
+</div>
 
-                        <Link
-                            href="/sign-up"
-                            className="text-white hover:text-blue-700 underline text-lg font-extrabold"
-                        >
-                            Sign up
-                        </Link>
+<div className="flex flex-wrap justify-between items-center mt-6 gap-3">
+  <Link
+    href="/reset-password"
+    className="text-sm font-medium text-blue-400 hover:text-blue-500 transition-colors duration-200"
+  >
+    Forgot Password?
+  </Link>
 
+  <Link
+    href="/"
+    className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
+  >
+    Home Page ↗
+  </Link>
+</div>
 
-                    </div>
-                    <div className=' flex flex-wrap justify-between items-center'>
-
-                        <div>
-
-                            <Link
-                                href="/reset-password"
-                                className="text-white hover:text-blue-700 underline text-lg font-bold"
-                            >
-                                Forgot Password ?
-                            </Link>
-                        </div>
-                        <div>
-
-                            <Link
-                                className="w-full  hover:text-gray-500 text-white font-semibold underline py-2 px-4 rounded mt-3"
-                                href="/"
-                            >
-                                Return to Home Page↗
-                            </Link>
-                        </div>
                     </div>
 
                 </div>

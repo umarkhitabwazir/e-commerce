@@ -2,24 +2,11 @@
 import React, { useState } from "react";
 import withAuth from "../utils/withAuth";
 import UserProfileForm from "./UserProfileForm.component";
+import { UserInterface } from "../utils/user.interface";
 
-
-interface User {
-    id: string;
-    username: string;
-    email: string;
-    fullName: string;
-    role: string;
-    password: string;
-    address: string;
-    phone: number;
-    isVerified: boolean;
-    createdAt: string;
-    updatedAt: string;
-}
 
 interface ProfileComponentProps {
-    user: User;
+    user: UserInterface;
 }
 
 const ProfileComponent: React.FC<ProfileComponentProps> = ({ user }) => {
@@ -40,12 +27,9 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user }) => {
                             <div className="grid  grid-cols-1 gap-4">
                                 {/* User Information Items */}
                                 {[
-                                    { label: "Full Name", value: user.fullName },
-                                    { label: "Username", value: user.username },
+                                   { label: "Username", value: user.username },
                                     { label: "Email", value: user.email },
-                                    { label: "Phone", value: user.phone },
-                                    { label: "Address", value: user.address }
-                                ].map((item, index) => (
+                                   ].map((item, index) => (
                                     <div key={index} className="flex items-center py-3 border-b border-gray-100">
                                         <span className="font-medium text-gray-600 w-40 flex-shrink-0">
                                             {item.label}:

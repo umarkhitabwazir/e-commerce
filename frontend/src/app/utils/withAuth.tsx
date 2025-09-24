@@ -66,6 +66,9 @@ const withAuth = <P extends WithAuthProps>(
                         console.log('error',error?.response?.status)
                         router.push(`/login?track=${trackPath}&${updatedSearchParams}`)
                       }
+                      if (error?.response?.status===403) {
+                        router.push(`/verify-email?track=${trackPath}&${updatedSearchParams}`)
+                      }
                   }
 
               

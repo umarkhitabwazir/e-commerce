@@ -25,7 +25,7 @@ const userRouter = Router()
 userRouter.route("/user/signup").post(
   [
     body("email").isEmail().withMessage("Invalid email address"),
-    body("phone").isMobilePhone().withMessage("Invalid phone number"),
+  
   ],
   createUser
 ); // Create a new user (Signup)

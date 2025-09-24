@@ -23,13 +23,7 @@ const userSchema = new Schema(
             lowecase: true,
             trim: true, 
         },
-        fullName: {
-            type: String,
-            required: [true,"fullname is required"],            
-            trim: true, 
-            index: true
-        },
-        role:{
+            role:{
             type: String,
             trim: true, 
             enum: ["user", "admin", "superadmin"],
@@ -45,11 +39,7 @@ const userSchema = new Schema(
             trim: true,
         },
       
-        phone:{
-            type:Number,
-            required: [true,"phone number is required"],
-            trim: true, 
-        },
+      
         refreshToken: {
             type: String,
             default: ""
