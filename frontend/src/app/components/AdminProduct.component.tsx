@@ -296,7 +296,7 @@ const AdminProductComponent = () => {
                         </div>
                       </div>
                       <div className="min-w-0">
-                        <h2 className="text-lg font-bold text-gray-900 truncate">
+                        <h2 className="text-lg font-bold text-gray-900 break-words line-clamp-2">
                           {product.title}
                         </h2>
                         <p className="text-gray-500 text-sm">{product.brand}</p>
@@ -310,7 +310,7 @@ const AdminProductComponent = () => {
                     <div className="mt-5 grid grid-cols-2 gap-3">
                       <div>
                         <p className="text-xs text-gray-500">Price</p>
-                        <p className="font-semibold">${product.price.toFixed(2)}</p>
+                        <p className="font-semibold text-gray-500">${product.price.toFixed(2)}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Stock</p>

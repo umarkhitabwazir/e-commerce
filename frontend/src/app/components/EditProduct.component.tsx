@@ -9,6 +9,69 @@ import Image from 'next/image';
 
 const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh: Dispatch<SetStateAction<ProductInterface[]>>, setEditProductId: Dispatch<SetStateAction<string | ''>>, product: ProductInterface | null }) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const categoryEnum = [
+    "Perfume",
+    "Smart Watch",
+    "Fashion",
+    "Beauty & Skincare",
+    "Electronics",
+    "Mobile Phones",
+    "Laptops",
+    "Tablets",
+    "Desktop Computers",
+    "Computer Accessories",
+    "Cameras",
+    "Headphones",
+    "Speakers",
+    "Home Appliances",
+    "Kitchen Appliances",
+    "Refrigerators",
+    "Washing Machines",
+    "Air Conditioners",
+    "Furniture",
+    "Living Room Furniture",
+    "Bedroom Furniture",
+    "Office Furniture",
+    "Clothing Men",
+    "Clothing Women",
+    "Clothing Kids",
+    "Shoes Men",
+    "Shoes Women",
+    "Shoes Kids",
+    "Bags & Luggage",
+    "Watches",
+    "Jewelry",
+    "Books",
+    "Stationery",
+    "Sports Equipment",
+    "Fitness & Gym",
+    "Toys",
+    "Baby Products",
+    "Health Care",
+    "Pharmacy",
+    "Groceries",
+    "Snacks & Beverages",
+    "Pet Supplies",
+    "Automobile Accessories",
+    "Motorbikes",
+    "Car Accessories",
+    "Gardening",
+    "Home Decor",
+    "Lighting",
+    "Tools & Hardware",
+    "Construction Materials",
+    "Musical Instruments",
+    "Gaming Consoles",
+    "Video Games",
+    "Software",
+    "Streaming Devices",
+    "Smart Home Devices",
+    "Medical Equipment",
+    "Safety & Security",
+    "Gift Items",
+    "Seasonal Items",
+    "Arts & Crafts"
+  ]
 
   const [formData, setFormData] = useState({
     categoryName: product?.category.categoryName || '',
@@ -29,8 +92,9 @@ const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh:
   const onClose = () => {
     setEditProductId('')
   }
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -101,14 +165,28 @@ const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh:
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">EDIT PRODUCT</h2>
         <div className="space-y-4">
           <label className='text-gray-400 text-sm' htmlFor="categoryName">CATEGORY NAME</label>
-          <input
+          <select
+            name="categoryName"
+            value={formData.categoryName}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded text-black"
+          >
+            <option value="" disabled>Select Category</option>
+            {categoryEnum.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+
+          {/* <input
             type="text"
             name="categoryName"
             value={formData.categoryName}
             onChange={handleChange}
             placeholder="Category Name"
             className="w-full p-2 border border-gray-300 rounded text-black"
-          />
+          /> */}
           <label className='text-gray-400 text-sm' htmlFor="title">TITLE</label>
           <input
             type="text"

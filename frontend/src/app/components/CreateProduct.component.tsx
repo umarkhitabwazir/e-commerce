@@ -5,7 +5,7 @@ import { CreateProductSchema, CreateProductFormData } from '../utils/formSchemas
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios, { AxiosError } from 'axios';
 import withAuth from '../utils/withAuth';
-import { useRouter } from 'next/navigation';
+
 
 // Zod schema validation
 
@@ -16,11 +16,12 @@ const CreateProductComponent = () => {
     const [message, setMessage] = useState("")
     const [loading, setLoading] = useState(false)
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const router = useRouter()
+    
 
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm<CreateProductFormData>({
         resolver: zodResolver(CreateProductSchema),
@@ -49,15 +50,20 @@ const CreateProductComponent = () => {
         formData.append('countInStock', data.countInStock.toString());
         formData.append('categoryName', data.categoryName);
 
-        console.log(formData)
+       
         try {
             const res = await axios.post(`${API_URL}/product/create`, formData, { withCredentials: true })
-            console.log('res', res.data.message)
-            alert(`✅${res.data.message}`)
+          
+            
             setMessage(res.data.message)
             setTimeout(() => { setMessage("") }, 2000)
             setLoading(false)
-            router.push('/my-products')
+           reset()      
+            setImagePreview(null)
+            
+           
+
+            
         } catch (error: unknown) {
             setLoading(false)
 
@@ -76,28 +82,7 @@ const CreateProductComponent = () => {
             </div>
 
             <div className="p-6">
-                {/* Status Messages */}
-                <div className={`text-center mb-6 p-3 rounded-lg transition-all duration-300 ${error ? "bg-red-100 text-red-700" :
-                        message ? "bg-green-100 text-green-700" :
-                            "bg-transparent"
-                    }`}>
-                    {error && (
-                        <div className="flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                            </svg>
-                            <span>{error}</span>
-                        </div>
-                    )}
-                    {message && (
-                        <div className="flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                            </svg>
-                            <span>{message}</span>
-                        </div>
-                    )}
-                </div>
+          
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -108,13 +93,31 @@ const CreateProductComponent = () => {
                                         field === 'categoryName' ? 'Category' :
                                             field.charAt(0).toUpperCase() + field.slice(1)}
                                 </label>
-                                <input
-                                    type={field === 'price' || field === 'countInStock' ? 'number' : 'text'}
-                                    id={field}
-                                    {...register(field)}
-                                    className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                    placeholder={`Enter ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`}
-                                />
+                                {field === 'categoryName' ? (
+                                    <select
+                                        id={field}
+                                        {...register(field)}
+                                        className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                        defaultValue=""
+                                    >
+                                        <option value="" disabled>
+                                            Select a category
+                                        </option>
+                                        {CreateProductSchema.shape.categoryName.options.map((category) => (
+                                            <option key={category} value={category}>
+                                                {category}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <input
+                                        type={field === 'price' || field === 'countInStock' ? 'number' : 'text'}
+                                        id={field}
+                                        {...register(field)}
+                                        className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                        placeholder={`Enter ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`}
+                                    />
+                                )}
                                 {errors[field as keyof CreateProductFormData] && (
                                     <p className="text-red-500 text-sm mt-1 flex items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
@@ -247,6 +250,28 @@ const CreateProductComponent = () => {
                         </button>
                     </div>
                 </form>
+                      {/* Status Messages */}
+                <div className={`text-center mb-6 p-3 rounded-lg transition-all duration-300 ${error ? "bg-red-100 text-red-700" :
+                    message ? "bg-green-100 text-green-700" :
+                        "bg-transparent"
+                    }`}>
+                    {error && (
+                        <div className="flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                            <span>{error}</span>
+                        </div>
+                    )}
+                    {message && (
+                        <div className="flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            <span>{message}</span>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

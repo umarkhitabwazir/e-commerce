@@ -1,22 +1,88 @@
 import mongoose,{Schema} from "mongoose";
 
+const CATEGORY_ENUM = [
+  "Perfume",
+  "Smart Watch",
+  "Fashion",
+  "Beauty & Skincare",
+  "Electronics",
+  "Mobile Phones",
+  "Laptops",
+  "Tablets",
+  "Desktop Computers",
+  "Computer Accessories",
+  "Cameras",
+  "Headphones",
+  "Speakers",
+  "Home Appliances",
+  "Kitchen Appliances",
+  "Refrigerators",
+  "Washing Machines",
+  "Air Conditioners",
+  "Furniture",
+  "Living Room Furniture",
+  "Bedroom Furniture",
+  "Office Furniture",
+  "Clothing Men",
+  "Clothing Women",
+  "Clothing Kids",
+  "Shoes Men",
+  "Shoes Women",
+  "Shoes Kids",
+  "Bags & Luggage",
+  "Watches",
+  "Jewelry",
+  "Books",
+  "Stationery",
+  "Sports Equipment",
+  "Fitness & Gym",
+  "Toys",
+  "Baby Products",
+  "Health Care",
+  "Pharmacy",
+  "Groceries",
+  "Snacks & Beverages",
+  "Pet Supplies",
+  "Automobile Accessories",
+  "Motorbikes",
+  "Car Accessories",
+  "Gardening",
+  "Home Decor",
+  "Lighting",
+  "Tools & Hardware",
+  "Construction Materials",
+  "Musical Instruments",
+  "Gaming Consoles",
+  "Video Games",
+  "Software",
+  "Streaming Devices",
+  "Smart Home Devices",
+  "Medical Equipment",
+  "Safety & Security",
+  "Gift Items",
+  "Seasonal Items",
+  "Arts & Crafts"
+];
+
 const categorySchema = new Schema(
-    {
-    categoryName:{
-        type:String,
-        required:[true,"name is required"],
-        trim:true,
-        unique: true,
-        index:true,
+  {
+    categoryName: {
+      type: String,
+      enum: CATEGORY_ENUM,
+      required: [true, "name is required"],
+      trim: true,
+      unique: true,
+      index: true,
     },
- 
-    user:{
-        type:Schema.Types.ObjectId,
-        ref:"User",
-        required:[true,"user is required"],
-    }
-
-
-}
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "user is required"],
+    },
+  },
+  { timestamps: true }
 );
+
+
+
 export const Category=mongoose.model("Category",categorySchema)

@@ -14,7 +14,7 @@ import {  reviewsRouters } from "./routes/reviews.routes.js";
 import categoryRouter from "./routes/category.routes.js";
 import { cartRouter } from "./routes/cart.rout.js";
 import favoritRouter from "./routes/favorate.routes.js";
-import sellerRequestRoutes from "./routes/sellerRequest.routes.js";
+import sellerRequestRoutes from "./routes/storeRequests.routes.js";
 const app = express()
 app.use(
   cors({

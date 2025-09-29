@@ -7,4 +7,4 @@ categoryRouter.route("/categoryList").post(categoryList); // Create a category l
 categoryRouter.route("/find-Category-Products").post(findCategoryProduct); //find Category Products
 
 
-export default categoryRouter;
+export default categoryRouter;  

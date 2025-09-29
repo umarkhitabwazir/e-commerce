@@ -9,6 +9,7 @@ import { ProductInterface } from '../utils/productsInterface';
 import Loading from './Loading.component';
 import AddToCartComponent from './AddToCart.component';
 import FavInterface from '../utils/favInterface';
+import ErrorMessage from './ErrorMessage.component';
 
 const Products = () => {
   const [sort, setSort] = useState<string | null>(null);
@@ -123,11 +124,15 @@ if (!searchedProducts && !categoryName){
   const categoryBaseProducts = async () => {
     try {
       setError(null)
-      const res = await axios.post(`${API_URL}/find-Category-Products?category=${categoryName}`)
+      if (!categoryName) {
+        return;
+      }
+      const res = await axios.post(`${API_URL}/find-Category-Products?category=${encodeURIComponent(categoryName)}`)
       setProducts(res.data.data)
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
+      console.log('categoryName after axios', categoryName)
         
         setError(error.response?.data.error || "An error occurred while fetching products.");
       }
@@ -195,7 +200,7 @@ try {
   }, [favIdInParams])
   return (
 
-    <div className="bg-product-bg bg-cover  h-full px-6 py-10">
+    <div className=" px-6 py-10">
       {loading && <Loading />}
 
       {searchedProducts && (
@@ -205,7 +210,7 @@ try {
       )}
 
       {error ? (
-        <p className="text-red-500 text-center text-lg">{error}</p>
+      <ErrorMessage message={error} />
       ) : (
         <div className="grid bg-transparent  grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product: ProductInterface) => {

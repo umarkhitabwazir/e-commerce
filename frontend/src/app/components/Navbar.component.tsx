@@ -136,7 +136,18 @@ const Navbar = ({ user }: { user: UserInterface }) => {
                                 {/* Logo */}
                                 <div
                                     className="text-2xl font-bold cursor-pointer tracking-tight hover:text-cyan-300 transition-colors"
-                                    onClick={() => router.push("/")}
+                                    onClick={() =>{ 
+
+                                        router.push("/")
+                                        setSearchResult(null)
+                                        setSearchInput("")
+                                        setIsProductSearched(false)
+                                        setTimeout(() => {
+
+                                            window.location.reload();
+                                        }, 100);
+                                        }
+                                    }
                                 >
                                     Shop<span className="text-cyan-400">Hub</span>
                                 </div>

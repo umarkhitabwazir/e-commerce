@@ -1,7 +1,7 @@
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import SellerRequest from "../models/sellerRequest.model.js";
+import SellerRequest from "../models/storeRequests.model.js";
 import nodemailer from "nodemailer";
 import sellerRequestTemplate from "../emailTemplate/sellerRequest.template.js";
 

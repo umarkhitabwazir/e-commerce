@@ -245,7 +245,7 @@ let updateProductWithCategory = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(400, "user not logged in")
     }
-    if (!user.role === "admin") {
+    if (user.role !== "admin") {
         throw new ApiError(400, "only admin can update products")
     }
     if (!categoryName ||
@@ -255,20 +255,18 @@ let updateProductWithCategory = asyncHandler(async (req, res) => {
     }
     let productId = req.params.productid
     let product = await Product.findById(productId)
-    console.log('product in update route', product)
+    
     if (!product) {
         throw new ApiError(404, "Product not found")
     }
 
     let category = await Category.findOne({ categoryName: categoryName })
+console.log('category', category)
     if (!category) {
-        category = await Category.findByIdAndUpdate(
-            product.category,
-            {
-                categoryName,
-
-                user: user.id
-            })
+        category = await Category.create({
+            categoryName,
+            user: user.id
+        })
     }
 
 
@@ -278,9 +276,7 @@ let updateProductWithCategory = asyncHandler(async (req, res) => {
         throw new ApiError(400, "You are not authorized to update this product")
     }
 
-    if (!product) {
-        throw new ApiError(404, "Product not found")
-    }
+    product.category = category.id
     product.title = title
     product.price = price
     product.description = description

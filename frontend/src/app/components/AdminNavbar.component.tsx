@@ -13,11 +13,11 @@ const AdminNavbarComponent = () => {
   return (
     <>
       {!isAuthRoute && (
-        <nav 
-        className={
-          `${isSticky 
-            ? "fixed top-0 bg-opacity-70 bg-gray-800 backdrop-blur-sm shadow-lg"
-             : "relative bg-gray-800"} text-white transition-all duration-300 w-full z-50 py-3`}
+        <nav
+          className={
+            `${isSticky
+              ? "fixed top-0 bg-opacity-70 bg-gray-800 backdrop-blur-sm shadow-lg"
+              : "relative bg-gray-800"} text-white transition-all duration-300 w-full z-50 py-3`}
         >
           <div className="container mx-auto px-4">
             <div className="flex flex-row flex-wrap md:items-center justify-between gap-4">
