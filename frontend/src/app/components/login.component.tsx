@@ -26,10 +26,10 @@ const LoginComponent = () => {
     const [loading, setLoading] = useState<boolean>(false); // Track loading state
     const router = useRouter()
     const searchParams = useSearchParams()
-    const updatedSearchParams=new URLSearchParams(searchParams.toString())
+    const updatedSearchParams = new URLSearchParams(searchParams.toString())
     const trackedPath = searchParams.get("track")
     const [passwordVisible, setPasswordVisible] = useState(false)
-      const [networkError, setNetworkError] = useState(false)
+    const [networkError, setNetworkError] = useState(false)
     // Form submit handler
     const onSubmit = async (data: LoginFormData) => {
 
@@ -39,7 +39,7 @@ const LoginComponent = () => {
 
             const response = await axios.post(`${API_URL}/user/Login`, data, { withCredentials: true });
             const resdata = response?.data.data
-            if (resdata==="notVerified") {
+            if (resdata === "notVerified") {
 
                 const maskEmail = (email: string) => {
                     const [name, domain] = email.split('@');
@@ -56,18 +56,22 @@ const LoginComponent = () => {
 
 
 
-
+            const userRole = response.data.data.role;
             setLoading(false); // Stop loading
             if (response.data.data.isVerified) {
+                if (userRole === "buyer") {
+                    router.push(`${trackedPath || "/buyer"}?${updatedSearchParams} `);
+                }
+                if (userRole === "super-admin") {
+                    router.push("/admin");
+                }
+                if (userRole === "seller") {
+                    router.push("/seller");
+                }
 
-                router.push(`${trackedPath || "/"}?${updatedSearchParams} `);
-                setTimeout(() => {
-                   window.location.reload()
-                }, 700)
             }
 
         } catch (err: unknown) {
-            console.log('login error',err)
             setLoading(false); // Stop loading
             if (err instanceof AxiosError) {
                 if (err.status === 500) {
@@ -85,7 +89,7 @@ const LoginComponent = () => {
                 }
 
             }
-        } 
+        }
 
     };
     return (
@@ -94,19 +98,31 @@ const LoginComponent = () => {
                 networkError && <NoInternetComponent />
             }
 
-            <div className="flex justify-center items-center min-h-screen bg-login-bg bg-cover bg-center">
+            <div className="flex justify-center items-center min-h-screen bg-auth-bg bg-cover bg-center">
                 <div className="w-full max-w-4xl bg-transparent p-8 rounded-lg shadow-lg">
+                    <div className="text-center mb-10">
+                        <Image
+                            src="/logo.jpg"
+                            alt="App Logo"
+                            width={100}
+                            height={100}
+                            className="mx-auto rounded-full mb-4"
+                        />
+                        <h1 className="text-4xl font-extrabold text-orange-200">Welcome Back</h1>
+                        <p className="text-gray-300 mt-2">Log in to manage your account and explore new features</p>
+                    </div>
                     <h2 className="text-3xl font-bold text-white text-center mb-8">Login</h2>
+
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
 
                         {/* Email Field */}
                         <div className=" ">
-                            <label className="block text-sm font-medium text-black mb-1">Email</label>
+                            <label className="block text-sm font-medium text-orange-200 mb-1">Email</label>
                             <input
 
                                 {...register('email')}
                                 type="email"
-                                className={`w-full p-3 text-white bg-transparent border rounded-lg focus:outline-none ${errors.email ? 'border-red-500' : 'border-gray-300'
+                                className={`w-full p-3 placeholder:text-orange-200 text-white bg-transparent border rounded-lg focus:outline-none ${errors.email ? 'border-red-500' : 'border-gray-300'
                                     }`}
                                 placeholder="Enter your email"
                             />
@@ -117,23 +133,23 @@ const LoginComponent = () => {
 
                         {/* Password Field */}
                         <div className="">
-                            <label className="block text-sm font-medium text-black mb-1">Password</label>
+                            <label className="block text-sm font-medium text-orange-200 mb-1">Password</label>
                             <div className='relative'>
 
                                 <input
                                     {...register('password')}
                                     type={passwordVisible ? 'text' : 'password'}
-                                    className={`w-full p-3  border text-white bg-transparent rounded-lg focus:outline-none ${errors.password ? 'border-red-500' : 'border-gray-300'
+                                    className={`w-full p-3 placeholder:text-orange-200  border text-white bg-transparent rounded-lg focus:outline-none ${errors.password ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     placeholder="Enter your password"
                                 />
 
                                 <div className='absolute right-3 top-3'>
 
-                                    <Image onClick={()=>setPasswordVisible(prev=>!prev)}
-                                     src={passwordVisible?"/eye-solid.svg" :"/eye-slash-solid.svg"}
-                                     className='cursor-pointer'
-                                      width={20} height={20} alt='eye-slash-solid' />
+                                    <Image onClick={() => setPasswordVisible(prev => !prev)}
+                                        src={passwordVisible ? "/eye-solid.svg" : "/eye-slash-solid.svg"}
+                                        className='cursor-pointer'
+                                        width={20} height={20} alt='eye-slash-solid' />
                                 </div>
                             </div>
                             {errors.password && (
@@ -168,30 +184,30 @@ const LoginComponent = () => {
                             or
                         </h4>
 
-<div className="flex items-center justify-center flex-col mt-6 space-y-4">
-  <Link
-    href="/sign-up"
-    className="w-full text-center py-2 px-4 rounded-lg bg-gray-800 text-white font-medium hover:bg-gray-900 transition-colors duration-200"
-  >
-    Sign Up
-  </Link>
-</div>
+                        <div className="flex items-center justify-center flex-col mt-6 space-y-4">
+                            <Link
+                                href="/sign-up"
+                                className="w-full text-center py-2 px-4 rounded-lg bg-gray-800 text-white font-medium hover:bg-gray-900 transition-colors duration-200"
+                            >
+                                Sign Up
+                            </Link>
+                        </div>
 
-<div className="flex flex-wrap justify-between items-center mt-6 gap-3">
-  <Link
-    href="/reset-password"
-    className="text-sm font-medium text-blue-400 hover:text-blue-500 transition-colors duration-200"
-  >
-    Forgot Password?
-  </Link>
+                        <div className="flex flex-wrap justify-between items-center mt-6 gap-3">
+                            <Link
+                                href="/reset-password"
+                                className="text-sm font-medium text-blue-400 hover:text-blue-500 transition-colors duration-200"
+                            >
+                                Forgot Password?
+                            </Link>
 
-  <Link
-    href="/"
-    className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
-  >
-    Home Page ↗
-  </Link>
-</div>
+                            <Link
+                                href="/"
+                                className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
+                            >
+                                Home Page ↗
+                            </Link>
+                        </div>
 
                     </div>
 

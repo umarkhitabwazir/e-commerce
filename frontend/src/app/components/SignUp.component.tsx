@@ -74,16 +74,25 @@ const SignupComponent = () => {
         <>
 
 
-            <div className="flex flex-wrap w-full h-auto justify-between items-center ">
+            <div className="flex flex-wrap w-screen max-w-xl h-auto justify-between items-center ">
                 <div className="w-full  h-auto  bg-transparent p-8 ">
-                    <h2 className="text-3xl font-bold text-gray-600 text-center mb-8">Sign Up</h2>
-                    <form onSubmit={handleSubmit(onSubmit)} className=" flex  flex-wrap justify-center gap-2">
+                        <Image
+        src="/logo.jpg" 
+        alt="App Logo" 
+        width={100} 
+        height={100} 
+        className="mx-auto rounded-full mb-4"
+    />
+                    <h2 className="text-3xl font-bold text-orange-200 text-center mb-8">Sign Up</h2>
+                    <form 
+                    onSubmit={handleSubmit(onSubmit)} 
+                    className=" flex flex-col  flex-wrap justify-center gap-2">
                         {/* Username Field */}
                         <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-black mb-1">Username</label>
+                            <label className="block text-sm font-medium text-orange-200 mb-1">Username</label>
                             <input
                                 {...register('username')}
-                                className={`w-full p-3 placeholder:text-gray-600 text-white bg-transparent border rounded-lg focus:outline-none ${errors.username ? 'border-red-500' : 'border-gray-300'
+                                className={`w-full p-3 placeholder:text-orange-200 text-white bg-transparent border rounded-lg focus:outline-none ${errors.username ? 'border-red-500' : 'border-gray-300'
                                     }`}
                                 placeholder="Enter your username"
                             />
@@ -95,11 +104,11 @@ const SignupComponent = () => {
                       
                         {/* Email Field */}
                         <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-black mb-1">Email</label>
+                            <label className="block text-sm font-medium text-orange-200 mb-1">Email</label>
                             <input
                                 {...register('email')}
                                 type="email"
-                                className={`w-full p-3 text-white placeholder:text-gray-600 bg-transparent border rounded-lg focus:outline-none ${errors.email ? 'border-red-500' : 'border-gray-300'
+                                className={`w-full p-3 text-white placeholder:text-orange-200 bg-transparent border rounded-lg focus:outline-none ${errors.email ? 'border-red-500' : 'border-gray-300'
                                     }`}
                                 placeholder="Enter your email"
                             />
@@ -111,13 +120,13 @@ const SignupComponent = () => {
                       
                         {/* Password Field */}
                         <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-black mb-1">Password</label>
+                            <label className="block text-sm font-medium text-orange-200 mb-1">Password</label>
                             <div className='relative'>
 
                                 <input
                                     {...register('password')}
                                     type={passwordVisible ? 'text' : 'password'}
-                                    className={`w-full p-3 text-white placeholder:text-gray-600 bg-transparent border rounded-lg focus:outline-none ${errors.password ? 'border-red-500' : 'border-gray-300'
+                                    className={`w-full p-3 text-white placeholder:text-orange-200 bg-transparent border rounded-lg focus:outline-none ${errors.password ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     placeholder="Enter your password"
                                 />

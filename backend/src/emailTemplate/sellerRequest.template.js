@@ -20,6 +20,10 @@ const sellerRequestTemp = (
       font: inherit;
       vertical-align: baseline;
     }
+          .logo {
+              width: 120px;
+              margin-bottom: 20px;
+          }
     body {
       margin: 0;
       padding: 0;
@@ -33,12 +37,13 @@ const sellerRequestTemp = (
 </head>
 <body style="background-color: #f5f7fa; padding: 20px 0;">
   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto;">
-    <!-- Logo -->
+              <img src="https://saadicollection.shop/logo.jpg" alt="saadiCollection.shop Logo" class="logo" />
+
     <tr>
       <td align="center" style="padding: 30px 0 20px;">
         <div style="font-size: 24px; font-weight: bold; color: #2563eb;">
           <span style="color: #2563eb; background: #dbeafe; border-radius: 6px; padding: 8px 12px; display: inline-block;">
-            📦 ukbazaar
+            📦 saadiCollection
           </span>
         </div>
       </td>
