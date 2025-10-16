@@ -1,22 +1,18 @@
 "use client";
 import React from 'react';
 import Products from './components/buyer/HomeProducts.component';
-import { UserInterface } from './utils/user.interface';
 
 
 
-interface HomePageProps {
-  user: UserInterface;
-}
 
-const HomePage: React.FC<HomePageProps> = () => {
+const Page = () => {
 
   return (
     <div className='bg-bgGray'>
-          <Products />
-     
+      <Products />
+
     </div>
   );
 };
 
-export default HomePage;
+export default Page;
