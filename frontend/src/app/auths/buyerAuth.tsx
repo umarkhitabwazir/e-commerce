@@ -17,7 +17,7 @@ const buyerAuth = <P extends WithAuthProps>(
         const [networkError, setNetworkError] = useState(false);
         const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const pathName = usePathname();
-        const authRoutes = useMemo(() => ["/login", "/register", "/log-out"], [])
+        const authRoutes = useMemo(() => ["/login", "/sign-up", "/log-out"], [])
         const trackPath = usePathname();
         const isAuthRoutes = authRoutes.includes(trackPath);
         const secureRoute = ["/buyer"];
@@ -55,6 +55,7 @@ const pathName = usePathname();
 
                 setUser(response.data.data);
             } catch (error: unknown) {
+               
                 if (error instanceof AxiosError) {
                     if (error.code === "ERR_NETWORK") {
                         setNetworkError(true);

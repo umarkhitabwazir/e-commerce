@@ -32,7 +32,8 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
     const authRoutes = ["/sign-up", "/verify-email", "/reset-password", "/login", "/log-out"];
     const isAuthRoute = authRoutes.includes(pathName);
 
-    const roleAuth = ["/buyer","/contact"].some(route => pathName.startsWith(route));
+    const roleAuth = ["/buyer", "/contact"].some(route => pathName.startsWith(route));
+    const sellerRoleAuth = ["/seller"].some(route => pathName.startsWith(route));
 
 
 
@@ -179,9 +180,18 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
                                 {/* Desktop Navigation */}
                                 <div className="hidden md:flex items-center space-x-6">
                                     {
-
                                         !roleAuth && user?.role === userRoles?.[1] &&
                                         <Link href="/buyer"
+                                            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition">
+                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12h18M3 6h18M3 18h18" /> </svg>
+                                            Dashboard
+                                        </Link>
+
+                                    }
+                                    {
+                                        !sellerRoleAuth && user?.role === userRoles?.[2] &&
+                                        <Link href="/seller"
                                             className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition">
                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12h18M3 6h18M3 18h18" /> </svg>
@@ -387,6 +397,17 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
 
                                         !roleAuth && user?.role === userRoles?.[1] &&
                                         <Link href="/buyer"
+                                            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition">
+                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12h18M3 6h18M3 18h18" /> </svg>
+                                            Dashboard
+                                        </Link>
+
+                                    }
+                                    {
+
+                                        !sellerRoleAuth && user?.role === userRoles?.[2] &&
+                                        <Link href="/seller"
                                             className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition">
                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12h18M3 6h18M3 18h18" /> </svg>
