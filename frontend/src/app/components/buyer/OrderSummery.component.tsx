@@ -83,12 +83,11 @@ const ShippingComponent = () => {
 
     }
     const previewOrder = async () => {
-      try {
+      
         const res = await axios.post(`${API_URL}/preview-order`, formdata)
         setOrderSummary(res.data.data)
-      } catch (error) {
-        console.log(error)
-      }
+      
+      
     }
     previewOrder()
 

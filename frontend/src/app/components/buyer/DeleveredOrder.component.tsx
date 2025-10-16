@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image';
-import { OrderInterface, OrderProduct } from '../../utils/orderInterface';
+import { OrderInterface } from '../../utils/orderInterface';
 type Product = {
   _id: string;
   title: string;
@@ -49,17 +49,39 @@ const DeleveredOrderComponent =
         )}
 
         {deleveredOders.map((order) => (
-          <div key={order._id} className="animate-fadeIn ">
-            <div className="flex flex-wrap items-center w-full   justify-between gap-3 bg-green-50 rounded-xl p-4 mb-4">
-              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" >
-              </div>
+          <div key={order._id} className="animate-fadeIn">
+            <div className="flex flex-wrap items-center w-full justify-between gap-3 bg-green-50 rounded-xl p-4 mb-4">
+              {order.products.map((product, productIndex) => (
+                <div
+                  key={`${product.productId._id}-${productIndex}`}
+                  className="  w-16 h-16 flex flex-col items-center justify-center p-1"
+                >
+                  <a
+                    href={product.productId.image}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Image
+                      src={product.productId.image}
+                      alt={product.productId.title}
+                      width={50}
+                      height={50}
+                      className="rounded object-cover cursor-pointer hover:opacity-80 transition"
+                    />
+                  </a>
+
+                  <p className="text-xs text-gray-700 text-center">{product.productId.title}</p>
+                </div>
+              ))}
+
               <div className="ml-4">
                 <p className="font-medium text-gray-800">Order #{order._id}</p>
-                <p className="text-gray-600 text-sm">Delivered{' '}on{' '}
-                  {new Date(order.updatedAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
+                <p className="text-gray-600 text-sm">
+                  Delivered on{" "}
+                  {new Date(order.updatedAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
                   })}
                 </p>
                 <div className="flex items-center mt-1">
@@ -67,68 +89,74 @@ const DeleveredOrderComponent =
                   <span className="text-sm text-green-700">Delivered</span>
                 </div>
               </div>
+
               <button
                 onClick={() => {
-                  handleShowDetails(order._id)
+                  handleShowDetails(order._id);
                   if (selectedOrderId === order._id) {
-                    SetDetailToggleBtn((prev) => !prev)
+                    SetDetailToggleBtn((prev) => !prev);
                   }
                 }}
-                className="ml-auto w-full text-green-600 hover:text-green-800 font-medium">
-                {detailToggleBtn && selectedOrderId === order._id ? 'Close Details ' : "View Details"}
-              </button>
-            {
-              detailToggleBtn && selectedOrderId === order._id &&
-              <div
-                ref={detailRef}
-                key={order._id}
-                className="flex flex-wrap flex-col justify-between mb-8 w-full mt-3 rounded-xl bg-green-50  "
+                className="ml-auto w-full text-green-600 hover:text-green-800 font-medium"
               >
-                <hr className="border-t-2 border-gray-400" />
+                {detailToggleBtn && selectedOrderId === order._id ? "Close Details" : "View Details"}
+              </button>
 
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold text-gray-700">
-                    Order #{order._id.slice(-6).toUpperCase()}
-                  </h2>
-                  <span className="text-gray-400 text-sm">
-                    {new Intl.DateTimeFormat("en-GB").format(new Date(order.updatedAt))}
-                  </span>
-                </div>
-                <p className="text-sm text-gray-600 mb-2">
-                  Delivery Status:{" "}
-                  <span
-                    className={`font-medium ${order.isDelivered ? "text-green-500" : "text-red-500"
-                      }`}
-                  >
-                    {order.isDelivered ? "Delivered" : "Pending"}
-                  </span>
-                </p>
-                <p className="text-sm text-gray-600 mb-2">
-                  Payment Status:{" "}
-                  <span
-                    className={`font-medium ${order.isPaid ? "text-green-500" : "text-red-500"
-                      }`}
-                  >
-                    {order.isPaid ? "Paid" : "Pending"}
-                  </span>
-                </p>
-                <p className="text-sm text-gray-600 mb-4">
-                  Total Price:{" "}
-                  <span className="font-medium text-gray-800">
-                    ${order.totalPrice.toFixed(2)}
-                  </span>{" "}
-                  (Tax: ${order.taxPrice.toFixed(2)}, Shipping: $
-                  {order.shippingPrice.toFixed(2)})
-                </p>
+              {detailToggleBtn && selectedOrderId === order._id && (
+                <div
+                  ref={detailRef}
+                  className="flex flex-col justify-between mb-8 w-full mt-3 rounded-xl bg-green-50"
+                >
+                  <hr className="border-t-2 border-gray-400" />
 
-                <div className="space-y-4">
-                  {order.products.map((orderProduct: OrderProduct) => {
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-semibold text-gray-700">
+                      Order #{order._id.slice(-6).toUpperCase()}
+                    </h2>
+                    <span className="text-gray-400 text-sm">
+                      {new Intl.DateTimeFormat("en-GB").format(new Date(order.updatedAt))}
+                    </span>
+                  </div>
 
-                    const product = products.find((p) => p._id === orderProduct.productId._id)!;
+                  <p className="text-sm text-gray-600 mb-2">
+                    Delivery Status:
+                    <span
+                      className={`font-medium ${order.isDelivered ? "text-green-500" : "text-red-500"
+                        }`}
+                    >
+                      {" "}
+                      {order.isDelivered ? "Delivered" : "Pending"}
+                    </span>
+                  </p>
 
+                  <p className="text-sm text-gray-600 mb-2">
+                    Payment Status:
+                    <span
+                      className={`font-medium ${order.isPaid ? "text-green-500" : "text-red-500"
+                        }`}
+                    >
+                      {" "}
+                      {order.isPaid ? "Paid" : "Pending"}
+                    </span>
+                  </p>
 
-                    return (
-                      product! && (
+                  <p className="text-sm text-gray-600 mb-4">
+                    Total Price:
+                    <span className="font-medium text-gray-800">
+                      ${order.totalPrice.toFixed(2)}
+                    </span>{" "}
+                    (Tax: ${order.taxPrice.toFixed(2)}, Shipping: $
+                    {order.shippingPrice.toFixed(2)})
+                  </p>
+
+                  <div className="space-y-4">
+                    {order.products.map((orderProduct) => {
+                      const product = products.find(
+                        (p) => p._id === orderProduct.productId._id
+                      );
+                      if (!product) return null;
+
+                      return (
                         <div
                           key={orderProduct.productId._id}
                           className="flex items-center gap-4 p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition duration-300"
@@ -136,9 +164,9 @@ const DeleveredOrderComponent =
                           <Image
                             src={product.image}
                             alt={product.title}
-                            className=" rounded-lg object-cover"
                             width={50}
                             height={50}
+                            className="rounded-lg object-cover"
                           />
                           <div>
                             <h3 className="text-lg font-semibold text-gray-800">
@@ -152,31 +180,21 @@ const DeleveredOrderComponent =
                             </p>
                           </div>
                         </div>
-                      )
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
 
-                </div>
-                <div className="flex justify-end gap-4 mt-4">
-
-
-
-                  <div className="flex flex-col items-center ">
-
+                  <div className="flex justify-end mt-4">
                     <button className="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-500 transition">
                       Order
                     </button>
-
                   </div>
-
-
                 </div>
-
-              </div>
-            }
+              )}
             </div>
           </div>
         ))}
+
       </>
 
     );

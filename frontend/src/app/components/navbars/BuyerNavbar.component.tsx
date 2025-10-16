@@ -12,6 +12,7 @@ import useStickyScroll from "../UseStickyScroll.component";
 import { logOut } from "../../utils/LogOut";
 import buyerAuth from "@/app/auths/buyerAuth";
 import Image from "next/image";
+import Link from "next/link";
 const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
 
     const [sortOption, setSortOption] = useState("");
@@ -27,15 +28,17 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
     const [categorisOpen, setCategorisOpen] = useState(false)
     const router = useRouter();
     const pathName = usePathname();
+    const userRoles = process.env.NEXT_PUBLIC_ROLES?.split(',')
     const authRoutes = ["/sign-up", "/verify-email", "/reset-password", "/login", "/log-out"];
     const isAuthRoute = authRoutes.includes(pathName);
 
-    const roleAuth = ["/buyer"].some(route => pathName.startsWith(route));
+    const roleAuth = ["/buyer","/contact"].some(route => pathName.startsWith(route));
 
 
 
 
     useEffect(() => {
+
         if (searchResultParam) {
             setSearchInput(searchResultParam)
         }
@@ -107,6 +110,7 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
         if (e.target.value === 'sign-up') return router.push(`/sign-up`);
         if (e.target.value === 'login') return router.push(`/login`);
         if (e.target.value === 'profile') return router.push(`/buyer/${e.target.value}`);
+        if (e.target.value === 'contact') return router.push(`/${e.target.value}`);
     };
 
     const handleMenuToggle = () => {
@@ -126,7 +130,7 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
     return (
         <>
 
-            {!isAuthRoute && roleAuth && user && (
+            {(pathName === "/" || (!isAuthRoute && roleAuth)) && (
                 <nav
                     className={
                         `${isSticky
@@ -134,7 +138,7 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
                             : "relative bg-gray-800"} text-white transition-all duration-300 w-full z-50 py-3`}
                 >
                     {(
-                        <div className="container mx-auto  px-4">
+                        <div className="container mx-auto   px-4">
                             <div className="flex  flex-wrap gap-2 items-center justify-between">
                                 {/* Logo */}
                                 <div
@@ -157,6 +161,7 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
                                     />
                                     {/* SAADI<span className="text-cyan-400">COLLECTON</span> */}
 
+
                                 </div>
 
                                 {/* <button
@@ -173,6 +178,17 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
 
                                 {/* Desktop Navigation */}
                                 <div className="hidden md:flex items-center space-x-6">
+                                    {
+
+                                        !roleAuth && user?.role === userRoles?.[1] &&
+                                        <Link href="/buyer"
+                                            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition">
+                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12h18M3 6h18M3 18h18" /> </svg>
+                                            Dashboard
+                                        </Link>
+
+                                    }
                                     {/* Search Bar */}
                                     <div className="relative w-64">
                                         <div className="flex rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
@@ -269,6 +285,11 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
 
                                 {/* User Actions */}
                                 <div className="hidden md:flex items-center space-x-4">
+                                    <Link
+                                        href='/contact'
+                                        className="w-full h-10 p-4 flex justify-center items-center  text-white font-medium rounded-md hover:bg-blue-700 transition-colors">
+                                        Contact Us
+                                    </Link>
                                     <div className="relative">
                                         <select
                                             id="userActions"
@@ -362,6 +383,17 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
                             {/* Mobile Navigation */}
                             {isMenuOpen && (
                                 <div className="md:hidden relative py-4 space-y-4 border-t border-gray-700 mt-3">
+                                    {
+
+                                        !roleAuth && user?.role === userRoles?.[1] &&
+                                        <Link href="/buyer"
+                                            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition">
+                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12h18M3 6h18M3 18h18" /> </svg>
+                                            Dashboard
+                                        </Link>
+
+                                    }
                                     <div className="relative">
                                         <div className="flex rounded-lg bg-white/10">
                                             <input
@@ -464,14 +496,22 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
                                                     <option className="text-gray-400" value="" disabled hidden>
                                                         {isLogedin ? isLogedin.email : "Account"}
                                                     </option>
-                                                    <option value="sign-up">Sign Up</option>
+                                                    <option value="login">
+                                                        Login
+                                                    </option>
+                                                    <option value="sign-up">
+                                                        Sign Up
+                                                    </option>
                                                     <option className={`${!user ? "hidden" : ""}`} value="log-out">
                                                         Log Out
                                                     </option>
                                                     <option className={`${!user ? "hidden" : ""}`} value="profile">
                                                         Profile
                                                     </option>
-                                                    <option value="login">Login</option>
+                                                    <option className='' value="contact">
+                                                        Contact Us
+                                                    </option>
+
                                                 </select>
                                                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
 

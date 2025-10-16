@@ -119,7 +119,7 @@ const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh:
       data.append('brand', formData.brand);
       if (image) data.append('productImg', image);
 
-      const res = await axios.patch(`${API_URL}/product/update/${product._id}`, data, {
+      await axios.patch(`${API_URL}/product/update/${product._id}`, data, {
         withCredentials: true,
         headers: { 'Content-Type': 'multipart/form-data' },
       });
@@ -147,7 +147,6 @@ const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh:
           editBtnRef.current?.scrollIntoView({ behavior: 'smooth' });
 
           editProduct()
-          console.log('clicked enter')
         }
       }} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
       <div className="relative bg-white w-full max-w-md p-6 rounded-lg shadow-xl overflow-y-auto max-h-[90vh]">

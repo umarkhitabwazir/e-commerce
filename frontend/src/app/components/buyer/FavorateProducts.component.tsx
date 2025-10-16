@@ -30,7 +30,7 @@ const FavouriteProductsComponent = () => {
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-        console.log('removeFavHandler error', error)
+        return alert(error.message)
       }
     }
   }

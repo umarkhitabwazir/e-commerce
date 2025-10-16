@@ -46,7 +46,6 @@ const CartPanel = ({
           router.push(`/login`)
         }
       }
-      console.log('handleAddToCart error', error)
     }
 
     setTimeout(() => {

@@ -8,9 +8,9 @@ import SearchComponent from "../buyer/search.component";
 import CategoryComponent from "../buyer/Category.component";
 import useStickyScroll from "../UseStickyScroll.component";
 import { logOut } from "../../utils/LogOut";
-import PublicOrderIconComponent from "../PublicOrderIcon.component";
 import useAuth from "@/app/auths/auth";
 import Image from "next/image";
+import Link from "next/link";
 const PublicNavbar = () => {
 
     const [sortOption, setSortOption] = useState("");
@@ -106,6 +106,7 @@ const PublicNavbar = () => {
         if (e.target.value === 'sign-up') return router.push(`/sign-up`);
         if (e.target.value === 'login') return router.push(`/login`);
         if (e.target.value === 'profile') return router.push(`/buyer/${e.target.value}`);
+        if (e.target.value === 'contact') return router.push(`/${e.target.value}`);
     };
 
     const handleMenuToggle = () => {
@@ -150,7 +151,7 @@ const PublicNavbar = () => {
                                         height={70}
                                         className="w-[100px] h-[100px]  object-center rounded-full border border-gray-200 shadow"
                                     />
-                                   
+
                                 </div>
 
                                 {/* <button
@@ -258,11 +259,18 @@ const PublicNavbar = () => {
                                                 <CategoryComponent />
                                             </div>
                                         )}
+
                                     </div>
                                 </div>
 
                                 {/* User Actions */}
                                 <div className="hidden md:flex items-center space-x-4">
+                                    <Link
+                                        href='/contact'
+                                        className="w-full h-10 p-4 flex justify-center items-center bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors">
+                                        Contact Us
+                                    </Link>
+
                                     <div className="relative">
                                         <select
                                             id="userActions"
@@ -302,8 +310,9 @@ const PublicNavbar = () => {
                                                 />
                                             </svg>
                                         </div>
+
                                     </div>
-                                    <PublicOrderIconComponent />
+
 
                                 </div>
 
@@ -453,6 +462,8 @@ const PublicNavbar = () => {
                                                     <option className="text-gray-400" value="" disabled hidden>
                                                         {user !== null ? user.email : "Account"}
                                                     </option>
+                                                    <option value="login">Login</option>
+
                                                     <option value="sign-up">Sign Up</option>
                                                     <option className={`${!user ? "hidden" : ""}`} value="log-out">
                                                         Log Out
@@ -460,7 +471,10 @@ const PublicNavbar = () => {
                                                     <option className={`${!user ? "hidden" : ""}`} value="profile">
                                                         Profile
                                                     </option>
-                                                    <option value="login">Login</option>
+                                                    <option className={`${!user ? "hidden" : ""}`} 
+                                                    value="contact">
+                                                        Contact Us 
+                                                    </option>
                                                 </select>
                                                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
 
@@ -476,7 +490,6 @@ const PublicNavbar = () => {
                                                             clipRule="evenodd"
                                                         />
                                                     </svg>
-                                                    <PublicOrderIconComponent />
 
                                                 </div>
                                             </div>

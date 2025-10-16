@@ -38,7 +38,6 @@ const UserProfileForm = ({ user, setEdit }: { user: UserInterface, setEdit: Disp
         setLoading(false)
         if(error instanceof AxiosError){
           setError(error.response?.data?.error);
-          console.log("updateUserError", error)
         }
       }
     }

@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 
-import Loading from "@/app/components/Loading.component";
-import BuyerNavbarComponent from "@/app/components/navbars/BuyerNavbar.component";
 
 
 export const metadata: Metadata = {
@@ -19,10 +16,9 @@ export default function SellerLayout({
 }) {
   return (
    
-      <Suspense fallback={<Loading />}>
-      <BuyerNavbarComponent />
-      <main className="p-6">{children}</main>
-    </Suspense>
+    
+      <main >{children}</main>
+
      
   );
 }

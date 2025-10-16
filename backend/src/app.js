@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors"
 import { ApiError } from "./utils/apiError.js";
-import { adminRouter } from "./routes/admin.routes.js";
+import { adminRouter } from "./routes/seller.routes.js";
 import { superAdminRouter } from "./routes/superAdmin.routes.js";
 import { productRouter } from "./routes/product.routes.js";
 import {  sortingRouters } from "./routes/sorting.routes.js";
@@ -15,6 +15,7 @@ import categoryRouter from "./routes/category.routes.js";
 import { cartRouter } from "./routes/cart.rout.js";
 import favoritRouter from "./routes/favorate.routes.js";
 import sellerRequestRoutes from "./routes/storeRequests.routes.js";
+import { contactUsRouter } from "./routes/contactUs.route.js";
 const app = express()
 app.use(
   cors({
@@ -44,7 +45,8 @@ app.use("/api/v2",
   cartRouter,
    categoryRouter,
    favoritRouter,
-   sellerRequestRoutes
+   sellerRequestRoutes,
+   contactUsRouter
 
   )
 

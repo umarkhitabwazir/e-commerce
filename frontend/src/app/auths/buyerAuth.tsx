@@ -32,6 +32,7 @@ const pathName = usePathname();
         const isQuantity = quantity || "";
         const isProduct = product || "";
         const isProductPrice = productPrice || "";
+        const publicRoutes=["/","/contact"]
 
         const checkAuth = async () => {
             try {
@@ -46,7 +47,7 @@ const pathName = usePathname();
                     const userRole = response.data.data.role;
                     const allowedRoles = ["buyer"];
 
-                    if (pathName !== "/" && !allowedRoles.includes(userRole)) {
+                    if (!publicRoutes.includes(pathName) && !allowedRoles.includes(userRole)) {
                         router.push(`${isAuthRoutes ? "/" : "/login"}?track=${trackPath}&${updatedSearchParams}`);
                         return;
                     }
@@ -60,8 +61,7 @@ const pathName = usePathname();
 
                         return null;
                     }
-                    if (pathName !== "/"  &&  error?.response?.status === 401 && !isAuthRoutes) {
-                        console.log('error', error?.response?.status)
+                    if (!publicRoutes.includes(pathName)  &&  error?.response?.status === 401 && !isAuthRoutes) {
                         router.push(`/login?track=${trackPath}&${updatedSearchParams}`)
                     }
                     if (error?.response?.status === 403) {
@@ -88,7 +88,7 @@ const pathName = usePathname();
 
 
         if (!user) {
-            return null;
+            return <WrappedComponent {...props as P} user={null as any} />;
         }
 
         return <WrappedComponent {...(props as P)} user={user} />;

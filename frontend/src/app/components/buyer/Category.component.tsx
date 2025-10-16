@@ -20,7 +20,6 @@ const CategoryComponent = () => {
             try {
                 const res = await axios.get(`${API_URL}/all-category-list`);
                 setCategory(res.data.data || []);
-                console.log('category-copm', res.data.data)
             } catch (error: unknown) {
                 if (error instanceof AxiosError) {
 

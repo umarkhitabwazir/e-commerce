@@ -38,7 +38,6 @@ const CreateProductComponent = () => {
         }
     };
     const onSubmit = async (data: CreateProductFormData) => {
-        console.log(data);
         setLoading(true)
         const formData = new FormData()
         formData.append('productImg', data.productImg[0]);

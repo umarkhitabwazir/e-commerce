@@ -44,12 +44,10 @@ const SignupComponent = () => {
                     const firstTwo = name.slice(0, 2);
                     const lastTwo = name.slice(-2);
 
-                    console.log(`${firstTwo}****${lastTwo}@${domain}`);
 
                     return `${firstTwo}****${lastTwo}@${domain}`
                 };
                 const maskedEmail = maskEmail(data.email)
-                console.log('maskedEmail', maskedEmail)
            router.push(`/verify-email?email=${maskedEmail}`)
 
           

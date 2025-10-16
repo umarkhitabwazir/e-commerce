@@ -24,7 +24,6 @@ const ResetPasswordComponent = () => {
 
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
-                console.log('error', error?.response?.data.error)
                 setError(error?.response?.data.error)
             }
 
@@ -58,7 +57,6 @@ const ResetPasswordComponent = () => {
 
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
-                console.log('resetPasswordError', error?.response?.data.error)
                 setError(error?.response?.data.error)
 
 

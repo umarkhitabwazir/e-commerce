@@ -86,7 +86,6 @@ const GetUserCartComponent = () => {
 
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
-        console.log('cart error', err.message)
         return
       }
     }

@@ -3,7 +3,8 @@ import { Product } from "../models/Product.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { sendEmail } from "./User.controller.js";
+import { sendEmailVarification } from "../utils/emailSenders/emailVarificationSender.utils.js";
+import { sendEmailOrderPlaced } from "../utils/emailSenders/sendEmailorderPlaced.utils.js";
 
 
 const  TAX_RATE = parseFloat(process.env.TAX_RATE);
@@ -79,7 +80,7 @@ const createOrder = asyncHandler(async (req, res) => {
     }
     
     if (!user.isVerified) {
-        sendEmail(user.email, user.emailVerificationCode)
+        sendEmailVarification(user.email, user.emailVerificationCode)
         throw new ApiError(403, "we sended a verification code to your email, please verify your email and try again");
     }
     const produdsArr = [];
@@ -108,7 +109,7 @@ const createOrder = asyncHandler(async (req, res) => {
         shippingPrice: 210,
         totalPrice: productTotalPrice + TAX_RATE + SHIPPING_COST,
     });
-
+sendEmailOrderPlaced(order,user.email,user.username)
     res.status(201).json(new ApiResponse(201, order, "Order created successfully"));
 });
 
@@ -169,8 +170,10 @@ const getOrder = asyncHandler(async (req, res) => {
         throw new ApiError(400, "product id is required!")
 
     }
-    const order = await Order.find({ products: { $elemMatch: { productId: productId } } });
-    
+    const order = await Order.find({
+  products: { $elemMatch: { productId: productId } }
+}).sort({ createdAt: -1 });
+
     if (!order) {
         throw new ApiError(400, "order not founded!")
     }

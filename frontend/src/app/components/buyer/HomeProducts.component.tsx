@@ -114,7 +114,6 @@ if (!searchedProducts && !categoryName){
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-        console.log('fav product error', error)
       }
     }
   }
@@ -132,11 +131,9 @@ if (!searchedProducts && !categoryName){
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-      console.log('categoryName after axios', categoryName)
         
         setError(error.response?.data.error || "An error occurred while fetching products.");
       }
-      console.log('categoryBaseProducts error', error)
       if (error) {
         return null
       }
@@ -168,11 +165,9 @@ if (!searchedProducts && !categoryName){
       fetchProducts()
       getFavProducts()
     } catch (error: unknown) {
-      console.log('addToFavHandler error', error)
       if (error instanceof AxiosError) {
         if (error.response?.status===401) {
           router.push(`/login?favId=${productId}`)
-          console.log('addToFavHandler error', error.response)
         }
       }
     }
@@ -184,7 +179,6 @@ try {
   
 } catch (error:unknown) {
   if (error instanceof AxiosError) {
-    console.log('removeFavHandler error',error)
   }
 }
   }

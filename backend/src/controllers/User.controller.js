@@ -3,7 +3,7 @@ import { ApiResponse } from "../utils/apiResponse.js"
 import { ApiError } from "../utils/apiError.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { validationResult } from "express-validator";
-import nodemailer from "nodemailer";
+import { sendEmailVarification } from "../utils/emailSenders/emailVarificationSender.utils.js";
 import dotenv from "dotenv"
 
 dotenv.config({
@@ -30,85 +30,9 @@ const generateAccessAndRefereshTokens = async (userId) => {
     }
 }
 
-const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-    logger: true,
-    debug: true,
-});
 
-export const sendEmail = async (email, emailVerificationCode) => {
-    const verificationLink = `${process.env.CORS_ORIGIN}verify-email?&code=${emailVerificationCode}`;
 
-    const mailOptions = {
-  from: `"saadiCollection.shop" ${process.env.EMAIL_USER}`,
-  to: email,
-  subject: "Email Verification",
-  html: `
-  <!DOCTYPE html>
-  <html>
-  <head>
-      <style>
-          body {
-              font-family: Arial, sans-serif;
-              background-color: #f4f4f4;
-              margin: 0;
-              padding: 0;
-          }
-          .container {
-              max-width: 600px;
-              margin: 20px auto;
-              background: #ffffff;
-              padding: 20px;
-              border-radius: 8px;
-              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-              text-align: center;
-          }
-          .logo {
-              width: 120px;
-              margin-bottom: 20px;
-          }
-          .btn {
-              display: inline-block;
-              background-color: #007bff;
-              color: white;
-              padding: 10px 20px;
-              text-decoration: none;
-              border-radius: 5px;
-              font-weight: bold;
-          }
-          .btn:hover {
-              background-color: #0056b3;
-          }
-      </style>
-  </head>
-  <body>
-      <div class="container">
-          <img src="https://saadicollection.shop/logo.jpg" alt="saadiCollection.shop Logo" class="logo" />
-          <h2 style="color: #333;">Email Verification</h2>
-          <p style="font-size: 16px; color: #555;">
-              Your verification code is: <strong>${emailVerificationCode}</strong>
-          </p>
-      </div>
-  </body>
-  </html>
-  `,
-};
 
-    return new Promise((resolve, reject) => {
-        transporter.sendMail(mailOptions, (error, info) => {
-            
-            if (error) {
-                console.error("Failed to send email:", error);
-                return reject(new ApiError(500, "Failed to send email"));
-            }
-            resolve(info);
-        });
-    });
-};
 
 
 // this is for email varification and workable ,but out of credits not able to check
@@ -141,19 +65,19 @@ const createUser = asyncHandler(async (req, res) => {
 
 
 
-    if (role === "superadmin") {
+    if (role === "admin") {
         throw new ApiError(400, "you only create user and admin role! ")
     }
 
     const exitUser = await User.findOne({
-        $or: [{ username: username }, { email: email }]
+        $or: [{ email: email }]
     })
 
     if (exitUser) {
-        throw new ApiError(400, "User username or email already exists")
+        throw new ApiError(400, "email already exists")
     }
     const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
-    await sendEmail(email, emailVerificationCode)
+    await sendEmailVarification(email, emailVerificationCode)
 
 
     const user = new User({
@@ -239,7 +163,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
         const isVerified = user.isVerified
         if (!isVerified) {
             const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
-            await sendEmail(email, emailVerificationCode)
+            await sendEmailVarification(email, emailVerificationCode)
             user.emailVerificationCode = emailVerificationCode
             await user.save()
 
@@ -281,7 +205,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
         user.passwordResetCode = emailVerificationCode;
         await user.save();
     
-        await sendEmail(user.email, emailVerificationCode);
+        await sendEmailVarification(user.email, emailVerificationCode);
         res.status(200).json(new ApiResponse(200, null, "Password reset code sent successfully."));
         
     } catch (error) {
@@ -374,7 +298,7 @@ const resendEmailVerificationCode = asyncHandler(async (req, res) => {
     }
 
     const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
-    await sendEmail(user.email, emailVerificationCode);
+    await sendEmailVarification(user.email, emailVerificationCode);
 
     user.emailVerificationCode = emailVerificationCode;
 
@@ -391,7 +315,7 @@ const getLoginUserData = asyncHandler(async (req, res) => {
     }
     const verified = user.isVerified
     if (!verified) {
-        sendEmail(user.email, user.emailVerificationCode)
+        sendEmailVarification(user.email, user.emailVerificationCode)
         throw new ApiError(403, null, "Please verify your email to access this resource.", false)
     }
     res.status(200).json({ status: 200, data: user, message: "user founded" })

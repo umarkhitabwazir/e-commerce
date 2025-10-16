@@ -8,7 +8,7 @@ import {
   createProductsWithCategory,
   updateProductWithCategory, orderShipping,
   paymentConfirmed, deleteProductWithCategory
-} from "../controllers/adminDashboard.controller.js";
+} from "../controllers/sellerDashboard.controller.js";
 import { upload } from "../middleWare/multer.middle.js";
 
 
