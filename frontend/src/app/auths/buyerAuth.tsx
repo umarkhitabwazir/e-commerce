@@ -88,7 +88,7 @@ const pathName = usePathname();
 
 
         if (!user) {
-            return <WrappedComponent {...props as P} user={null as any} />;
+            return <WrappedComponent {...props as P} user={null} />;
         }
 
         return <WrappedComponent {...(props as P)} user={user} />;
