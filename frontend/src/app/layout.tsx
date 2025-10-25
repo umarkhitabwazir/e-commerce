@@ -4,6 +4,8 @@ import "./globals.css";
 import FooterComponent from "./components/footers/footer.component";
 import SideWhatsappIconComponent from "./components/SideWhatsappIcon.component";
 import BuyerNavbarComponent from "./components/navbars/BuyerNavbar.component";
+import { Suspense } from "react";
+import Loading from "./components/Loading.component";
 
 
 
@@ -26,7 +28,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="flex flex-col min-h-screen">
+        <Suspense fallback={<Loading/>}>
+          <div className="flex flex-col min-h-screen">
             <div className="relative">
               <BuyerNavbarComponent />
               <div className="fixed bottom-4 right-4 z-50">
@@ -37,8 +40,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main className="flex-grow">
               {children}
             </main>
-          <FooterComponent />
-        </div>
+            <FooterComponent />
+          </div>
+        </Suspense>
       </body>
     </html>
   )
