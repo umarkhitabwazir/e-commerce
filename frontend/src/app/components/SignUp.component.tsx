@@ -30,7 +30,7 @@ const SignupComponent = () => {
 
     // Form submit handler
     const onSubmit = async (data: SignupFormData) => {
-
+console.log("data",data)
         setLoading(true); // Start loading
         setError(undefined); // Clear previous error
         try {
@@ -94,8 +94,16 @@ const SignupComponent = () => {
                                     }`}
                                 placeholder="Enter your username"
                             />
-                            {errors.username && (
-                                <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
+                            {/* phone field */}
+                            <label className="block text-sm font-medium text-orange-200 mb-1">Phone</label>
+                            <input
+                                {...register('phone')}
+                                className={`w-full p-3 placeholder:text-orange-200 text-white bg-transparent border rounded-lg focus:outline-none ${errors.username ? 'border-red-500' : 'border-gray-300'
+                                    }`}
+                                placeholder="Enter your phone number"
+                            />
+                            {errors.phone && (
+                                <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
                             )}
                         </div>
 
@@ -179,7 +187,7 @@ const SignupComponent = () => {
 </Link>
   <Link
     href="/"
-    className="text-sm font-medium text-gray-600 hover:text-white transition-colors duration-200"
+    className="text-sm font-medium text-white hover:text-gray-400 transition-colors duration-200"
   >
     Home Page ↗
   </Link>

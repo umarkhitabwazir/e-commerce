@@ -4,14 +4,15 @@ import useStickyScroll from '../UseStickyScroll.component';
 import { usePathname, useRouter } from 'next/navigation';
 import AdminNavLinkComponent from '../seller/SellerNavBarLink.component';
 import sellerAuth from '@/app/auths/sellerAuth';
+import Image from 'next/image';
 
 const SellerNavbarComponent = () => {
   const isSticky = useStickyScroll();
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter()
   const pathName = usePathname();
-  const authRoutes = ["/sign-up","/verify-email", "/reset-password", "/login", "/log-out"];
-    const roleAuth = [ "/seller"].some(route => pathName.startsWith(route));
+  const authRoutes = ["/sign-up", "/verify-email", "/reset-password", "/login", "/log-out"];
+  const roleAuth = ["/seller"].some(route => pathName.startsWith(route));
 
   const isAuthRoute = authRoutes.includes(pathName);
   return (
@@ -27,8 +28,21 @@ const SellerNavbarComponent = () => {
             <div className="flex flex-row flex-wrap md:items-center justify-between gap-4">
               {/* Branding */}
               <div className="flex items-center select-none">
-                <div onClick={() => router.push('/seller')} className="text-xl hover:text-cyan-400 cursor-pointer font-bold tracking-tight">
-                  Admin<span className="text-cyan-400">Dashboard </span>
+                <div onClick={() => router.push('/seller')} className="text-xl flex flex-col justify-center items-center hover:text-cyan-400 cursor-pointer font-bold tracking-tight">
+                  <div>
+                    <Image
+                      src="/logo.jpg"
+                      alt="Logo"
+                      width={70}
+                      height={70}
+                      className="w-[90px] h-[90px]  object-center rounded-full border border-gray-200 shadow"
+                    />
+
+                  </div>
+                  <div>
+
+                    Seller<span className="text-cyan-400">Dashboard </span>
+                  </div>
                 </div>
               </div>
 
@@ -126,4 +140,4 @@ const SellerNavbarComponent = () => {
   )
 }
 
-export default sellerAuth( SellerNavbarComponent)
+export default sellerAuth(SellerNavbarComponent)

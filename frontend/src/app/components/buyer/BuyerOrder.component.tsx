@@ -115,15 +115,18 @@ const BuyerOrderComponent = () => {
   return (
     <div className="p-3 flex flex-wrap justify-between   min-h-screen">
       {/* mobile menu  */}
- <div className={`absolute left-0 p-2  md:hidden w-full   mb-8`}>
+      <div className={`absolute left-0 p-2  md:hidden w-full   mb-8`}>
         {/* Menu Button */}
         <button
           onClick={() => setMenuOpen((prev) => !prev)}
-          className={`${menuOpen?"rounded-t-md":"rounded-md"} px-4 py-2   w-full bg-blue-600 text-white font-medium `}
+          className={`${menuOpen ? "rounded-t-md" : "rounded-md"} px-4 py-2   w-full bg-blue-600 text-white font-medium `}
         >
-          Select Tab {menuOpen ? '▲' : '▼'}
+          {tabs.find(t => t.id === activeTab)?.label === 'Pending Orders'
+            ? 'Pending Orders (Default)'
+            : tabs.find(t => t.id === activeTab)?.label} {menuOpen ? '▲' : '▼'}
+
         </button>
-                <hr className="border-t-2 border-gray-400" />
+        <hr className="border-t-2 border-gray-400" />
 
 
         {/* Menu Items */}
@@ -134,8 +137,8 @@ const BuyerOrderComponent = () => {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-4 py-2 text-sm sm:text-base font-medium rounded-md transition-colors duration-200 ${activeTab === tab.id
-                    ? "bg-gray-500 text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  ? "bg-gray-500 text-white"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
               >
                 {tab.label}
@@ -161,8 +164,8 @@ const BuyerOrderComponent = () => {
                     onClick={() => setActiveTab(tab.id)}
                     className={` px-4 py-3 text-sm sm:text-base font-medium transition-colors duration-300 relative z-10 
                       ${activeTab === tab.id
-                      ? 'text-blue-600'
-                      : 'text-gray-500 hover:text-gray-700'
+                        ? 'text-blue-600'
+                        : 'text-gray-500 hover:text-gray-700'
                       }`}
                   >
                     {tab.label}

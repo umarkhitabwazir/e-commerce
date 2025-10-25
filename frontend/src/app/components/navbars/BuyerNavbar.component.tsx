@@ -29,10 +29,11 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
     const router = useRouter();
     const pathName = usePathname();
     const userRoles = process.env.NEXT_PUBLIC_ROLES?.split(',')
-    const authRoutes = ["/sign-up", "/verify-email", "/reset-password", "/login", "/log-out"];
+    const authRoutes = ["/sign-up", "/verify-email", "/reset-password", "/login"];
     const isAuthRoute = authRoutes.includes(pathName);
 
-    const roleAuth = ["/buyer", "/contact"].some(route => pathName.startsWith(route));
+    const roleAuth = ["/buyer"].some(route => pathName.startsWith(route));
+    const publicRoutes = ["/privacy-policy", "/ownership-statement", "/terms-and-conditions", "/refund-return-policy", "/shipping-policy", "/", "/contact"].includes(pathName);
     const sellerRoleAuth = ["/seller"].some(route => pathName.startsWith(route));
 
 
@@ -108,6 +109,7 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
             return router.push(`/login`)
 
         }
+        if (user?.role === userRoles?.[2]) return router.push(`/seller/${e.target.value}`);
         if (e.target.value === 'sign-up') return router.push(`/sign-up`);
         if (e.target.value === 'login') return router.push(`/login`);
         if (e.target.value === 'profile') return router.push(`/buyer/${e.target.value}`);
@@ -131,7 +133,7 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
     return (
         <>
 
-            {(pathName === "/" || (!isAuthRoute && roleAuth)) && (
+            {(publicRoutes || (!isAuthRoute && roleAuth)) && (
                 <nav
                     className={
                         `${isSticky
@@ -143,7 +145,7 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
                             <div className="flex  flex-wrap gap-2 items-center justify-between">
                                 {/* Logo */}
                                 <div
-                                    className="text-2xl font-bold cursor-pointer tracking-tight hover:text-cyan-300 transition-colors"
+                                    className="text-2xl font-bold  flex flex-col  justify-center items-center cursor-pointer tracking-tight hover:text-cyan-300 transition-colors"
                                     onClick={() => {
 
                                         router.push("/")
@@ -158,9 +160,12 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
                                         alt="Logo"
                                         width={70}
                                         height={70}
-                                        className="w-[100px] h-[100px]  object-center rounded-full border border-gray-200 shadow"
+                                        className="w-[90px] h-[90px]  object-center rounded-full border border-gray-200 shadow"
                                     />
-                                    {/* SAADI<span className="text-cyan-400">COLLECTON</span> */}
+                                    <div>
+
+                                        SAADI<span className="text-cyan-400">COLLECTON</span>
+                                    </div>
 
 
                                 </div>

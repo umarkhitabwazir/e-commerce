@@ -16,23 +16,18 @@ const buyerAuth = <P extends WithAuthProps>(
         const [user, setUser] = useState<WithAuthProps | null>(null);
         const [networkError, setNetworkError] = useState(false);
         const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const pathName = usePathname();
+        const Roles=process.env.NEXT_PUBLIC_ROLES?.split(',') || []
+        const pathName = usePathname();
         const authRoutes = useMemo(() => ["/login", "/sign-up", "/log-out"], [])
         const trackPath = usePathname();
         const isAuthRoutes = authRoutes.includes(trackPath);
         const secureRoute = ["/buyer"];
         const roleAuth = secureRoute.some(route => trackPath.startsWith(route));
 
+
         const searchParams = useSearchParams();
         const updatedSearchParams = new URLSearchParams(searchParams.toString())
-        const quantity = searchParams.get("q");
-        const product = searchParams.get("product");
-        const productPrice = searchParams.get("p");
-
-        const isQuantity = quantity || "";
-        const isProduct = product || "";
-        const isProductPrice = productPrice || "";
-        const publicRoutes=["/","/contact"]
+        const publicRoutes = ["/privacy-policy", "/reset-password", "/verify-email", "/terms-and-conditions", "/ownership-statement", "/refund-return-policy", "/shipping-policy", "/", "/contact"].includes(pathName);
 
         const checkAuth = async () => {
             try {
@@ -43,11 +38,17 @@ const pathName = usePathname();
                 if (!response.data) {
                     throw new Error("User not logged in");
                 }
+
                 if (roleAuth) {
                     const userRole = response.data.data.role;
-                    const allowedRoles = ["buyer"];
+                    if (userRole === Roles[2]) {
+                      alert("Access denied. Sellers cannot access buyer routes. Redirecting back.");
 
-                    if (!publicRoutes.includes(pathName) && !allowedRoles.includes(userRole)) {
+                        router.push(`/`);
+                        return;
+                    }
+
+                    if (!publicRoutes && userRole !== Roles[1]) {
                         router.push(`${isAuthRoutes ? "/" : "/login"}?track=${trackPath}&${updatedSearchParams}`);
                         return;
                     }
@@ -55,14 +56,14 @@ const pathName = usePathname();
 
                 setUser(response.data.data);
             } catch (error: unknown) {
-               
+
                 if (error instanceof AxiosError) {
                     if (error.code === "ERR_NETWORK") {
                         setNetworkError(true);
 
                         return null;
                     }
-                    if (!publicRoutes.includes(pathName)  &&  error?.response?.status === 401 && !isAuthRoutes) {
+                    if (!publicRoutes && error?.response?.status === 401 && !isAuthRoutes) {
                         router.push(`/login?track=${trackPath}&${updatedSearchParams}`)
                     }
                     if (error?.response?.status === 403) {
@@ -77,7 +78,7 @@ const pathName = usePathname();
         useEffect(() => {
 
             checkAuth();
-        }, [API_URL, router, trackPath, authRoutes, isAuthRoutes, isProduct, isProductPrice, isQuantity, updatedSearchParams, roleAuth]);
+        }, []);
 
 
         if (networkError) {

@@ -1,7 +1,7 @@
 "use client";
 import axios, { AxiosError } from 'axios';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, {  useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SingleProductComponent from './GetProductsByIds.component';
 import buyerAuth from '../../auths/buyerAuth';
 
@@ -14,16 +14,18 @@ const PaymentComponent = () => {
   const decoded = searchParams.get('query') !== null && JSON.parse(atob(searchParams.get('query') || ''))
   const productIds = decoded.productIdsAndQtyArr ? decoded.productIdsAndQtyArr.map((item: { productId: string; quantity: number }) => item.productId) : []
   const [loading, setLoading] = useState(false)
- const paymentMethods=[
-            { id: "JazzCash", label: "JazzCash" },
-            { id: "credit", label: "Credit Card" },
-            { id: "cod", label: "Cash on Delivery" }
-          ]
-     
+  const paymentMethods = [
+    { id: "JazzCash", label: "JazzCash" },
+    { id: "credit", label: "Credit Card" },
+    { id: "cod", label: "Cash on Delivery" }
+  ]
+
   const [error, setError] = useState<string | undefined>(undefined);
   const router = useRouter()
 
-
+useEffect(() => {
+  console.log('decoded',decoded)
+}, [])
 
   const handlePaymentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setError(undefined)
@@ -43,23 +45,23 @@ const PaymentComponent = () => {
             "paymentMethod": paymentMethod,
           }, { withCredentials: true });
 
-        return router.push(`/buyer/orders?decoded=${btoa(JSON.stringify(decoded))}`)
-      }
+          return router.push(`/buyer/orders?decoded=${btoa(JSON.stringify(decoded))}`)
+        }
 
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 403) {
-          router.push(`/verify-email?track=${trackPath}&${updatedSearchParams}`)
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 403) {
+            router.push(`/verify-email?track=${trackPath}&${updatedSearchParams}`)
+
+          }
+          setError(error.response?.data?.error);
 
         }
-        setError(error.response?.data?.error);
-
+        setLoading(false)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
-    } finally {
-      setLoading(false)
-    }
-  };
+    };
   };
 
   return (
@@ -67,11 +69,11 @@ const PaymentComponent = () => {
       <div className="text-gray-800 max-w-lg mx-auto bg-transparent p-8  rounded-xl shadow-lg">
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-900">Select Payment Method</h1>
 
-        {decoded.totalPrice
+        {decoded.price
           && (
             <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
               <p className="text-center font-medium">
-                Total Amount: <span className="font-bold text-blue-700">{decoded.totalPrice}</span>
+                Total Amount: <span className="font-bold text-blue-700">PKR{' '}{decoded.price}</span>
               </p>
             </div>
           )}
@@ -117,7 +119,7 @@ const PaymentComponent = () => {
             </div>
           ))}
         </div>
-{error && (
+        {error && (
           <p className="text-red-500 text-center mb-4">{error}</p>
         )}
         <div className={`transition-opacity duration-300 ${selectedPayment ? "opacity-100" : "opacity-0 h-0"}`}>

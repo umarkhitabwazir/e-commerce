@@ -12,6 +12,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { User } from "../models/User.model.js";
 import { Cart } from "../models/Cart.model.js"
 import {sellerRole} from "../config/roles.config.js"
+import { Address } from "../models/address.model.js";
 
 dotenv.config({
     path: ".env"
@@ -396,11 +397,19 @@ const getOrdersByAdminProducts = asyncHandler(async (req, res) => {
         const getAllOrdered = await Order.find()
             .populate("userId", "username email phone")
             .populate("products.productId", "title price image")
+const addresses=await Address.find()
+const ordersWithAddresses = getAllOrdered.map(order => {
+    const orderAddress = addresses.find(address => address.user.toString() === order.userId._id.toString());
+    return {
+        ...order.toObject(),
+        address: orderAddress || null
+    };
+});
 
         // Extract product IDs of admin's products
         const adminProductIds = adminProducts.map((product) => product._id);
         // Filter orders containing admin's products
-        const filterAdminProducts = getAllOrdered.filter((order) =>
+        const filterAdminProducts = ordersWithAddresses.filter((order) =>
             order.products.map((p) => adminProductIds.includes(new mongoose.Types.ObjectId(p.productId?._id)))
         );
 

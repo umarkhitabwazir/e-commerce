@@ -17,6 +17,19 @@ type adminOrdersInterface = {
         _id: string;
 
     }];
+    address: {
+           _id: string,
+      fullName: string,
+      user: string,
+      Province: string,
+      City: string,
+      phone:number,
+      Building: number,
+      HouseNo: number,
+      Floor: number,
+      Street: string,
+    }
+    ;
     shippingPrice: number;
     taxPrice: number;
     orderPending: boolean;

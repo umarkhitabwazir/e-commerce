@@ -208,13 +208,13 @@ const SellerProductComponent = () => {
           <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
             <p className="text-gray-500 text-sm">Average Price</p>
             <p className="text-2xl font-bold text-gray-900 mt-1">
-              ${(products.reduce((sum, p) => sum + p.price, 0) / (products.length || 1)).toFixed(2)}
+             PKR{' '}{(products.reduce((sum, p) => sum + p.price, 0) / (products.length || 1)).toFixed(2)}
             </p>
           </div>
           <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
             <p className="text-gray-500 text-sm">Total Inventory Value</p>
             <p className="text-2xl font-bold text-gray-900 mt-1">
-              ${products.reduce((sum, p) => sum + (p.price * p.countInStock), 0).toLocaleString()}
+              PKR{' '}{products.reduce((sum, p) => sum + (p.price * p.countInStock), 0).toLocaleString()}
             </p>
           </div>
         </div>
@@ -241,7 +241,7 @@ const SellerProductComponent = () => {
             <p className={`${searchTerm ? 'hidden' : ''} text-gray-500 max-w-md mx-auto`}>
               Add new products to see them appear in your dashboard
             </p>
-            <button onClick={() => router.push('create-product')}
+            <button onClick={() => router.push('/seller/create-product')}
               className={` ${searchTerm ? 'hidden' : ''} mt-6 px-5 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors`}>
               Add First Product
             </button>
@@ -309,7 +309,7 @@ const SellerProductComponent = () => {
                     <div className="mt-5 grid grid-cols-2 gap-3">
                       <div>
                         <p className="text-xs text-gray-500">Price</p>
-                        <p className="font-semibold text-gray-500">${product.price.toFixed(2)}</p>
+                        <p className="font-semibold text-gray-500">PKR{' '}{product.price.toFixed(2)}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Stock</p>

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Order } from "../models/Order.model.js";
 import { Product } from "../models/Product.model.js";
 import { ApiError } from "../utils/apiError.js";
@@ -90,12 +91,13 @@ const createOrder = asyncHandler(async (req, res) => {
             throw new ApiError(400, `Each product must have a valid productId and quantity > 0`);
         }
         const  product = await Product.findById(item.productId);
+
         if (!product) {
             throw new ApiError(404, `Product with ID ${item.productId} not found`);
         }
         productTotalPrice += product.price * item.quantity;
         produdsArr.push({
-            productId: item.productId,
+            productId:new mongoose.Types.ObjectId( item.productId),
             quantity: item.quantity,
         });
     }
@@ -109,7 +111,8 @@ const createOrder = asyncHandler(async (req, res) => {
         shippingPrice: 210,
         totalPrice: productTotalPrice + TAX_RATE + SHIPPING_COST,
     });
-sendEmailOrderPlaced(order,user.email,user.username)
+    const  orderedProduct = await Product.find({ _id: { $in: produdsArr.map((productIds)=>productIds.productId) } })
+sendEmailOrderPlaced(order,orderedProduct,user.email,user.username)
     res.status(201).json(new ApiResponse(201, order, "Order created successfully"));
 });
 

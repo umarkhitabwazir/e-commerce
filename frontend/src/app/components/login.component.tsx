@@ -98,7 +98,7 @@ const LoginComponent = () => {
                 networkError && <NoInternetComponent />
             }
 
-            <div className="flex justify-center items-center min-h-screen bg-auth-bg bg-cover bg-center">
+            <div className="flex justify-center items-center min-h-screen  bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 p-4">
                 <div className="w-full max-w-4xl bg-transparent p-8 rounded-lg shadow-lg">
                     <div className="text-center mb-10">
                         <Image

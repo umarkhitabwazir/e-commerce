@@ -54,7 +54,7 @@ const GetProductsByIdsComponent = ({ productIds }: { productIds: string[] | [] }
                 src={products.image}
                 alt={products.title}
                 onClick={() => window.open(products.image, "_self")}
-                className={`rounded-lg object-cover w-full h-auto  shadow-md cursor-pointer`}
+                className={`rounded-lg object-cover max-w-lg mx-auto  shadow-md cursor-pointer`}
                 width={400}
                 height={400}
               />
@@ -73,7 +73,7 @@ const GetProductsByIdsComponent = ({ productIds }: { productIds: string[] | [] }
             {/* Product Pricing & Brand */}
             <div className="text-gray-800">
               <h2 className="text-lg font-semibold">
-                Price: <span className="text-green-600">${products.price?.toFixed(2) || 'No product price'}</span>
+                Price: <span className="text-green-600">PKR{' '}{products.price?.toFixed(2) || 'No product price'}</span>
               </h2>
               <h2 className="text-lg font-semibold">
                 Brand: <span className="text-gray-700">{products.brand || "Unknown"}</span>

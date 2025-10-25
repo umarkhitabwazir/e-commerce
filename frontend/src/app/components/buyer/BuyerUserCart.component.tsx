@@ -4,16 +4,21 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { CartDataInterface, CartItemInterface } from "../../utils/cartInterface";
 import { useRouter } from "next/navigation";
+import AddressComponent from "./Address.component";
 
 const GetUserCartComponent = () => {
   const API = process.env.NEXT_PUBLIC_API_URL;
 
   const [userCart, setUserCart] = useState<CartDataInterface[]>([]);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [price, setPrice] = useState<number>(0);
   const [selectedItemsIds, setSelectedItemsIds] = useState<string[]>([]);
   const [productIdsAndQtyArr, setProductIdsAndQtyArr] = useState<
     { productId: string; quantity: number }[]
   >([]);
+    const [savedAddress, setSavedAddress] = useState<boolean>(false)
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+  
 
   const router = useRouter();
 
@@ -24,12 +29,41 @@ const GetUserCartComponent = () => {
         : [...prev, itemId]
     );
   };
+    const getAddress = async () => {
+  
+      try {
+        const res = await axios.get(`${API_URL}/find-address`, { withCredentials: true })
+        if (res.data.success) {
+          setSavedAddress(true)
+    
+        }
+  
+  
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+  
+          if (!error.response?.data.success) {
+            setSavedAddress(false)
+  
+          }
+        }
+  
+      }
+    };
+    useEffect(() => {
+      getAddress()
+    }, []);
 
   const proceedHandler = () => {
-    if (totalPrice > 0 && productIdsAndQtyArr.length > 0) {
+    
+    if (price > 0 && productIdsAndQtyArr.length > 0) {
+      if (!savedAddress) {
+        alert("Please add a shipping address before proceeding to checkout.");
+              return;
+      }
 
       router.push(
-        `/buyer/payment-cashier?query=${btoa(JSON.stringify({ totalPrice, productIdsAndQtyArr }))} `
+        `/buyer/payment-cashier?query=${btoa(JSON.stringify({ price, productIdsAndQtyArr }))} `
       );
 
 
@@ -51,7 +85,7 @@ const GetUserCartComponent = () => {
   useEffect(() => {
     if (!userCart || userCart.length === 0) {
       setProductIdsAndQtyArr([]);
-      setTotalPrice(0);
+      setPrice(0);
       return;
     }
     const removeDeletedProducts = userCart.filter((cart: { deleted: boolean }) => !cart.deleted)
@@ -75,7 +109,7 @@ const GetUserCartComponent = () => {
       )
       .reduce((sum: number, item: CartItemInterface) => sum + item.price, 0);
 
-    setTotalPrice(total);
+    setPrice(total);
   }, [userCart, selectedItemsIds]);
 
 
@@ -109,7 +143,10 @@ const GetUserCartComponent = () => {
           </button>
         </div>
       ) : (
-        <div className="animate-fadeIn ">
+        <div className="flex flex-col">
+
+
+        <div className="animate-fadeIn   ">
           {userCart.map((cart: CartDataInterface) => (
             <div key={cart._id}
               className={`
@@ -162,7 +199,7 @@ const GetUserCartComponent = () => {
                           qty: {cartItem.quantity}
                         </p>
                         <p className="text-gray-600 text-sm">
-                          price: ${cartItem.product.price}
+                          price: PKR{' '}{cartItem.product.price}
                         </p>
                       </div>
                       
@@ -179,11 +216,11 @@ const GetUserCartComponent = () => {
             </div>
           ))}
 
-          <div className="mt-6 pt-4 border-t border-gray-200 flex justify-between flex-col items-center">
+          <div className="mt-6 pt-4 border-t border-gray-200 flex flex-col items-center">
             <p className="font-medium text-gray-800">
               Total:{" "}
               <span className="font-bold text-lg text-purple-700">
-                ${totalPrice}
+                PKR{' '}{price}
               </span>
             </p>
             <button
@@ -192,7 +229,12 @@ const GetUserCartComponent = () => {
             >
               PROCEED TO CHECKOUT
             </button>
+         
           </div>
+        </div>
+          <div >
+    <AddressComponent />
+  </div>
         </div>
       )}
     </>

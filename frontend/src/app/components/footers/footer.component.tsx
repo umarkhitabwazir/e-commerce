@@ -1,69 +1,169 @@
 "use client"
-import React from "react"
+import { JSX, useState, FormEvent } from "react"
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaYoutube,
+  FaTiktok,
+  FaTelegramPlane,
+  FaTwitter,
+  FaWhatsapp,
+  FaEnvelope,
+  FaCcVisa,
+  FaCcMastercard,
+  FaCcPaypal,
+  FaCreditCard
+} from "react-icons/fa"
+import Image from "next/image"
 import Link from "next/link"
+import PolicyLinksCoponent from "../PolicyLinks.coponent"
 import { usePathname } from "next/navigation"
 
-const FooterComponent = () => {
-  const pathName=usePathname()
-  const authRoutes = ["/login", "/sign-up","/reset-password"];
+const Footer = () => {
+  const [email, setEmail] = useState("")
+  const year = new Date().getFullYear()
+   const pathName = usePathname();
+      const authRoutes = ["/sign-up", "/verify-email", "/reset-password", "/login"];
+      const isAuthRoute = authRoutes.includes(pathName);
+
+  const submitNewsletter = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      alert("Please enter a valid email address.")
+      return
+    }
+    alert(`Thanks — ${email} subscribed.`)
+    setEmail("")
+  }
+
   return (
-   !authRoutes.includes(pathName) &&
-    <footer className="bg-gray-900 text-gray-300 py-8">
-      <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+    <>
+   { 
+   !isAuthRoute &&  <footer className="bg-[#0b1721] text-white pt-10 pb-4 px-4 relative font-inter border-t border-white/5">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-        {/* Left Section */}
-        <div className="flex flex-col items-center md:items-start space-y-2">
-          <h2 className="text-lg font-semibold text-white">SaadiCollection.shop</h2>
-          <div className="flex items-center gap-2">
-            {/* Phone Icon */}
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2 5.5A2.5 2.5 0 014.5 3h2A2.5 2.5 0 019 5.5V7a2.5 2.5 0 01-2.5 2.5H6v1a11 11 0 0011 11h1a2.5 2.5 0 012.5 2.5V21a2.5 2.5 0 01-2.5 2.5h-2A18.5 18.5 0 012 5.5z" />
-            </svg>
-            <span>+92 340 9751709</span>
+          {/* Brand */}
+          <div className="flex flex-col">
+            <div className="flex  gap-4 items-start">
+              <div className="bg-white rounded-xl p-2 shadow-lg">
+                <Image
+                  src="/logo.jpg"
+                  alt="Saadi Collections logo"
+                  width={90}
+                  height={90}
+                  className="bg-cover  bg-center rounded-lg"
+                />
+              </div>
+              <div className="flex flex-col justify-center">
+                <h3 className="text-xl font-semibold">Saadi Collections</h3>
+                <p className="text-gray-400 leading-relaxed text-[1.02rem] max-w-md">
+                  Curated ethnic & modern wear, premium fabrics, fair prices and reliable delivery.
+                </p>
+              </div>
+            </div>
+          <PolicyLinksCoponent/>
+
+            <div className="flex gap-3 mt-auto text-gray-300 text-xl pt-4">
+              <FaCcVisa />
+              <FaCcMastercard />
+              <FaCcPaypal />
+              <FaCreditCard />
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            {/* Email Icon */}
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12H8m8 0l-8 5m8-5l-8-5m0 10V7m8 10V7" />
-            </svg>
-            <span>saadicollection18@gmail.com</span>
+          {/* Location */}
+          <div>
+            <h4 className="text-lg mb-2">Location</h4>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col gap-3">
+              <div className="rounded-lg overflow-hidden bg-black">
+                <iframe
+                  title="Saadi Collections - chakwal location"
+                  src="https://www.google.com/maps?q=chakwal,+Pakistan&output=embed"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-60 border-0"
+                />
+
+              </div>
+              <div className="text-gray-200 text-sm leading-tight">
+                <strong className="block text-white mb-1">Visit us — chakwal</strong>
+                <div>Saadi Collections (Representative)</div>
+                <div>chakwal, Punjab, Pakistan</div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Newsletter + Social */}
+          <div>
+            <h4 className="text-lg mb-2">Stay in touch</h4>
+            <p className="text-gray-400 mb-3 text-sm">
+              Get offers, restocks & early access — unsubscribe anytime.
+            </p>
+
+            <form onSubmit={submitNewsletter} className="flex flex-col sm:flex-row gap-2 mb-3">
+              <input
+                id="sc-newsletter"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="flex-1 px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-white placeholder-white/50 text-sm outline-none"
+              />
+              <button
+                type="submit"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-yellow-400 to-amber-500 text-[#071327] font-bold hover:-translate-y-[2px] transition"
+              >
+                Subscribe
+              </button>
+            </form>
+
+            <div className="grid grid-cols-4 sm:grid-cols-6 gap-3 justify-start mt-2">
+              {([
+                ["https://wa.me/923165548374", <FaWhatsapp key="wa" />],
+                ["https://t.me/SaadiCollection", <FaTelegramPlane key="tg" />],
+                ["https://youtube.com/@saadicollection.4469", <FaYoutube key="yt" />],
+                ["https://facebook.com/profile.php?id=61579311066499", <FaFacebookF key="fb" />],
+                ["https://instagram.com/saadicollection313", <FaInstagram key="ig" />],
+                ["https://tiktok.com/@saadi_collection.com", <FaTiktok key="tt" />],
+                ["https://x.com/sadicollection1", <FaTwitter key="tw" />],
+                ["mailto:saadicollection18@gmail.com", <FaEnvelope key="mail" />],
+              ] as [string, JSX.Element][]).map(([link, icon]) => (
+                <Link
+                  key={link}
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 flex items-center justify-center rounded-lg bg-white/5 hover:bg-yellow-400/20 hover:text-yellow-400 transition transform hover:-translate-y-1 shadow-lg"
+                >
+                  {icon}
+                </Link>
+              ))}
+
+            </div>
           </div>
         </div>
 
-        {/* Right Section */}
-        <div className="flex items-center gap-5">
-          <Link href="https://t.me/SaadiCollection_Shop" target="_blank" aria-label="Telegram">
-            <img src="/telegram.svg" alt="Telegram" className="w-6 h-6 hover:opacity-80" />
-          </Link>
-
-          <Link href="https://youtube.com/@saadicollection.4469?si=VviirPubSNf05Oh_" target="_blank" aria-label="YouTube">
-            <img src="/youtube.svg" alt="YouTube" className="w-6 h-6 hover:opacity-80" />
-          </Link>
-
-          <Link href="https://www.instagram.com/saadicollection313?igsh=Z2k4eHBzcmdtNGI3" target="_blank" aria-label="Instagram">
-            <img src="/instagram.svg" alt="Instagram" className="w-6 h-6 hover:opacity-80" />
-          </Link>
-
-          <Link href="https://www.facebook.com/share/169ozQFNQB/" target="_blank" aria-label="Facebook">
-            <img src="/facebook.svg" alt="Facebook" className="w-6 h-6 hover:opacity-80" />
-          </Link>
-
-          <Link href="https://www.tiktok.com/@saadicollection.shop?_t=ZS-90UQsaq7AFr&_r=1" target="_blank" aria-label="TikTok">
-            <img src="/tiktok.svg" alt="TikTok" className="w-6 h-6 hover:opacity-80" />
-          </Link>
-
-          <Link href="https://wa.me/923409751709" target="_blank" aria-label="WhatsApp">
-            <img src="/whatsapp.svg" alt="WhatsApp" className="w-6 h-6 hover:opacity-80" />
-          </Link>
+        {/* Bottom bar */}
+        <div className="border-t border-white/10 mt-6 pt-3 flex flex-col sm:flex-row justify-between items-center gap-3 max-w-6xl mx-auto text-gray-400 text-sm">
+          <small>© {year} Saadi Collections. All rights reserved.</small>
+          <nav className="flex gap-4">
+            <Link href="/contact" className="hover:text-yellow-400">Contact</Link>
+          </nav>
         </div>
-      </div>
 
-      <div className="text-center text-sm text-gray-500 mt-6 border-t border-gray-700 pt-4">
-        © {new Date().getFullYear()} Saadi Collection. All rights reserved.
-      </div>
-    </footer>
+        {/* Back to top */}
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="absolute right-4  bottom-20 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center font-bold hover:bg-yellow-400/20 hover:text-yellow-400 transition"
+          title="Back to top"
+        >
+          ↑
+        </button>
+      </footer>
+}
+    </>
   )
 }
 
-export default FooterComponent
+export default Footer

@@ -2,27 +2,16 @@
 
 const nextConfig = {
   images: {
-  remotePatterns:[
-    {
-      protocol: 'http',
-      hostname: 'res.cloudinary.com',
-      port: '',
-      pathname: '/dl5t2l1sc/image/upload/**',
-      search: '',
-    },
-  ]
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'res.cloudinary.com',
+        pathname: `/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload/**`,
+      },
+    ],
   },
 };
 
-module.exports = {
-  async rewrites() {
-    return [
-      {
-        // source: "/api/:path*",
-        // destination: `${process.env.NEXT_PUBLIC_API_URL}/:path*`,
-      },
-    ];
-  },
-};
+console.log('Cloudinary path:', process.env.NEXT_PUBLIC_CLOUD_NAME);
 
 module.exports = nextConfig;

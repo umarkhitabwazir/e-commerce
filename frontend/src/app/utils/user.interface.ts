@@ -1,6 +1,7 @@
 type UserInterface = {
   id: string
   username: string
+  phone:number | null
   email: string
   role: string
   password: string

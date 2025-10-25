@@ -17,13 +17,8 @@ export default {
       },
           backgroundImage: {
         'seller-form-bg': "url('/seller-req-bg.jpg')",
-        'product-bg': "url('/product-bg.jpg')",
-        'login-bg': "url('/login-page-bg.jpg')",
-        'auth-bg': "url('/auth-bg.jpg')",
-        'order-bg': "url('/order-management-bg.jpg')",
-        'profile-bg': "url('/profie-bg.jpg')",
-        'shipping-bg': "url('/shipping-bg.jpg')",
-        'payment-cashier-bg': "url('/payment-cashier-bg.jpg')",
+        
+        
       },
     },
   },

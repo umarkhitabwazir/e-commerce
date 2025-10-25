@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { emailVerificationTemp } from "../../emailTemplate/emailVarification.templet.js";
+import { ApiError } from "../apiError.js";
 
 
 const transporter = nodemailer.createTransport({
@@ -14,10 +15,10 @@ const transporter = nodemailer.createTransport({
 
 
 export const sendEmailVarification = async (email, emailVerificationCode) => {
-    const verificationLink = `${process.env.CORS_ORIGIN}verify-email?&code=${emailVerificationCode}`;
+    // const verificationLink = `${process.env.CORS_ORIGIN}verify-email?&code=${emailVerificationCode}`;
 
     const mailOptions = {
-  from: `"saadiCollection.shop" ${process.env.EMAIL_USER}`,
+  from: `"noreply" ${process.env.EMAIL_USER}`,
   to: email,
   subject: "Email Verification",
   html:emailVerificationTemp(emailVerificationCode)

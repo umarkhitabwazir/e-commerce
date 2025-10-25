@@ -66,7 +66,7 @@ const CreateProductComponent = () => {
             setLoading(false)
 
             if (error instanceof AxiosError) {
-
+console.log('add product error ',error)
                 setError(error.response?.data.error)
             }
         }

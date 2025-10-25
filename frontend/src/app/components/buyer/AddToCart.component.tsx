@@ -90,10 +90,10 @@ const CartPanel = ({
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-end gap-2">
               <span className="text-2xl font-bold text-gray-900">
-                ${product.price.toFixed(2)}
+              PKR{' '}{product.price.toFixed(2)}
               </span>
               <span className="text-gray-500 line-through text-lg">
-                ${(product.price * 1.2).toFixed(2)}
+                PKR{' '}{(product.price * 1.2).toFixed(2)}
               </span>
             </div>
 

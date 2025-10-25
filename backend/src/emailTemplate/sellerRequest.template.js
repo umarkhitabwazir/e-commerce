@@ -5,6 +5,8 @@ const sellerRequestTemp = (
   SubmissionDate,
   ReferenceID
 ) => {
+  const websiteUrl = process.env.WEBSITE_URL
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,7 +82,7 @@ const sellerRequestTemp = (
 
               <!-- CTA -->
               <div style="text-align:center; margin-top:30px;">
-                <a href="https://ukbazaar.vercel.app" style="background:linear-gradient(to right,#2563eb,#3b82f6); color:#fff; padding:12px 28px; border-radius:6px; text-decoration:none; font-weight:600; box-shadow:0 4px 10px rgba(37,99,235,.25);">Visit Seller Center</a>
+                <a href=${websiteUrl} style="background:linear-gradient(to right,#2563eb,#3b82f6); color:#fff; padding:12px 28px; border-radius:6px; text-decoration:none; font-weight:600; box-shadow:0 4px 10px rgba(37,99,235,.25);">Visit Seller Center</a>
               </div>
 
               <p style="margin-top:20px; font-size:14px; color:#64748b; text-align:center;">Have questions? Contact our support at <a href="mailto:umairkhitab0308@gmail.com" style="color:#3b82f6; text-decoration:none;">umairkhitab0308@gmail.com</a></p>

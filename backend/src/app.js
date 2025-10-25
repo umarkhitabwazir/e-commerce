@@ -16,6 +16,7 @@ import { cartRouter } from "./routes/cart.rout.js";
 import favoritRouter from "./routes/favorate.routes.js";
 import sellerRequestRoutes from "./routes/storeRequests.routes.js";
 import { contactUsRouter } from "./routes/contactUs.route.js";
+import webhookRouter from "./routes/pyment/webhook.routes.js";
 const app = express()
 app.use(
   cors({
@@ -46,7 +47,9 @@ app.use("/api/v2",
    categoryRouter,
    favoritRouter,
    sellerRequestRoutes,
-   contactUsRouter
+   contactUsRouter,
+   webhookRouter
+
 
   )
 

@@ -5,6 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import SingleProductComponent from "./GetProductsByIds.component";
 import ReviewComponent from "./Review.component";
+import PolicyLinksCoponent from "../PolicyLinks.coponent";
 
 
 interface FormData {
@@ -60,7 +61,7 @@ return;
   return (
     <>
       {loading ? (
-        <div className="fixed top-0 left-0   w-full h-full  flex flex-col justify-center items-center z-50">
+        <div className=" w-full min-h-screen  flex flex-col justify-center items-center z-50">
           <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-600 border-b-blue-500 rounded-full animate-spin"></div>
           <p className="text-black text-lg mt-4 font-medium">Processing Order...</p>
         </div>
@@ -106,6 +107,10 @@ return;
                 >
                   Buy Now
                 </button>
+              </div>
+              <div className="mt-3">
+
+                <PolicyLinksCoponent/>
               </div>
             </div>
             {/* Error Message */}

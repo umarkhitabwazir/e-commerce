@@ -57,7 +57,7 @@ const FavouriteProductsComponent = () => {
               <div
               className='cursor-pointer'
                 onClick={() =>
-                  router.push(`/order?query=${btoa(JSON.stringify({ productId: fav.item._id, p: fav.item.price, stock: fav.item.countInStock, rating: fav.item.rating }))}`)
+                  router.push(`/buyer/order?query=${btoa(JSON.stringify({ productId: fav.item._id, p: fav.item.price, stock: fav.item.countInStock, rating: fav.item.rating }))}`)
 
                 }
               >

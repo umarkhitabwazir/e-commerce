@@ -24,16 +24,11 @@ export const metadata: Metadata = {
   description: "Discover the best deals on electronics, fashion, and more. Shop now for high-quality products at unbeatable prices!",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Suspense fallback={<Loading />}>
-          <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen">
             <div className="relative">
               <BuyerNavbarComponent />
               <div className="fixed bottom-4 right-4 z-50">
@@ -44,11 +39,9 @@ export default function RootLayout({
             <main className="flex-grow">
               {children}
             </main>
-
-            <FooterComponent />
-          </div>
-        </Suspense>
+          <FooterComponent />
+        </div>
       </body>
     </html>
-  );
+  )
 }

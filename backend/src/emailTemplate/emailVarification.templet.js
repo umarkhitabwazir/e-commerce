@@ -1,6 +1,7 @@
-export const emailVerificationTemp=(emailVerificationCode)=>{
-    return `
-     <!DOCTYPE html>
+export const emailVerificationTemp = (emailVerificationCode) => {
+    const websiteUrl = process.env.WEBSITE_URL 
+  return `
+  <!DOCTYPE html>
   <html>
   <head>
       <style>
@@ -21,7 +22,10 @@ export const emailVerificationTemp=(emailVerificationCode)=>{
           }
           .logo {
               width: 120px;
+              height: 120px;
               margin-bottom: 20px;
+              border-radius: 50%;
+              object-fit: cover;
           }
           .btn {
               display: inline-block;
@@ -35,18 +39,34 @@ export const emailVerificationTemp=(emailVerificationCode)=>{
           .btn:hover {
               background-color: #0056b3;
           }
+          .footer {
+              margin-top: 30px;
+              font-size: 13px;
+              color: #999;
+              border-top: 1px solid #e0e0e0;
+              padding-top: 10px;
+          }
+          .footer a {
+              color: #007bff;
+              text-decoration: none;
+          }
+          .footer a:hover {
+              text-decoration: underline;
+          }
       </style>
   </head>
   <body>
       <div class="container">
-          <img src="https://saadicollection.shop/logo.jpg" alt="saadiCollection.shop Logo" class="logo" />
+          <img src="${websiteUrl}/logo.jpg" alt="saadiCollection.shop Logo" class="logo" />
           <h2 style="color: #333;">Email Verification</h2>
           <p style="font-size: 16px; color: #555;">
               Your verification code is: <strong>${emailVerificationCode}</strong>
           </p>
+          <div class="footer">
+              © ${new Date().getFullYear()} <a href=${websiteUrl} target="_blank">saadiCollection.shop</a>. All rights reserved.
+          </div>
       </div>
   </body>
   </html>
-    
-    `
+  `
 }

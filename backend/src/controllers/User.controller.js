@@ -30,6 +30,14 @@ const generateAccessAndRefereshTokens = async (userId) => {
     }
 }
 
+const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? "None" : 'Lax',
+    // domain: process.env.WEBSITE_URL,
+
+}
+
 
 
 
@@ -52,10 +60,10 @@ const generateAccessAndRefereshTokens = async (userId) => {
 // };
 
 const createUser = asyncHandler(async (req, res) => {
-    const { username, email, role, password } = req.body
+    const { username, email, role,phone, password } = req.body
 
 
-    if ([username, email, password].some((field) => field?.trim() === "")) {
+    if ([username,phone, email, password].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "All fields are required")
     }
     const errors = validationResult(req);
@@ -82,8 +90,9 @@ const createUser = asyncHandler(async (req, res) => {
 
     const user = new User({
         username,
+        phone,
         email,
-       role,
+        role,
         password,
         emailVerificationCode,
 
@@ -91,13 +100,7 @@ const createUser = asyncHandler(async (req, res) => {
     })
 
     await user.save()
-    const options = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite:process.env.NODE_ENV === 'production'? "None":'Lax',
-        // domain: process.env.FRONTEND_DOMAIN,
 
-    }
     const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
 
     res.
@@ -113,23 +116,23 @@ const createUser = asyncHandler(async (req, res) => {
 
 const updateUser = asyncHandler(async (req, res) => {
     const user = req.user
-    const { username} = req.body
+    const { username,phone } = req.body
     if (!user.id) {
         throw new ApiError(401, "Unauthorized. Please log in first.")
     }
-    if (username) {
-const existingUser = await User.find({ username: username });
-if (existingUser.length > 0 && existingUser[0]._id.toString() !== user._id.toString()) {
-    throw new ApiError(400, "Username already exists. Please choose a different username.");
-}
-const updatedUser = await User.findById(user._id);
-if (!updatedUser) {
-    throw new ApiError(404, "User not found.");
-}
-        user.username = username
+    if (!username || !phone) {
+        throw new ApiError(400, "Username and phone are required.")
         
-        await user.save()
     }
+    
+        const updatedUser = await User.findById(user._id);
+        if (!updatedUser) {
+            throw new ApiError(404, "User not found.");
+        }
+        user.username = username
+        user.phone = phone
+
+        await user.save()
 
     res.status(201).json(new ApiResponse(201, user, "User updated successfully"))
 })
@@ -144,13 +147,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
         }
         const user = await User.findOne({ email: email })
 
-        const options = {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? 'None' : 'Lax',
-            // domain: process.env.FRONTEND_DOMAIN
 
-        }
         if (!user) {
             throw new ApiError(404, "User not found")
         }
@@ -176,7 +173,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
         }
 
         if (isVerified) {
-            
+
             res.
                 cookie("accessToken", accessToken, options)
                 .cookie("refreshToken", refreshToken, options).
@@ -204,12 +201,12 @@ const forgotPassword = asyncHandler(async (req, res) => {
         const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
         user.passwordResetCode = emailVerificationCode;
         await user.save();
-    
+
         await sendEmailVarification(user.email, emailVerificationCode);
-        res.status(200).json(new ApiResponse(200, null, "Password reset code sent successfully."));
-        
+        res.status(200).json(new ApiResponse(200, null, "email varification code send successfully."));
+
     } catch (error) {
-        console.error("forgotPassError",error)
+        console.error("forgotPassError", error)
     }
 })
 const resetPassword = asyncHandler(async (req, res) => {
@@ -225,10 +222,15 @@ const resetPassword = asyncHandler(async (req, res) => {
     if (user.passwordResetCode !== Number(passwordResetCode)) {
         throw new ApiError(400, "Invalid password reset code.");
     }
+    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
+
     user.password = newPassword;
     user.passwordResetCode = null;
     await user.save();
-    res.status(200).json(new ApiResponse(200, null, "Password reset successfully."));
+    res.
+        cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options).
+        status(200).json(new ApiResponse(200, null, "Password reset successfully."));
 })
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -243,13 +245,13 @@ const logoutUser = asyncHandler(async (req, res) => {
         httpOnly: true,
         secure: isProduction,
         sameSite: isProduction ? 'None' : 'Lax',
-        // domain: process.env.FRONTEND_DOMAIN
+        // domain: process.env.WEBSITE_URL
     });
     res.clearCookie("accessToken", {
         httpOnly: true,
         secure: isProduction,
         sameSite: isProduction ? 'None' : 'Lax',
-        // domain: process.env.FRONTEND_DOMAIN
+        // domain: process.env.WEBSITE_URL
     });
     res.status(200).json(new ApiResponse(200, null, "User logged out successfully"))
 })

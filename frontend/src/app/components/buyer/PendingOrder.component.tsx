@@ -136,9 +136,9 @@ return;
                   <p className="text-sm text-gray-600 mb-4">
                     Total Price:{' '}
                     <span className="font-medium text-gray-800">
-                      ${order.totalPrice.toFixed(2)}
+                      PKR{' '}{order.totalPrice.toFixed(2)}
                     </span>{' '}
-                    (Tax: ${order.taxPrice.toFixed(2)}, Shipping: ${order.shippingPrice.toFixed(2)})
+                    (Tax: PKR{' '}{order.taxPrice.toFixed(2)}, Shipping: ${order.shippingPrice.toFixed(2)})
                   </p>
 
                   <div className=" flex gap-2 items-center justify-center flex-wrap">
@@ -164,7 +164,7 @@ return;
                                 {product.title}
                               </h3>
                               <p className="text-sm text-gray-500">
-                                Price: ${product.price.toFixed(2)}
+                                Price: PKR{' '}{product.price.toFixed(2)}
                               </p>
                               <p className="text-sm text-gray-500">
                                 Quantity: {orderProduct.quantity}

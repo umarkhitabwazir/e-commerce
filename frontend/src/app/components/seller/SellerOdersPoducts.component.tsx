@@ -161,12 +161,12 @@ const SellerOrdersComponent = () => {
 
     <div className="p-6">
       {loading ? (
-        <div className="flex flex-col items-center justify-center min-h-[50vh]">
+        <div className="flex flex-col items-center justify-center h-screen">
           <div className="w-16 h-16 border-4 border-t-cyan-500 border-r-blue-600 border-b-indigo-600 border-l-violet-600 rounded-full animate-spin"></div>
           <p className="mt-4 text-gray-600 text-lg font-medium">Loading orders...</p>
         </div>
       ) : adminOrders.length <= 0 ? (
-        <div className="bg-white rounded-xl shadow-sm p-12 text-center">
+        <div className="bg-white rounded-xl shadow-sm p-12 h-screen flex flex-col justify-center items-center text-center">
           <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -204,7 +204,7 @@ const SellerOrdersComponent = () => {
                       }`}>
                       {order.cancelled ? "Cancelled" : order.isDelivered ? "Delivered" : "Active"}
                     </span>
-                    <span className="text-lg font-bold text-gray-800">${order.totalPrice.toFixed(2)}</span>
+                    <span className="text-lg font-bold text-gray-800">PKR{' '}{order.totalPrice.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
@@ -234,6 +234,14 @@ const SellerOrdersComponent = () => {
                         <p className="text-sm text-gray-500">Payment Method</p>
                         <p className="font-medium text-gray-400">{order.paymentMethod}</p>
                       </div>
+                      {/* address */}
+                      <div>
+                        <p className="text-sm text-gray-500">Shipping Address</p>
+                        <div className="font-medium text-gray-400">
+                          <p>{order.address ? `Street: ${order.address.Street}` : "null"},{order.address ?`House No:${order.address.HouseNo}`  : "null"}</p>
+                          <p>{order.address ? order.address.City : "null"}, {order.address ? order.address.Province : "null"}</p>
+                        </div>
+                      </div>
                     </div>
                     }
                   </div>
@@ -244,6 +252,7 @@ const SellerOrdersComponent = () => {
                     <div className="space-y-4">
                       {order.products.map((p) => (
                         <div key={p.productId._id} className="flex items-start gap-3">
+
                           <div className="bg-gray-100 border rounded-md overflow-hidden">
                             <Image
                               src={p.productId.image}
@@ -255,9 +264,9 @@ const SellerOrdersComponent = () => {
                           </div>
                           <div>
                             <p className="font-medium text-gray-800">{p.productId.title}</p>
-                            <div className="flex gap-4 text-sm mt-1">
+                            <div className="flex flex-col flex-wrap gap-1 text-sm mt-1">
                               <span className="text-gray-600">Qty: {p.quantity}</span>
-                              <span className="text-gray-600">SKU: {p.productId._id.slice(-6)}</span>
+                              <span className="text-gray-600">Price:PKR{' '}{p.productId.price}</span>
                             </div>
                           </div>
                         </div>

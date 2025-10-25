@@ -10,6 +10,7 @@ import Loading from '../Loading.component';
 import AddToCartComponent from './AddToCart.component';
 import FavInterface from '../../utils/favInterface';
 import ErrorMessage from '../ErrorMessage.component';
+import Slider from '../Slider.component';
 
 const Products = () => {
   const [sort, setSort] = useState<string | null>(null);
@@ -203,10 +204,30 @@ try {
           {searchResult} items found for &quot;{searchedProducts}&quot;
         </h1>
       )}
+      {categoryName && (
+        <h1 className="text-gray-600 font-semibold mb-6 text-lg">
+     Items found in the &quot;{categoryName}&quot; category
+        </h1>
+      )}
 
       {error ? (
       <ErrorMessage message={error} />
       ) : (
+        <div className='flex flex-col gap-3'>
+        <div>
+          <Slider />
+        </div>
+        <hr className="h-px bg-gray-200 border-0 my-6" />
+    {products.length === 0 && (
+  <div className="flex flex-col items-center justify-center min-h-screen px-4">
+    <h1 className="text-5xl font-bold text-yellow-600 mb-4">No Products Found</h1>
+    <p className="text-lg text-gray-700 mb-3 text-center max-w-md">
+      There are currently no products available. Please check back soon.
+    </p>
+  </div>
+)}
+
+              
         <div className="grid bg-transparent  grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product: ProductInterface) => {
             const productId = product._id;
@@ -251,7 +272,7 @@ try {
                       <p className="text-sm text-gray-500">{product.brand}</p>
                     </div>
                     <span className={`text-xl font-bold ${isOutOfStock ? 'text-gray-400' : 'text-emerald-600'}`}>
-                      ${product.price}
+                      PKR{' '}{product.price}
                     </span>
                   </div>
 
@@ -335,6 +356,7 @@ try {
               </div>
             );
           })}
+        </div>
         </div>
       )}
     </div>

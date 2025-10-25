@@ -1,4 +1,10 @@
 import { v2 as cloudinary } from "cloudinary";
+import { ApiError } from "./apiError.js";
+import dotenv from 'dotenv';
+dotenv.config(
+    {path: '.env'}  
+);
+
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -8,7 +14,6 @@ cloudinary.config({
 
 
 const uploadOnCloudinary = async (buffer) => {
-    console.log('Cloudinarybuffer',buffer)
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
@@ -18,9 +23,9 @@ const uploadOnCloudinary = async (buffer) => {
       (error, result) => {
         if (error) {
           console.error("Cloudinary upload error:", error);
-          reject(error);
+         reject(new ApiError(500, "Cloudinary upload failed"));
+
         } else {
-          console.log('result',result)
           resolve(result);
         }
       }

@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { orderConfirmationTemp } from "../../emailTemplate/orderPlaced.template.js";
+import { ApiError } from "../apiError.js";
 
 
 const transporter = nodemailer.createTransport({
@@ -13,13 +14,13 @@ const transporter = nodemailer.createTransport({
 });
 
 
-export const sendEmailOrderPlaced = async (order,email, userName) => {
+export const sendEmailOrderPlaced = async (order,orderedProduct,email, userName) => {
 
     const mailOptions = {
-  from: `"saadiCollection.shop" ${process.env.EMAIL_USER}`,
+  from: `"noreply" ${process.env.EMAIL_USER}`,
   to: email,
   subject: "Order placed – cancel within 15 minutes",
-  html:orderConfirmationTemp(order,userName)
+  html:orderConfirmationTemp(order,orderedProduct,userName)
 };
 
     return new Promise((resolve, reject) => {

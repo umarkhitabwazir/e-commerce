@@ -1,4 +1,6 @@
 export const customerContactConfirmationTemp = (name) => {
+  const websiteUrl = process.env.WEBSITE_URL
+
   return `
   <!DOCTYPE html>
   <html>
@@ -44,7 +46,7 @@ export const customerContactConfirmationTemp = (name) => {
   </head>
   <body>
       <div class="container">
-          <img src="https://saadicollection.shop/logo.jpg" alt="saadiCollection.shop Logo" class="logo" />
+          <img src="${websiteUrl}/logo.jpg" alt="saadiCollection.shop Logo" class="logo" />
           <div class="header">
               <h2>Message Received</h2>
           </div>

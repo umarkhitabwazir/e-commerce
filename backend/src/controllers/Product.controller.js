@@ -29,10 +29,8 @@ let getAllProducts = asyncHandler(async (req, res) => {
 let getProductsByIds = asyncHandler(async (req, res) => {
 
     const { productIdsArr } = req.body
-  console.log("productIdsArr", productIdsArr)
     if (productIdsArr.length > 0) {
         const objectIds = productIdsArr.map((p) => new mongoose.Types.ObjectId(p));
-      console.log("objectIds", objectIds)
         const productArr = await Product.find({
             _id: { $in: objectIds }
         });
