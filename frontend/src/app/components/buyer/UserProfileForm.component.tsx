@@ -2,10 +2,11 @@
 import React, { useState, useEffect, Dispatch } from "react";
 import axios, { AxiosError } from "axios";
 import useAuth from "@/app/auths/auth";
+import { UserInterface } from "@/app/utils/user.interface";
 
-type User = { username?: string; phone?: string; updatedAt?: string; [key: string]: any } | null;
 
-const UserProfileForm = ({ setUser, setEdit }: { setUser: Dispatch<React.SetStateAction<User>>; setEdit: Dispatch<React.SetStateAction<boolean>> }) => {
+
+const UserProfileForm = ({ setUser, setEdit }: { setUser: Dispatch<React.SetStateAction<UserInterface>>; setEdit: Dispatch<React.SetStateAction<boolean>> }) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const { user } = useAuth();
 
@@ -39,19 +40,20 @@ const UserProfileForm = ({ setUser, setEdit }: { setUser: Dispatch<React.SetStat
 
     try {
       await axios.patch(`${API_URL}/updateUser`, formData, { withCredentials: true });
-      
-        setUser((prev: User) => ({
-    ...(prev || {}),
-    username: formData.username,
-    phone: formData.phone,
-    updatedAt: new Date().toISOString(),
-  }));
+
+    setUser((prev) => ({
+  ...(prev ?? {}),
+  username: formData.username,
+  phone: formData.phone ? Number(formData.phone) : undefined,
+  updatedAt: new Date().toISOString(),
+}));
+
+      setUpdated((prev) => !prev);
+      setEdit((prev) => !prev);
+      setTimeout(() => {
         setUpdated((prev) => !prev);
-          setEdit((prev) => !prev);
-          setTimeout(() => {
-            setUpdated((prev) => !prev);
-          }, 1000);
-      
+      }, 1000);
+
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         setError(error.response?.data?.error);

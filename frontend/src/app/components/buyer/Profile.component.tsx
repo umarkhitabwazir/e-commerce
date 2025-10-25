@@ -65,26 +65,26 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user: initialUser }
                                     <span className="font-medium text-gray-600 w-40 flex-shrink-0">
                                         Joined:
                                     </span>
-                                    <span className="text-gray-800">
+                                   { user.createdAt &&<span className="text-gray-800">
                                         {new Date(user.createdAt).toLocaleDateString('en-US', {
                                             year: 'numeric',
                                             month: 'long',
                                             day: 'numeric'
                                         })}
-                                    </span>
+                                    </span>}
                                 </div>
 
                                 <div className="flex items-center py-3 border-b border-gray-100">
                                     <span className="font-medium text-gray-600 w-40 flex-shrink-0">
                                         Last Updated:
                                     </span>
-                                    <span className="text-gray-800">
+                                 {user.updatedAt &&   <span className="text-gray-800">
                                         {new Date(user.updatedAt).toLocaleDateString('en-US', {
                                             year: 'numeric',
                                             month: 'long',
                                             day: 'numeric'
                                         })}
-                                    </span>
+                                    </span>}
                                 </div>
 
 
@@ -106,7 +106,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user: initialUser }
                     )}
                       {/* Edit Form */}
                     <div className={edit ? "block" : "hidden"}>
-                        <UserProfileForm setUser={setUser as any} setEdit={setEdit} />
+                        <UserProfileForm setUser={setUser} setEdit={setEdit} />
                     </div>
 
 {/* address */}

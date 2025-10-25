@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Suspense } from "react";
-import Loading from "./components/Loading.component";
 import FooterComponent from "./components/footers/footer.component";
 import SideWhatsappIconComponent from "./components/SideWhatsappIcon.component";
 import BuyerNavbarComponent from "./components/navbars/BuyerNavbar.component";
