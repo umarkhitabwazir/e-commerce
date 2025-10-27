@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm} from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import GetProductsByIdsComponent from "./GetProductsByIds.component";
 import PolicyLinksCoponent from "../PolicyLinks.coponent";
