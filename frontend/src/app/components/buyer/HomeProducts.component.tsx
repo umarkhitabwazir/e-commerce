@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { usePathname, useSearchParams } from 'next/navigation';

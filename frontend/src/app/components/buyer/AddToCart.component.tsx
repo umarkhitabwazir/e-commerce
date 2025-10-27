@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { FiX, FiMinus, FiPlus, FiShoppingCart, FiHeart } from 'react-icons/fi';
+import { FiX, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import { ProductInterface } from '../../utils/productsInterface';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
@@ -12,7 +12,6 @@ const CartPanel = ({
   setShowAddTocart: Dispatch<SetStateAction<boolean>>
 }) => {
   const [quantity, setQuantity] = useState(1);
-  const [isFavorite, setIsFavorite] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const router = useRouter()

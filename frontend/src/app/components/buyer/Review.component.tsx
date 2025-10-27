@@ -45,19 +45,23 @@ const ReviewComponent = ({ setCountReviews, productId }: { setCountReviews: Disp
     setEditToggle(true);
   }
 
-  const handleDelete = async (reviewId: string) => {
+  const handleDelete = async (reviewId?: string) => {
+    if (!reviewId) {
+      alert('review id no founded')
+      return;
+    }
     try {
       await axios.delete(`${API_URL}/delete/${reviewId}`, { withCredentials: true });
       setReviews((prev) => prev.filter((r) => r._id !== reviewId));
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-        alert("Failed to delete review: " + (error.response?.data.error || "Unknown error"));
+        alert("Failed to delete review: " + (error.response?.data?.error || "Unknown error"));
         return;
       }
     }
   }
 
-  
+
 
   return (
     <>
@@ -148,21 +152,20 @@ const ReviewComponent = ({ setCountReviews, productId }: { setCountReviews: Disp
                     {/* Actions */}
                     <button
                       onClick={() => {
-                        review._id &&
-                          handleEditToggle(review)
+                        handleEditToggle(review)
                       }
                       }
                       className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
                       Edit
                     </button>
-                    <button 
-                      onClick={() => {
-                        review._id &&
+                  
+                      <button
+                        onClick={() => {
                           handleDelete(review._id)
-                      }}                      
-                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
-                      Delete
-                    </button>
+                        }}
+                        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
+                        Delete
+                      </button>
 
                   </div>
                 }

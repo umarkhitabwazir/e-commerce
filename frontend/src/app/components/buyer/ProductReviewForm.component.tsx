@@ -1,15 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Link from "next/link";
-import { UserInterface } from "../../utils/user.interface";
-import buyerAuth from "@/app/auths/buyerAuth";
+import { useRouter } from "next/navigation";
+
 
 const ProductReviewFormComponent = ({
-    user,
     productId,
 }: {
-    user: UserInterface;
+
     productId: string | null;
 }) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -20,6 +19,7 @@ const ProductReviewFormComponent = ({
     const [success, setSuccess] = useState(false);
     const [rating, setRating] = useState(1);
     const ratingOptions = [1, 2, 3, 4, 5];
+    const router=useRouter()
 
     const handleSubmit = async () => {
         if (!productId) {
@@ -49,9 +49,14 @@ const ProductReviewFormComponent = ({
                 setSuccess(false);
             }, 2000);
             setReviewMessage("");
-        } catch (err) {
-            console.error(err);
-            setError("Failed to submit review. Please try again.");
+        } catch (err: unknown) {
+            if (err instanceof AxiosError) {
+                if (err.response?.status === 401) {
+router.push('/login')
+                }
+                setError(`Failed to submit review:${err.response?.data.error || 'Unknown error'}`);
+            }
+
             setTimeout(() => {
                 setError(null);
 
@@ -73,7 +78,6 @@ const ProductReviewFormComponent = ({
                 Write a Review
             </h2>
 
-            {error && <p className="text-red-500">{error}</p>}
             {success && (
                 <p className="text-green-500">Review submitted successfully!</p>
             )}
@@ -109,6 +113,8 @@ const ProductReviewFormComponent = ({
                     />
 
                     <div className="flex flex-col items-center">
+            {error && <p className="text-red-500">{error}</p>}
+
                         <button
                             onClick={handleSubmit}
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded mt-3"
@@ -130,4 +136,4 @@ const ProductReviewFormComponent = ({
     );
 };
 
-export default buyerAuth(ProductReviewFormComponent);
+export default ProductReviewFormComponent;
