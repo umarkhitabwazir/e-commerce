@@ -20,11 +20,17 @@ const ShippingComponent = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [orderSummary, setOrderSummary] = useState(orderSummaryStructure)
   const searchParams = useSearchParams()
-  const decoded = JSON.parse(atob(searchParams.get("query") || ""))
-    const [savedAddress, setSavedAddress] = useState<boolean>(false)
-  
+  const decoded = searchParams.get("query") && JSON.parse(atob(searchParams.get("query") || ""))
+  const [savedAddress, setSavedAddress] = useState<boolean>(false)
+
 
   const router = useRouter()
+  useEffect(() => {
+    if (!searchParams.get("query")) {
+      return;
+    }
+  }, [decoded]);
+
   const getAddress = async () => {
 
     try {
@@ -53,21 +59,24 @@ const ShippingComponent = () => {
 
 
   useEffect(() => {
+    if (!decoded) {
+      return;
+    }
     const formdata = {
       "products": [{
         "productId": decoded.productId,
-        "quantity":decoded.quantity
+        "quantity": decoded.quantity
       },
       ],
 
 
     }
     const previewOrder = async () => {
-      
-        const res = await axios.post(`${API_URL}/preview-order`, formdata)
-        setOrderSummary(res.data.data)
-      
-      
+
+      const res = await axios.post(`${API_URL}/preview-order`, formdata)
+      setOrderSummary(res.data.data)
+
+
     }
     previewOrder()
 
@@ -79,21 +88,30 @@ const ShippingComponent = () => {
 
   const handleProceedPay = async () => {
     setLoading(true)
-  
+    if (!decoded) {
+      setLoading(false)
+      alert("Invalid order data. Please try again.");
+      if (window.history.length > 1) {
+        router.back()
+      } else {
+        router.push('/')
+      }
+      return;
+    }
     setTimeout(() => {
-      setLoading(false)  
+      setLoading(false)
     }, 1000);
 
     if (!savedAddress) {
-        alert("Please add a shipping address before proceeding to payment.");
-        return;
-      }
+      alert("Please add a shipping address before proceeding to payment.");
+      return;
+    }
 
-    router.push(`/buyer/payment-cashier?query=${btoa(JSON.stringify({productIdsAndQtyArr: [{ productId: decoded.productId, quantity: decoded.quantity }], price: decoded.price }))}`)
+    router.push(`/buyer/payment-cashier?query=${btoa(JSON.stringify({ productIdsAndQtyArr: [{ productId: decoded.productId, quantity: decoded.quantity }], price: decoded.price }))}`)
   }
   return (
     <>
-      <div className=" bg-transparent h-full  grid grid-row-2  w-full p-4">
+      <div className=" bg-transparent h-full  grid grid-row-2  w-full  ">
 
 
         {
@@ -101,54 +119,68 @@ const ShippingComponent = () => {
             <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-700 border-b-blue-500 rounded-full animate-spin"></div>
             <p className="text-black text-lg mt-4 border-t-black ">loading...</p>
           </div>
-          }
+        }
 
 
 
-      
-        <div className="flex  flex-wrap">
+
+        <div className="flex flex-wrap justify-center p-2 rounded-lg shadow-md">
 
 
 
-          <div className="w-auto max-w-md text-gray-800 bg-transparent rounded-lg shadow-md p-6 mt-10">
+          <div className="w-auto max-w-md text-gray-800 bg-transparent  p-6 mt-10">
             <h1 className="text-xl font-semibold text-gray-900 border-b pb-2 mb-4">
               Order Summary
             </h1>
             <p className="text-sm text-gray-600 mb-4">
-              order cancelling is not allowed after 30 minutes of placing order
+              order cancelling is not allowed after 15 minutes of placing order
             </p>
-            <div className="space-y-3">
-              <h2 className="flex justify-between text-sm font-medium">
-                <span>Items Total ({orderSummary.items}):</span>
-                <span>PKR{' '}{decoded.price}</span>
-              </h2>
-              <h2 className="flex justify-between text-sm font-medium">
-                <span>Delivery Fee:</span>
-                <span>PKR{' '}{orderSummary.shippingPrice}</span>
-              </h2>
-              <h2 className="flex justify-between text-sm font-medium">
-                <span>Tax Price:</span>
-                <span>PKR{' '}{orderSummary.taxPrice}</span>
-              </h2>
-              <h2 className="flex justify-between text-lg font-semibold text-gray-900">
-                <span>Total:</span>
-                <span>PKR{' '}{orderSummary.totalPrice.toFixed(2)}</span>
-              </h2>
-            </div>
+            {
+              decoded ?
+                <div className="space-y-3">
+                  <h2 className="flex justify-between text-sm font-medium">
+                    <span>Items Total ({orderSummary.items}):</span>
+                    <span>PKR{' '}{decoded.price}</span>
+                  </h2>
+                  <h2 className="flex justify-between text-sm font-medium">
+                    <span>Delivery Fee:</span>
+                    <span>PKR{' '}{orderSummary.shippingPrice}</span>
+                  </h2>
+                  <h2 className="flex justify-between text-sm font-medium">
+                    <span>Tax Price:</span>
+                    <span>PKR{' '}{orderSummary.taxPrice.toFixed(2)}</span>
+                  </h2>
+                  <h2 className="flex justify-between text-lg font-semibold text-gray-900">
+                    <span>Total:</span>
+                    <span>PKR{' '}{orderSummary.totalPrice.toFixed(2)}</span>
+                  </h2>
+                </div>
+                : <p className="text-red-600 font-light flex justify-center items-center mt-4">Invalid order details provided.</p>
+            }
             <button onClick={handleProceedPay} className="mt-6 w-full bg-blue-600 text-white font-medium py-2 rounded-md hover:bg-blue-700 transition-all">
               {loading ? 'loading...' : 'Proceed to Pay'}
             </button>
           </div>
-          <div className="w-auto max-w-md text-gray-800 bg-transparent border rounded-lg shadow-md p-6 mt-10">
+          <div className="">
 
-            <SingleProductComponent productIds={[decoded.productId]} />
-
+            <AddressComponent />
           </div>
+          {
+            decoded ?
+              <div className=" text-gray-800 bg-transparent border  mt-10">
+                <h1
+                  className="text-xl font-semibold text-gray-900 border-b pb-2 mb-4"
+                >
+                  Selected Item for Checkout
+                </h1>
+                <SingleProductComponent productIds={[decoded.productId]} />
 
-          <div className="bg-transparent">
+              </div>
+              : <p className="text-red-600 font-light flex justify-center items-center mt-4">Invalid order details provided.</p>
+          }
 
-            <AddressComponent  />
-          </div>
+
+
 
         </div>
       </div>

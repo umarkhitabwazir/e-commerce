@@ -11,6 +11,7 @@ import AddToCartComponent from './AddToCart.component';
 import FavInterface from '../../utils/favInterface';
 import ErrorMessage from '../ErrorMessage.component';
 import Slider from '../Slider.component';
+import { useFetchData } from '@/app/utils/useFetchData';
 
 const Products = () => {
   const [sort, setSort] = useState<string | null>(null);
@@ -32,11 +33,8 @@ const Products = () => {
   const value = searchParams.get("sort");
   const favIdInParams = searchParams.get("favId");
 
-  const fetchData = useCallback(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setLoading(false);
-  }, []);
 
+const { fetchData } = useFetchData(setLoading);
   useEffect(() => {
     fetchData();
   }, [fetchData]);

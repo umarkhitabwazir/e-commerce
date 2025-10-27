@@ -44,20 +44,25 @@ const TrackOrderComponent = ({ product, order, setOpenTrackOrder }: { product: O
                                         <br />
                                         15-20 days
                                     </div>
-                                    <div>
-                                        <strong>Shipping By:</strong>
-                                        <br />
-                                        BLUEDART | <FaPhone className="inline" /> +1598675986
-                                    </div>
+                                
                                     <div>
                                         <strong>Status:</strong>
                                         <br />
-                                       {order.isDelivered ?"Order Deviver": order.confirmed?"Order confirmed" : "Pending"}
+                                        {order.isDelivered ? "Order Deviver" : order.confirmed ? "Order confirmed" : "Pending"}
                                     </div>
                                     <div>
                                         <strong>Tracking #:</strong>
                                         <br />
-                                       {order._id}
+                                        {order._id}
+                                    </div>
+                                        <div>
+                                        <strong>Shipped By:</strong>
+                                        <br />
+                                        Customer Support
+                                        <br />
+                                        <a href="tel:+923409751709" className="text-blue-600 hover:underline ml-1 flex items-center gap-1">
+                                            <FaPhone className="inline" /> +92 340 9751709
+                                        </a>
                                     </div>
                                 </div>
                             </article>
@@ -68,12 +73,12 @@ const TrackOrderComponent = ({ product, order, setOpenTrackOrder }: { product: O
                                     <FaCheck className="text-2xl mb-1" />
                                     <span>{order.confirmed ? "Order confirmed " : "Order Pending..."}</span>
                                 </div>
-                            
+
                                 <div className={`${order.pickedByCounter ? "text-green-600" : "text-gray-400"}  flex flex-col items-center `}>
                                     <FaUser className="text-2xl mb-1" />
                                     <span>picked By Counter</span>
                                 </div>
-          
+
 
                                 <div className={`${order.orderShipped ? "text-green-600" : "text-gray-400"} flex flex-col items-center `}>
                                     <FaTruck className="text-2xl mb-1" />
@@ -90,24 +95,24 @@ const TrackOrderComponent = ({ product, order, setOpenTrackOrder }: { product: O
                             {/* Product List */}
                             <ul className="grid md:grid-cols-3 gap-6">
                                 {product &&
-                                product.map((product:OrderProduct)=>(
-                                      <li key={product.productId._id} className="flex text-gray-500 items-start gap-4">
-                                        <Image
-                                            src={product.productId.image}
-                                            alt="Product"
-                                            width={80}
-                                            height={80}
-                                            className="border rounded-md object-contain"
-                                        />
-                                        <div className="flex flex-col justify-center">
-                                            <p className="font-medium">Title:{product.productId.title}</p>
-                                            <span className="text-gray-500">Price:{product.productId.price}</span>
-                                            <span className="text-gray-500">Quantity:{product.quantity}</span>
-                                        
-                                        </div>
-                                    </li>
-                                ))
-                                  
+                                    product.map((product: OrderProduct) => (
+                                        <li key={product.productId._id} className="flex text-gray-500 items-start gap-4">
+                                            <Image
+                                                src={product.productId.image}
+                                                alt="Product"
+                                                width={80}
+                                                height={80}
+                                                className="border rounded-md object-contain"
+                                            />
+                                            <div className="flex flex-col justify-center">
+                                                <p className="font-medium">Title:{product.productId.title}</p>
+                                                <span className="text-gray-500">Price:{product.productId.price}</span>
+                                                <span className="text-gray-500">Quantity:{product.quantity}</span>
+
+                                            </div>
+                                        </li>
+                                    ))
+
                                 }
                             </ul>
 

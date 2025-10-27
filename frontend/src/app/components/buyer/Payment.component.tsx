@@ -1,8 +1,8 @@
 "use client";
 import axios, { AxiosError } from 'axios';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import SingleProductComponent from './GetProductsByIds.component';
+import React, { useState } from 'react';
+import GetProductsByIdsComponent from './GetProductsByIds.component';
 import buyerAuth from '../../auths/buyerAuth';
 
 const PaymentComponent = () => {
@@ -23,9 +23,7 @@ const PaymentComponent = () => {
   const [error, setError] = useState<string | undefined>(undefined);
   const router = useRouter()
 
-useEffect(() => {
-  console.log('decoded',decoded)
-}, [])
+
 
   const handlePaymentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setError(undefined)
@@ -39,14 +37,27 @@ useEffect(() => {
       try {
 
         const paymentMethod = selectedPayment;
-        if (decoded) {
-          await axios.post(`${API_URL}/create-order`, {
-            "products": decoded.productIdsAndQtyArr,
-            "paymentMethod": paymentMethod,
-          }, { withCredentials: true });
-
-          return router.push(`/buyer/orders?decoded=${btoa(JSON.stringify(decoded))}`)
+        if (!decoded) {
+          setError("Invalid order data. Please try again.")
+          setLoading(false)
+          setTimeout(() => {
+            setError(undefined)
+          }, 2000);
+          if (window.history.length > 1) {
+            router.back()
+          } else {
+            router.push('/')
+          }
+          return;
         }
+
+        await axios.post(`${API_URL}/create-order`, {
+          "products": decoded.productIdsAndQtyArr,
+          "paymentMethod": paymentMethod,
+        }, { withCredentials: true });
+
+        return router.push(`/buyer/orders?decoded=${btoa(JSON.stringify(decoded))}`)
+
 
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
@@ -150,11 +161,57 @@ useEffect(() => {
       </div>
       <div>
 
-        <h3 className="text-xl font-semibold text-gray-900 tracking-tight">
-          Selected Items for Checkout
-        </h3>
+        {
+          productIds.length === 0 ? (
+            <p className="text-red-500 text-center mt-4">No products selected for checkout.</p>
+          )
+            : (
 
-        <SingleProductComponent productIds={productIds} />
+              <h3 className="text-xl font-semibold text-gray-900 tracking-tight">
+                {
+                  productIds.length !== 0
+                  &&
+                  (
+                    <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-b-xl px-4 py-3 shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center w-8 h-8 bg-blue-500 rounded-full">
+                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h2 className="text-gray-700 font-semibold text-sm uppercase tracking-wide">
+                            Selected for Checkout
+                          </h2>
+                          <p className="text-gray-500 text-xs">
+                            Ready to complete your purchase
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="text-right">
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-2xl font-bold text-blue-600">{productIds.length}</span>
+                          <span className="text-gray-500 text-sm font-medium">items</span>
+                        </div>
+                        <div className="w-full h-1 bg-blue-200 rounded-full mt-1">
+                          <div
+                            className="h-full bg-blue-500 rounded-full transition-all duration-300"
+                            style={{
+                              width: `${Math.min((productIds.length / (productIds.length + 10)) * 100, 100)}%`
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                  )
+                }
+              </h3>
+            )
+        }
+
+        <GetProductsByIdsComponent productIds={productIds} />
       </div>
     </div>
   );

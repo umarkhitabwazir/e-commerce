@@ -1,33 +1,39 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { UserInterface } from "../../utils/user.interface";
-import SingleProductComponent from "./GetProductsByIds.component";
-import adminAuth from "../../auths/sellerAuth";
+import buyerAuth from "@/app/auths/buyerAuth";
 
-const ProductReviewComponent = ({ user, productId }: { user: UserInterface, productId: string | null }) => {
-    useEffect(() => {
-        if (!user) {
-            return;
-        }
-
-
-    }, [user])
+const ProductReviewFormComponent = ({
+    user,
+    productId,
+}: {
+    user: UserInterface;
+    productId: string | null;
+}) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    const [rating, setRating] = useState(1);
     const [reviewMessage, setReviewMessage] = useState("");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const [rating, setRating] = useState(1);
+    const ratingOptions = [1, 2, 3, 4, 5];
+
+    const handleSubmit = async () => {
         if (!productId) {
-            return alert("Product not found return to home page and try again");
-
-
+            alert("Product not found. Return to home page and try again.");
+            return;
         }
-        e.preventDefault();
+        if (reviewMessage.trim() === "") {
+            setError("Review message cannot be empty.");
+            return;
+        }
+        if (rating < 1 || rating > 5) {
+            setError("Rating must be between 1 and 5.");
+            return;
+        }
         setLoading(true);
         setError(null);
         setSuccess(false);
@@ -38,72 +44,90 @@ const ProductReviewComponent = ({ user, productId }: { user: UserInterface, prod
                 { rating, reviewMessage },
                 { withCredentials: true }
             );
-
             setSuccess(true);
+            setTimeout(() => {
+                setSuccess(false);
+            }, 2000);
             setReviewMessage("");
-
         } catch (err) {
             console.error(err);
-            // setError("Failed to submit review. Please try again.");
+            setError("Failed to submit review. Please try again.");
+            setTimeout(() => {
+                setError(null);
+
+            }, 2000);
         } finally {
             setLoading(false);
+            setError(null);
+            setSuccess(false);
+
+
         }
     };
 
     return (
-        <div className={`${!productId&&"hidden"} p-4 bg-white shadow-md rounded-lg`}>
-            <h2 className="text-lg font-semibold text-gray-400 mb-2">Write a Review</h2>
+        <div
+            className={`${!productId && "hidden"}  rounded-lg`}
+        >
+            <h2 className="text-lg font-semibold text-gray-400 mb-2">
+                Write a Review
+            </h2>
+
             {error && <p className="text-red-500">{error}</p>}
-            {success && <p className="text-green-500">Review submitted successfully!</p>}
-            <SingleProductComponent productIds={[productId || ''] } />
-            <form onSubmit={handleSubmit}>
-                {/* Star Rating Input */}
-                <label className="block text-sm font-medium text-gray-700">Rating</label>
-                <div className="flex space-x-1 mt-1">
-                    {[1, 2, 3, 4, 5].map((num) => (
-                        <span
-                            key={num}
-                            className={`cursor-pointer text-xl ${num <= rating ? "text-yellow-500" : "text-gray-300"}`}
-                            onClick={() => setRating(num)}
-                        >
-                            ★
-                        </span>
-                    ))}
-                </div>
+            {success && (
+                <p className="text-green-500">Review submitted successfully!</p>
+            )}
 
-                {/* Review Message Input */}
-                <label className="block text-sm font-medium text-gray-700 mt-3">Review</label>
-                <textarea
-                    className="w-full p-2 border text-gray-600 rounded mt-1"
-                    rows={3}
-                    value={reviewMessage}
-                    onChange={(e) => setReviewMessage(e.target.value)}
-                    placeholder="Write your review here..."
-                    required
-                />
+            {productId ? (
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                        Rating
+                    </label>
+                    <div className="flex space-x-1 mt-1">
+                        {ratingOptions.map((num) => (
+                            <span
+                                key={num}
+                                className={`cursor-pointer text-xl ${num <= rating ? "text-yellow-500" : "text-gray-300"
+                                    }`}
+                                onClick={() => setRating(num)}
+                            >
+                                ★
+                            </span>
+                        ))}
+                    </div>
 
-                {/* Submit Button */}
-                <div className="flex flex-col items-center">
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded mt-3"
-                        disabled={loading}
-                    >
-                        {loading ? "Submitting..." : "Submit Review"}
-                    </button>
-                    {
-                        !productId &&
-                        <Link
-                            className="w-full  hover:text-gray-500 text-gray-600 font-semibold underline py-2 px-4 rounded mt-3"
-                            href="/"
+                    <label className="block text-sm font-medium text-gray-700 mt-3">
+                        Review
+                    </label>
+                    <textarea
+                        className="w-full  p-2 border text-gray-600 rounded mt-1 overflow-y-auto resize-none"
+                        rows={3}
+                        value={reviewMessage}
+                        onChange={(e) => setReviewMessage(e.target.value)}
+                        placeholder="Write your review here..."
+                        required
+                    />
+
+                    <div className="flex flex-col items-center">
+                        <button
+                            onClick={handleSubmit}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded mt-3"
+                            disabled={loading}
                         >
-                            Return to Home Page↗
-                        </Link>
-                    }
+                            {loading ? "Submitting..." : "Submit Review"}
+                        </button>
+                    </div>
                 </div>
-            </form>
+            ) : (
+                <Link
+                    className="w-full hover:text-gray-500 text-gray-600 font-semibold underline py-2 px-4 rounded mt-3"
+                    href="/"
+                >
+                    Return to Home Page↗
+                </Link>
+            )}
         </div>
     );
 };
 
-export default adminAuth(ProductReviewComponent)
+export default buyerAuth(ProductReviewFormComponent);

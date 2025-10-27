@@ -12,6 +12,5 @@ const nextConfig = {
   },
 };
 
-console.log('Cloudinary path:', process.env.NEXT_PUBLIC_CLOUD_NAME);
 
 module.exports = nextConfig;

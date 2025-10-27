@@ -32,7 +32,7 @@ const reviewController = asyncHandler(async (req, res) => {
 });
 const getAllReviews = asyncHandler(async (req, res) => {  
     
-    const reviews = await Review.find().populate("user","fullName");
+    const reviews = await Review.find().populate("user","username");
 
     res.status(200).json(new ApiResponse(200, reviews, "All reviews fetched successfully"));
 });
@@ -44,10 +44,10 @@ const updateReview = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(400, "user not logined! ")
     }
-    const productId = req.params.productId
+    const reviewId = req.params.reviewId
     
-    if (!productId) {
-        throw new ApiError(400, "product Id not found ")
+    if (!reviewId) {
+        throw new ApiError(400, "review Id not found ")
 
     }
 
@@ -60,7 +60,7 @@ const updateReview = asyncHandler(async (req, res) => {
     }
 
     const  review = await Review.findOneAndUpdate(
-        { product: productId, user: user.id },
+        { _id: reviewId, user: user.id },
         { rating, reviewMessage },
         { new: true }
     );
@@ -74,11 +74,11 @@ const updateReview = asyncHandler(async (req, res) => {
 
 })
 const deleteReview = asyncHandler(async (req, res) => {
-    const productId = req.params.productId
-    if (!productId) {
-        throw new ApiError(400, "prodiuct Id is not found!")
+    const reviewId = req.params.reviewId
+    if (!reviewId) {
+        throw new ApiError(400, "review Id is not found!")
     }
-    const review = await Review.findOne({ product: productId })
+    const review = await Review.findById(reviewId)
     if (!review) {
         throw new ApiError(400, "review is not found!")
 

@@ -8,5 +8,5 @@ export const reviewsRouters = express.Router();
 // Review Routes
 reviewsRouters.route("/review/:productId").post(authMiddleware, reviewController); // Add a review for a product
 reviewsRouters.route("/get-all-reviews").get(getAllReviews); // get  a review for a product
-reviewsRouters.route("/update/:productId").patch(authMiddleware, updateReview); // Update a review
-reviewsRouters.route("/delete/:productId").delete(authMiddleware, deleteReview); // Delete a review
+reviewsRouters.route("/update/:reviewId").patch(authMiddleware, updateReview); // Update a review
+reviewsRouters.route("/delete/:reviewId").delete(authMiddleware, deleteReview); // Delete a review

@@ -28,12 +28,12 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
     const [categorisOpen, setCategorisOpen] = useState(false)
     const router = useRouter();
     const pathName = usePathname();
+    const publicRoutes = ["/privacy-policy", "/ownership-statement", "/terms-and-conditions", "/refund-return-policy", "/shipping-policy", "/", "/contact"].includes(pathName);
     const userRoles = process.env.NEXT_PUBLIC_ROLES?.split(',')
     const authRoutes = ["/sign-up", "/verify-email", "/reset-password", "/login"];
     const isAuthRoute = authRoutes.includes(pathName);
 
     const roleAuth = ["/buyer"].some(route => pathName.startsWith(route));
-    const publicRoutes = ["/privacy-policy", "/ownership-statement", "/terms-and-conditions", "/refund-return-policy", "/shipping-policy", "/", "/contact"].includes(pathName);
     const sellerRoleAuth = ["/seller"].some(route => pathName.startsWith(route));
 
 

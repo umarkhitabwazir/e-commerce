@@ -1,7 +1,8 @@
 type ReviewsInterface = {
+    _id?: string,
     product: string,
     rating: number,
-    user: { fullName: string },
+    user: {_id:string, username: string },
     reviewMessage: string,
     createdAt: Date,
     updatedAt: Date,

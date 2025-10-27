@@ -23,6 +23,7 @@ export const useAuth = () => {
           
                    setError(err?.response?.data?.message  || "Failed to fetch user")
         }
+      
         setUser(null)
       } finally {
         setLoading(false)
@@ -30,7 +31,7 @@ export const useAuth = () => {
     }
 
     fetchUser()
-  }, [API_URL])
+  }, [])
 
   return { user, loading, error }
 }

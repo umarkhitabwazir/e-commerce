@@ -1,5 +1,5 @@
 export type UserInterface = {
-  id?: string
+  _id?: string
   username?: string
   phone?: number
   email?: string

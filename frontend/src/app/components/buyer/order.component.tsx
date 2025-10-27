@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
-import SingleProductComponent from "./GetProductsByIds.component";
-import ReviewComponent from "./Review.component";
+import GetProductsByIdsComponent from "./GetProductsByIds.component";
 import PolicyLinksCoponent from "../PolicyLinks.coponent";
 
 
@@ -18,7 +17,7 @@ const OrderPage = () => {
   const [loading, setLoading] = useState(false);
   const [selectedQuantity, setSelectedQuantity] = useState<number | null>(1);
   const searchParams = useSearchParams();
-  const decoded = JSON.parse(atob(searchParams.get("query") || ""));
+  const decoded = searchParams.get("query") && JSON.parse(atob(searchParams.get("query") || ""));
 
   const router = useRouter();
 
@@ -26,9 +25,20 @@ const OrderPage = () => {
     if (!searchParams.get("query")) {
       return;
     }
-  }, [router, decoded]);
+  }, [ decoded]);
 
   const onSubmit: SubmitHandler<FormData> = async () => {
+if (!decoded) {
+  setError("quantity", { type: "manual", message: "Invalid order data. Please try again." });
+  alert("Invalid order data. Please try again.");
+       if (window.history.length>1) {
+      router.back()
+    }else{
+        router.push('/')
+    }
+  return;
+}
+
     if (!selectedQuantity) {
       setError("quantity", { type: "manual", message: "Quantity is required" });
       return;
@@ -61,24 +71,16 @@ return;
   return (
     <>
       {loading ? (
-        <div className=" w-full min-h-screen  flex flex-col justify-center items-center z-50">
+        <div className=" w-full h-auto min-h-screen  flex flex-col justify-center items-center z-50">
           <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-600 border-b-blue-500 rounded-full animate-spin"></div>
           <p className="text-black text-lg mt-4 font-medium">Processing Order...</p>
         </div>
       ) : (
-        <div className=" min-h-screen w-full ">
+        <div className="   w-full ">
           {/* Order Form */}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="rounded-lg flex flex-wrap justify-evenly items-center w-full ">
-
-
-            {/* Product Details */}
-            <div >
-
-              <SingleProductComponent productIds={[decoded.productId]} />
-            </div>
-
-            {/* Quantity Buttons */}
+          <form  className="rounded-lg flex flex-wrap justify-evenly  w-full ">
+    {/* Quantity Buttons */}
             <div>
 
               <h1 className="text-2xl font-bold text-gray-900 text-center mb-6">Select Quantity</h1>
@@ -98,11 +100,15 @@ return;
                   </button>
                 ))}
               </div>
+                  {/* Error Message */}
+            {errors.quantity && (
+              <p className="text-red-500 text-sm text-center mb-4">{errors.quantity.message}</p>
+            )}
               {/* Buy Now Button */}
               <div className="flex justify-center items-center w-full">
 
                 <button
-                  type="submit"
+                  onClick={handleSubmit(onSubmit)}
                   className="w-full max-w-lg bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-200 shadow-lg transform  active:scale-95"
                 >
                   Buy Now
@@ -113,16 +119,20 @@ return;
                 <PolicyLinksCoponent/>
               </div>
             </div>
-            {/* Error Message */}
-            {errors.quantity && (
-              <p className="text-red-500 text-sm text-center mb-4">{errors.quantity.message}</p>
-            )}
-            {/* Reviews Section */}
-            <div>
+        
 
-              <h1 id="review" className="text-gray-500 mt-10 text-xl font-medium">Reviews for this Product</h1>
-              <ReviewComponent productId={decoded.productId} />
+            {/* Product Details */}
+            {
+              decoded ?
+            <div className="" >
+
+              <GetProductsByIdsComponent productIds={[decoded.productId]} />
             </div>
+            : <p className="text-red-600 font-light flex justify-center items-center mt-4">Invalid order details provided.</p>
+            }
+
+        
+      
           </form>
 
 

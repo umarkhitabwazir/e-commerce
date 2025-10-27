@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Suspense fallback={<Loading/>}>
-          <div className="flex flex-col min-h-screen">
+          <div className="flex flex-col justify-between  h-auto min-h-screen">
             <div className="relative">
               <BuyerNavbarComponent />
               <div className="fixed bottom-4 right-4 z-50">
@@ -40,7 +40,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main className="flex-grow">
               {children}
             </main>
+            <div >
+
             <FooterComponent />
+            </div>
           </div>
         </Suspense>
       </body>

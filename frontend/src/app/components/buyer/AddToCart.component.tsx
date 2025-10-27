@@ -57,7 +57,6 @@ const CartPanel = ({
 
   const increment = () => setQuantity(prev => Math.min(prev + 1, 3));
   const decrement = () => setQuantity(prev => Math.max(prev - 1, 1));
-  const toggleFavorite = () => setIsFavorite(!isFavorite);
   const closePanel = () => setShowAddTocart((prev) => !prev);
 
   const isOutOfStock = product.countInStock <= 0;
@@ -192,18 +191,6 @@ const CartPanel = ({
               )}
             </button>
 
-            <button
-              onClick={toggleFavorite}
-              className={`p-4 flex items-center justify-center rounded-lg border ${isFavorite
-                ? 'bg-rose-50 border-rose-200 text-rose-600'
-                : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'
-                }`}
-            >
-              <FiHeart
-                size={20}
-                fill={isFavorite ? 'currentColor' : 'none'}
-              />
-            </button>
           </div>
 
           {/* Product Details */}
