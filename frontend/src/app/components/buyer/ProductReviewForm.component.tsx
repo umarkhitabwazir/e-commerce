@@ -19,7 +19,7 @@ const ProductReviewFormComponent = ({
     const [success, setSuccess] = useState(false);
     const [rating, setRating] = useState(1);
     const ratingOptions = [1, 2, 3, 4, 5];
-    const router=useRouter()
+    const router = useRouter()
 
     const handleSubmit = async () => {
         if (!productId) {
@@ -27,8 +27,8 @@ const ProductReviewFormComponent = ({
             return;
         }
         if (reviewMessage.trim() === "") {
-            setError("Review message cannot be empty.");
-            return;
+            return setError("Review message cannot be empty.");
+
         }
         if (rating < 1 || rating > 5) {
             setError("Rating must be between 1 and 5.");
@@ -52,7 +52,7 @@ const ProductReviewFormComponent = ({
         } catch (err: unknown) {
             if (err instanceof AxiosError) {
                 if (err.response?.status === 401) {
-router.push('/login')
+                    router.push('/login')
                 }
                 setError(`Failed to submit review:${err.response?.data.error || 'Unknown error'}`);
             }
@@ -109,11 +109,11 @@ router.push('/login')
                         value={reviewMessage}
                         onChange={(e) => setReviewMessage(e.target.value)}
                         placeholder="Write your review here..."
-                        required
+
                     />
 
                     <div className="flex flex-col items-center">
-            {error && <p className="text-red-500">{error}</p>}
+                        {error && <p className="text-red-500">{error}</p>}
 
                         <button
                             onClick={handleSubmit}

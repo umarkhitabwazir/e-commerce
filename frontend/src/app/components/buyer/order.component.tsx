@@ -12,7 +12,7 @@ interface FormData {
 }
 
 const OrderPage = () => {
-  const { handleSubmit, formState: { errors }, setValue, setError, clearErrors } = useForm<FormData>();
+  const {  formState: { errors }, setValue, setError, clearErrors } = useForm<FormData>();
 
   const [loading, setLoading] = useState(false);
   const [selectedQuantity, setSelectedQuantity] = useState<number | null>(1);
@@ -27,7 +27,7 @@ const OrderPage = () => {
     }
   }, [ decoded]);
 
-  const onSubmit: SubmitHandler<FormData> = async () => {
+  const onSubmit = async () => {
 if (!decoded) {
   setError("quantity", { type: "manual", message: "Invalid order data. Please try again." });
   alert("Invalid order data. Please try again.");
@@ -79,7 +79,7 @@ return;
         <div className="   w-full ">
           {/* Order Form */}
 
-          <form  className="rounded-lg flex flex-wrap justify-evenly  w-full ">
+          <div  className="rounded-lg flex flex-wrap justify-evenly  w-full ">
     {/* Quantity Buttons */}
             <div>
 
@@ -108,7 +108,7 @@ return;
               <div className="flex justify-center items-center w-full">
 
                 <button
-                  onClick={handleSubmit(onSubmit)}
+                  onClick={onSubmit}
                   className="w-full max-w-lg bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-200 shadow-lg transform  active:scale-95"
                 >
                   Buy Now
@@ -133,7 +133,7 @@ return;
 
         
       
-          </form>
+          </div>
 
 
         </div>

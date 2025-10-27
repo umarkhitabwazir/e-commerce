@@ -24,8 +24,8 @@ useEffect(() => {
         setRating(editData.rating);
     }
 }, [editData]);
-const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+const handleEditSubmit = async () => {
+
   
   if (!editData) return alert("No review data to edit");
 
@@ -57,7 +57,7 @@ const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                   <div className="bg-white rounded-lg p-6 w-full max-w-md">
                     <h2 className="text-xl font-semibold text-black mb-4">Edit Your Review</h2>
-                    <form onSubmit={handleEditSubmit}>
+                    <div >
                       <div className="mb-4">
                         <label className="block text-gray-700 mb-2">Rating</label>
                       
@@ -94,13 +94,13 @@ const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                           Cancel
                         </button>
                         <button
-                          type="submit"
+                         onClick={handleEditSubmit}
                           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
                         >
                           Save Changes
                         </button>
                       </div>
-                    </form>
+                    </div>
                   </div>
                 </div>
   )
