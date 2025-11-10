@@ -2,7 +2,7 @@ import { Order } from "../../models/Order.model.js"
 import { ApiResponse } from "../../utils/apiResponse.js"
 import { ApiError } from "../../utils/apiError.js"
 import mongoose from "mongoose"
-import { Product } from "../../models/product.model.js"
+import { Product } from "../../models/Product.model.js"
 import { User } from "../../models/User.model.js"
 
 export const getAllOrdersForAdmin = async (req, res, next) => {
