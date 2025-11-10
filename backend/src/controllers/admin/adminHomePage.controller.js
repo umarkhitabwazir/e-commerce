@@ -3,7 +3,7 @@
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { ApiResponse } from "../../utils/apiResponse.js";
 import { User } from "../../models/User.model.js";
-import { Product } from "../../models/product.model.js";
+import { Product } from "../../models/Product.model.js";
 import { Order } from "../../models/Order.model.js";
 import SellerRequest from "../../models/storeRequests.model.js";
 import { ApiError } from "../../utils/apiError.js";
