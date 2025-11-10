@@ -32,16 +32,14 @@ export default function ManageSellers() {
   };
 
   const handleStatusChange = async (id: string, status: string) => {
-    try {
+    
       await axios.patch(`${API_URL}/admin/sellers/${id}`, { status },{withCredentials:true});
       setSellers((prev) =>
         prev.map((seller) =>
           seller._id === id ? { ...seller, status } : seller
         )
       );
-    } catch (error) {
-return
-    }
+  
   };
 
   useEffect(() => {

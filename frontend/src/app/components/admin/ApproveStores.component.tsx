@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react"
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import { SellerRequestInterface } from "@/app/utils/sellerReuestInterface"
 import superAdminAuth from "@/app/auths/superAdminAuth"
 
@@ -16,8 +16,11 @@ const ApproveStoresComponent = () => {
     try {
       const res = await axios.get(`${API_URL}/admin/seller-requests`,{withCredentials:true})
       setStores(res.data.data)
-    } catch (err) {
-      setError("Failed to fetch store requests.")
+    } catch (err:unknown) {
+      if(err instanceof AxiosError){
+
+        setError(err.response?.data.error)
+      }
     } finally {
       setLoading(false)
     }
