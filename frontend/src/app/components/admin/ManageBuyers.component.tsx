@@ -171,22 +171,22 @@ const ManageBuyersComponent = () => {
                         ? "bg-gray-600 cursor-not-allowed"
                         : "bg-green-500 hover:bg-green-400"
                       }`}
-                    disabled={buyer?.status === "blocked"}
+                    disabled={buyer.status === "blocked"}
                   >
                     Approve
                   </button>
                   <button
-                    onClick={() =>{buyer?._id && handleBlock(buyer._id)}}
-                    className={`flex-1 px-3 py-1 rounded text-sm ${buyer?.status === "blocked"
+                    onClick={() =>{buyer._id && handleBlock(buyer._id)}}
+                    className={`flex-1 px-3 py-1 rounded text-sm ${buyer.status === "blocked"
                         ? "bg-gray-600 cursor-not-allowed"
                         : "bg-yellow-500 hover:bg-yellow-600"
                       }`}
-                    disabled={buyer?.status === "blocked"}
+                    disabled={buyer.status === "blocked"}
                   >
                     Block
                   </button>
                   <button
-                    onClick={() =>{buyer?._id && handleDelete(buyer._id)}}
+                    onClick={() =>{buyer._id && handleDelete(buyer._id)}}
                     className="flex-1 px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-sm"
                   >
                     Delete
