@@ -162,37 +162,43 @@ const ManageBuyersComponent = () => {
                 <p className="text-sm mt-1 capitalize text-gray-300">
                   Status: {buyer?.status}
                 </p>
-                {
-                  buyer?._id &&
-                <div className="flex flex-wrap  gap-2 mt-3">
-                  <button
-                    onClick={() => buyer._id && handleBlock(buyer._id)}
-                    className={`flex-1 px-3 py-1 rounded text-sm ${buyer?.status === "approved"
-                        ? "bg-gray-600 cursor-not-allowed"
-                        : "bg-green-500 hover:bg-green-400"
-                      }`}
-                    disabled={buyer.status === "blocked"}
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() =>{buyer._id && handleBlock(buyer._id)}}
-                    className={`flex-1 px-3 py-1 rounded text-sm ${buyer.status === "blocked"
-                        ? "bg-gray-600 cursor-not-allowed"
-                        : "bg-yellow-500 hover:bg-yellow-600"
-                      }`}
-                    disabled={buyer.status === "blocked"}
-                  >
-                    Block
-                  </button>
-                  <button
-                    onClick={() =>{buyer._id && handleDelete(buyer._id)}}
-                    className="flex-1 px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-sm"
-                  >
-                    Delete
-                  </button>
-                </div>
-                }
+            return (
+  <>
+    {buyer?._id && (
+      <div className="flex flex-wrap gap-2 mt-3">
+        <button
+          onClick={() => buyer._id && handleBlock(buyer._id)}
+          className={`flex-1 px-3 py-1 rounded text-sm ${
+            buyer?.status === "approved"
+              ? "bg-gray-600 cursor-not-allowed"
+              : "bg-green-500 hover:bg-green-400"
+          }`}
+          disabled={buyer.status === "blocked"}
+        >
+          Approve
+        </button>
+        <button
+          onClick={() => buyer._id && handleBlock(buyer._id)}
+          className={`flex-1 px-3 py-1 rounded text-sm ${
+            buyer.status === "blocked"
+              ? "bg-gray-600 cursor-not-allowed"
+              : "bg-yellow-500 hover:bg-yellow-600"
+          }`}
+          disabled={buyer.status === "blocked"}
+        >
+          Block
+        </button>
+        <button
+          onClick={() => buyer._id && handleDelete(buyer._id)}
+          className="flex-1 px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-sm"
+        >
+          Delete
+        </button>
+      </div>
+    )}
+  </>
+)
+
               </div>
             ))}
           </div>
