@@ -2,59 +2,87 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import SellerRequest from "../models/storeRequests.model.js";
-import nodemailer from "nodemailer";
-import sellerRequestTemplate from "../emailTemplate/sellerRequest.template.js";
-
-const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-    logger: true,
-    debug: true,
-});
-
-const sendEmail = async (StoreName,OwnerName,ContactEmail,SubmissionDate,ReferenceID) => {
-  
-    const mailOptions = {
-        from: `"UK Bazaar" ${process.env.EMAIL_USER}`, // Use domain-based email in production
-        to: ContactEmail,
-        subject: "seller store request",
-        html: sellerRequestTemplate(StoreName,OwnerName,ContactEmail,SubmissionDate,ReferenceID)
-    };
-    return new Promise((resolve, reject) => {
-        transporter.sendMail(mailOptions, (error, info) => {
-            
-            if (error) {
-                console.error("Failed to send email:", error);
-                return reject(new ApiError(500, "Failed to send email"));
-            }
-            resolve(info);
-        });
-    });
-};
-
-const sellerRequest=asyncHandler(async(req,res)=>{
-const{storeName,ownerName,email,description}=req.body
+import { sendSellerRequestEmail } from "../utils/emailSenders/sendSellerRequestEmail.js"
+import { User } from "../models/User.model.js";
 
 
 
-    if (storeName |ownerName |email |description) {
-        throw  new ApiError(401,'all fields are requried!')
+const sellerRequest = asyncHandler(async (req, res) => {
+  const { storeName, phone, ownerName, email, description } = req.body;
+
+  // Validate required fields
+  if (!storeName || !phone || !ownerName || !email || !description) {
+    throw new ApiError(401, "All fields are required!");
+  }
+
+  // Check if store name already exists
+  const existingStore = await SellerRequest.findOne({ storeName });
+  console.log('existingstore',existingStore)
+  if (existingStore && existingStore.status==="approved") {
+    throw new ApiError(400, `The store name "${storeName}" is already in use.`);
+  }
+
+
+  // Check if email belongs to an existing user
+  const existingUser = await User.findOne({ email });
+
+  if (existingUser) {
+    if (existingUser.role === "seller" && existingUser.status==='approved') {
+      throw new ApiError(400, `This email ${email} already belongs to a seller.`);
     }
-    const createRequest=await SellerRequest.create({
-        storeName,
+    if (existingUser.role === "super-admin") {
+      throw new ApiError(400, `This email ${email} belongs to an admin account.`);
+    }
+  }
+  // Check if email already submitted a seller request
+  const existingRequest = await SellerRequest.findOne({ email });
+
+  switch (existingRequest.status) {
+    case "approved":
+      throw new ApiError(400, "Your store is already approved. You can log in to your account.");
+    case "pending":
+      throw new ApiError(400, "Your store request is still under review. Please wait for admin approval.");
+    case "rejected":
+      await SellerRequest.updateOne(
+        { email: existingRequest.email },
+        {
+          description,
+          storeName,
+          phone,
+          ownerName
+        }
+      );
+     return res.status(201).json(new ApiResponse(201, {}));
+   
+    default:
+      throw new ApiError(400, "Invalid store status.");
+  }
+
+  // Create new seller request
+  const createRequest = await SellerRequest.create({
+    storeName,
+    ownerName,
+    phone,
+    email,
+    description,
+  });
+
+  const submissionDate = new Date();
+
+  sendSellerRequestEmail(
+    storeName,
     ownerName,
     email,
-    description
-    })
-    const SubmissionDate=new Date()
-    sendEmail(storeName,ownerName,email,SubmissionDate,createRequest._id)
-    res.status(201).json(new ApiResponse(201,createRequest))
+    submissionDate,
+    createRequest._id,
+    phone
+  );
 
-}) 
+  res.status(201).json(new ApiResponse(201, createRequest));
+});
+
+
 
 export {
-    sellerRequest
+  sellerRequest
 }

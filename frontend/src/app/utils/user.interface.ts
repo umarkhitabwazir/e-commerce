@@ -6,6 +6,7 @@ export type UserInterface = {
   role?: string
   password?: string
   isVerified?: boolean
+  status?:string,
   createdAt?: string
   updatedAt?: string
 } | null

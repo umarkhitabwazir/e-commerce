@@ -24,17 +24,17 @@ const AdminNavLinkComponent = ({
       }
     }}
     className={`
-      flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 font-medium
+      flex items-center gap-2 px-4  py-2 rounded-lg transition-all duration-200 font-medium
       ${isLogout
         ? "bg-red-500 hover:bg-red-600 text-white"
         : "bg-gray-700 hover:bg-gray-600 text-white"}
-      hover:shadow-md hover:-translate-y-0.5
+      hover:shadow-md 
       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800
       ${isLogout ? "focus:ring-red-500" : "focus:ring-cyan-500"}
     `}
   >
     {icon}
-    <span>{children}</span>
+    <span className="select-none">{children}</span>
   </Link>
 )};
 

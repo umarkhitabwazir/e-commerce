@@ -60,10 +60,10 @@ const options = {
 // };
 
 const createUser = asyncHandler(async (req, res) => {
-    const { username, email, role,phone, password } = req.body
+    const { username, email, role, phone, password } = req.body
 
 
-    if ([username,phone, email, password].some((field) => field?.trim() === "")) {
+    if ([username, phone, email, password].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "All fields are required")
     }
     const errors = validationResult(req);
@@ -116,23 +116,23 @@ const createUser = asyncHandler(async (req, res) => {
 
 const updateUser = asyncHandler(async (req, res) => {
     const user = req.user
-    const { username,phone } = req.body
+    const { username, phone } = req.body
     if (!user.id) {
         throw new ApiError(401, "Unauthorized. Please log in first.")
     }
     if (!username || !phone) {
         throw new ApiError(400, "Username and phone are required.")
-        
-    }
-    
-        const updatedUser = await User.findById(user._id);
-        if (!updatedUser) {
-            throw new ApiError(404, "User not found.");
-        }
-        user.username = username
-        user.phone = phone
 
-        await user.save()
+    }
+
+    const updatedUser = await User.findById(user._id);
+    if (!updatedUser) {
+        throw new ApiError(404, "User not found.");
+    }
+    user.username = username
+    user.phone = phone
+
+    await user.save()
 
     res.status(201).json(new ApiResponse(201, user, "User updated successfully"))
 })
@@ -149,12 +149,28 @@ const loginUser = asyncHandler(async (req, res, next) => {
 
 
         if (!user) {
-            throw new ApiError(404, "User not found")
+            throw new ApiError(404, "User not found,Please Signup")
         }
         const isMatch = await user.comparePassword(password)
         if (!isMatch) {
             throw new ApiError(400, "Invalid password")
         }
+        if (user.role === "seller") {
+            switch (user.status) {
+                case "pending":
+                    throw new ApiError(403, "Your seller account is under review. Please wait for approval.");
+                case "suspended":
+                    throw new ApiError(403, "Your seller account has been suspended. Contact support for details.");
+                case "blocked":
+                    throw new ApiError(403, "Your seller account has been blocked. Contact support to resolve this issue.");
+                case "approved":
+                    break;
+                default:
+                    throw new ApiError(403, "Invalid seller account status.");
+            }
+        }
+
+
         const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
 
         const isVerified = user.isVerified
@@ -211,7 +227,6 @@ const forgotPassword = asyncHandler(async (req, res) => {
 })
 const resetPassword = asyncHandler(async (req, res) => {
     const { email, passwordResetCode, newPassword } = req.body;
-    console.log('resetPassword', req.body)
     if (!email || !passwordResetCode || !newPassword) {
         throw new ApiError(400, "All fields are required.");
     }
@@ -280,6 +295,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
 
     user.isVerified = true;
     user.emailVerificationCode = null;
+    user.status="approved"
 
     await generateAccessAndRefereshTokens(user._id);
     await user.save();

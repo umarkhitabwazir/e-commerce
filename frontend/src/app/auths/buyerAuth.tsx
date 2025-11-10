@@ -27,7 +27,7 @@ const buyerAuth = <P extends WithAuthProps>(
 
         const searchParams = useSearchParams();
         const updatedSearchParams = new URLSearchParams(searchParams.toString())
-        const publicRoutes = ["/privacy-policy", "/reset-password", "/verify-email", "/terms-and-conditions", "/ownership-statement", "/refund-return-policy", "/shipping-policy", "/", "/contact"].includes(pathName);
+        const publicRoutes = ["/privacy-policy","/request-store", "/reset-password", "/verify-email", "/terms-and-conditions", "/ownership-statement", "/refund-return-policy", "/shipping-policy", "/", "/contact"].includes(pathName);
 
         const checkAuth = async () => {
             try {

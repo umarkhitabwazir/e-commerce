@@ -1,4 +1,3 @@
-import e from "express"
 import mongoose, { Schema } from "mongoose"
 
 const orderSchema = new Schema({
@@ -93,4 +92,4 @@ const orderSchema = new Schema({
     { timestamps: true, user: true }
 
 )
-export const Order = mongoose.model("Order", orderSchema)
+export const Order = mongoose.models.Order || mongoose.model("Order", orderSchema)

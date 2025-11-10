@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import OrdersIconComponent from "../buyer/OrdersIcon.component";
-import { UserInterface } from "../../utils/user.interface";
 import axios, { AxiosError } from "axios";
 import { ProductInterface } from "../../utils/productsInterface";
 import SearchComponent from "../buyer/search.component";
@@ -13,28 +12,31 @@ import { logOut } from "../../utils/LogOut";
 import buyerAuth from "@/app/auths/buyerAuth";
 import Image from "next/image";
 import Link from "next/link";
-const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
-
+import useAuth from "@/app/auths/auth";
+const BuyerNavbarComponent = () => {
+    const { user } = useAuth()
     const [sortOption, setSortOption] = useState("");
     const [isProductSearched, setIsProductSearched] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [userActionOpen, setUserActionOpen] = useState(false);
+    const [openSortAction, setOpenSortAction] = useState(false)
     const [searchResult, setSearchResult] = useState<ProductInterface[] | null>(null);
     const searchParams = useSearchParams()
     const updatedSearchParams = new URLSearchParams(searchParams.toString());
     const searchResultParam = searchParams.get("search");
     const [searchInput, setSearchInput] = useState("");
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const [isLogedin, setIsLogedin] = useState<UserInterface | null>(null)
     const [categorisOpen, setCategorisOpen] = useState(false)
     const router = useRouter();
     const pathName = usePathname();
-    const publicRoutes = ["/privacy-policy", "/ownership-statement", "/terms-and-conditions", "/refund-return-policy", "/shipping-policy", "/", "/contact"].includes(pathName);
+    const publicRoutes = ["/privacy-policy", "/request-store", "/ownership-statement", "/terms-and-conditions", "/refund-return-policy", "/shipping-policy", "/", "/contact"].includes(pathName);
     const userRoles = process.env.NEXT_PUBLIC_ROLES?.split(',')
     const authRoutes = ["/sign-up", "/verify-email", "/reset-password", "/login"];
     const isAuthRoute = authRoutes.includes(pathName);
 
     const roleAuth = ["/buyer"].some(route => pathName.startsWith(route));
     const sellerRoleAuth = ["/seller"].some(route => pathName.startsWith(route));
+    const adminRoleAuth = ["/admin"].some(route => pathName.startsWith(route));
 
 
 
@@ -53,7 +55,6 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
     }, [searchInput, setIsProductSearched])
 
     const search = async (value: string) => {
-
 
         try {
             setIsProductSearched(false)
@@ -82,7 +83,6 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
         setSearchInput(value)
-
         if (!value) {
             setSearchResult(null)
             updatedSearchParams.delete("search")
@@ -109,7 +109,7 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
             return router.push(`/login`)
 
         }
-        if (user?.role === userRoles?.[2]) return router.push(`/seller/${e.target.value}`);
+        if (user?.role === userRoles?.[2] && !["sign-up", "login"].includes(e.target.value)) return router.push(`/seller/${e.target.value}`);
         if (e.target.value === 'sign-up') return router.push(`/sign-up`);
         if (e.target.value === 'login') return router.push(`/login`);
         if (e.target.value === 'profile') return router.push(`/buyer/${e.target.value}`);
@@ -117,17 +117,11 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
     };
 
     const handleMenuToggle = () => {
-        setIsMenuOpen((prev) => !prev);
+        setIsMenuOpen((prev) => !prev)
     };
 
     const isSticky = useStickyScroll();
 
-
-    useEffect(() => {
-        if (user) {
-            setIsLogedin(user)
-        }
-    }, [user, isLogedin])
 
 
     return (
@@ -135,17 +129,17 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
 
             {(publicRoutes || (!isAuthRoute && roleAuth)) && (
                 <nav
-                    className={
-                        `${isSticky
-                            ? "fixed top-0 bg-opacity-70 bg-gray-800 backdrop-blur-sm shadow-lg"
-                            : "relative bg-gray-800"} text-white transition-all duration-300 w-full z-50 py-3`}
+                    className={`${isSticky
+                        ? "fixed top-0 bg-gray-800 bg-opacity-70 backdrop-blur-lg shadow-lg"
+                        : "relative bg-gray-800"} select-none text-white transition-all duration-300 w-full z-50 p-2`}
+
                 >
                     {(
                         <div className="container mx-auto   px-4">
-                            <div className="flex  flex-wrap gap-2 items-center justify-between">
+                            <div className="flex flex-wrap justify-between items-center  ">
                                 {/* Logo */}
                                 <div
-                                    className="text-2xl font-bold  flex flex-col  justify-center items-center cursor-pointer tracking-tight hover:text-cyan-300 transition-colors"
+                                    className="   flex flex-col w-20  justify-center items-center cursor-pointer tracking-tight hover:text-cyan-300 transition-colors"
                                     onClick={() => {
 
                                         router.push("/")
@@ -158,38 +152,32 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
                                     <Image
                                         src="/logo.jpg"
                                         alt="Logo"
-                                        width={70}
-                                        height={70}
-                                        className="w-[90px] h-[90px]  object-center rounded-full border border-gray-200 shadow"
+                                        width={40}
+                                        height={40}
+                                        className="w-[40px] h-[40px] object-center rounded-full border border-gray-200 shadow transition-transform duration-300 hover:scale-105"
                                     />
+
                                     <div>
 
-                                        SAADI<span className="text-cyan-400">COLLECTON</span>
+                                        SAADI<span className="text-cyan-400 text-sm">COLLECTON</span>
                                     </div>
 
 
                                 </div>
-
-                                {/* <button
-                                    onClick={() => router.push('/request-store')}
-                                    className="inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-indigo-700 font-medium transition
-                                  hover:bg-indigo-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2
-                                   active:scale-[.98]"
-                                >
-                                    Become a Seller
-                                </button> */}
-
-
-
-
                                 {/* Desktop Navigation */}
-                                <div className="hidden md:flex items-center space-x-6">
+                                <div className="hidden md:flex items-center flex-wrap justify-between space-x-2 space-y-2 md:space-y-0">
+                                    {user?.role === userRoles?.[1] && <button
+                                        onClick={() => router.push('/request-store')}
+                                        className="text-sm font-medium hover:text-blue-400"
+                                    >
+                                        Sell Now
+                                    </button>}
+
                                     {
                                         !roleAuth && user?.role === userRoles?.[1] &&
                                         <Link href="/buyer"
-                                            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition">
-                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12h18M3 6h18M3 18h18" /> </svg>
+                                            className="font-medium hover:text-gray-300 cursor-pointer"
+                                        >
                                             Dashboard
                                         </Link>
 
@@ -197,16 +185,26 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
                                     {
                                         !sellerRoleAuth && user?.role === userRoles?.[2] &&
                                         <Link href="/seller"
-                                            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition">
-                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12h18M3 6h18M3 18h18" /> </svg>
+                                            className="font-medium hover:text-gray-300 cursor-pointer"
+
+                                        >
+                                            Dashboard
+                                        </Link>
+
+                                    }
+                                    {
+                                        !adminRoleAuth && user?.role === userRoles?.[0] &&
+                                        <Link href="/admin"
+                                            className="font-medium hover:text-gray-300 cursor-pointer"
+
+                                        >
                                             Dashboard
                                         </Link>
 
                                     }
                                     {/* Search Bar */}
                                     <div className="relative w-64">
-                                        <div className="flex rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
+                                        <div className="flex rounded-lg border border-white/20 bg-white/10 hover:bg-white/20 focus-within:border-cyan-400 transition-colors duration-200">
                                             <input
                                                 type="text"
                                                 onChange={handleSearch}
@@ -214,58 +212,13 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
                                                 placeholder="Search products..."
                                                 className="w-full py-2 px-4 bg-transparent text-white placeholder-gray-300 focus:outline-none"
                                             />
-                                            <button className="px-3 text-gray-300 hover:text-white">
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className="h-5 w-5"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                                    />
-                                                </svg>
-                                            </button>
                                         </div>
+
                                         <SearchComponent
                                             product={searchResult}
                                             isProductSearched={isProductSearched}
                                             setIsProductSearched={setIsProductSearched}
                                         />
-                                    </div>
-
-                                    {/* Sort Dropdown */}
-                                    <div className="relative">
-                                        <select
-                                            value={sortOption}
-                                            onChange={handleSort}
-                                            className="py-2 pl-3 pr-8 rounded-lg bg-gray-800 border border-gray-700 text-white appearance-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent cursor-pointer"
-                                        >
-                                            <option value="" disabled>
-                                                Sort By
-                                            </option>
-                                            <option value="priceLowHigh">Price: Low to High</option>
-                                            <option value="priceHighLow">Price: High to Low</option>
-                                            <option value="newest">Newest</option>
-                                        </select>
-                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-                                            <svg
-                                                className="h-4 w-4"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20"
-                                                fill="currentColor"
-                                            >
-                                                <path
-                                                    fillRule="evenodd"
-                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                    clipRule="evenodd"
-                                                />
-                                            </svg>
-                                        </div>
                                     </div>
 
                                     {/* Categories */}
@@ -296,49 +249,15 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
                                             </div>
                                         )}
                                     </div>
-                                </div>
-
-                                {/* User Actions */}
-                                <div className="hidden md:flex items-center space-x-4">
-                                    <Link
-                                        href='/contact'
-                                        className="w-full h-10 p-4 flex justify-center items-center  text-white font-medium rounded-md hover:bg-blue-700 transition-colors">
-                                        Contact Us
-                                    </Link>
+                                    {/* Sort Dropdown */}
                                     <div className="relative">
-                                        <select
-                                            id="userActions"
-                                            name="userActions"
-                                            value={sortOption}
-                                            onChange={handleSitting}
-                                            className="py-2 pl-3 pr-8 rounded-lg bg-gray-800 border border-gray-700 text-white appearance-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent cursor-pointer"
+                                        <button
+                                            className="flex  items-center justify-center absolute right-2 top-3 text-gray-200 hover:text-white rounded-lg"
+
                                         >
-                                            <option className="text-gray-400" value="" disabled hidden>
-                                                {isLogedin ? isLogedin.email : "Account"}
-                                            </option>
-                                            <option className="py-2" value="sign-up">
-                                                Sign Up
-                                            </option>
-                                            <option
-                                                className={`${!user ? "hidden" : ""} py-2`}
-                                                value="log-out"
-                                            >
-                                                Log Out
-                                            </option>
-                                            <option
-                                                className={`${!user ? "hidden" : ""} py-2`}
-                                                value="profile"
-                                            >
-                                                Profile
-                                            </option>
-                                            <option className="py-2" value="login">
-                                                Login
-                                            </option>
-                                        </select>
-                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
                                             <svg
-                                                className="h-4 w-4"
                                                 xmlns="http://www.w3.org/2000/svg"
+                                                className={`h-4 w-4 transition-transform ${openSortAction ? "rotate-180" : "rotate-0"}`}
                                                 viewBox="0 0 20 20"
                                                 fill="currentColor"
                                             >
@@ -348,14 +267,90 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
                                                     clipRule="evenodd"
                                                 />
                                             </svg>
-                                        </div>
+                                        </button>
+                                        <select
+                                            value={sortOption}
+                                            onChange={handleSort}
+                                            onClick={() => setOpenSortAction((prev) => !prev)}
+                                            className="py-2 pl-3  pr-8 rounded-lg bg-gray-800 border border-gray-700 hover:border-cyan-400 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent cursor-pointer transition-all duration-200 appearance-none"
+
+                                        >
+                                            <option value="sort" disabled>
+                                                Sort By
+                                            </option>
+                                            <option value="priceLowHigh">Price: Low to High</option>
+                                            <option value="priceHighLow">Price: High to Low</option>
+                                            <option value="newest">Newest</option>
+                                        </select>
+
                                     </div>
 
-                                    <OrdersIconComponent />
+                                    <div className="hidden md:flex items-center space-x-4">
+                                        <Link
+                                            href='/contact'
+                                            className="font-medium hover:text-gray-300 cursor-pointer"
+                                        >
+                                            Contact Us
+                                        </Link>
+                                        {/* User Actions */}
+                                        <div className="relative">
+                                            <button
+                                                className="flex items-center justify-center absolute right-2 top-3 text-gray-200 hover:text-white rounded-lg"
+
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className={`h-4 w-4 transition-transform ${userActionOpen ? "rotate-180" : "rotate-0"}`}
+                                                    viewBox="0 0 20 20"
+                                                    fill="currentColor"
+                                                >
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                        clipRule="evenodd"
+                                                    />
+                                                </svg>
+                                            </button>
+
+                                            <select
+                                                id="userActions"
+                                                name="userActions"
+                                                value={user?.email?.split('@')[0]}
+                                                onChange={handleSitting}
+                                                onClick={() => setUserActionOpen((prev) => !prev)}
+                                                className="py-2 pl-3 pr-8 rounded-lg bg-gray-800 border border-gray-700 hover:border-cyan-400 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent cursor-pointer transition-all duration-200 appearance-none"
+                                            >
+                                                <option
+                                                    className="text-gray-400"
+                                                    value={user?.email?.split('@')[0]}
+                                                    disabled
+                                                    hidden
+                                                >
+                                                    {user ? user.email?.split('@')[0] : "Account"}
+                                                </option>
+                                                <option value="sign-up">Sign Up</option>
+                                                <option className={`${!user ? "hidden" : ""}`} value="log-out">
+                                                    Log Out
+                                                </option>
+                                                <option className={`${!user ? "hidden" : ""}`} value="profile">
+                                                    Profile
+                                                </option>
+                                                <option value="login">Login</option>
+                                            </select>
+                                        </div>
+
+
+
+                                        <OrdersIconComponent />
+                                    </div>
                                 </div>
 
+
                                 {/* Mobile Menu Button */}
-                                <div className="md:hidden flex items-center">
+
+
+                                <div className="md:hidden relative flex flex-wrap justify-evenly items-center space-y-2 ">
+
                                     <button
                                         className="text-white focus:outline-none p-2 rounded-lg hover:bg-gray-800"
                                         onClick={handleMenuToggle}
@@ -397,54 +392,153 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
 
                             {/* Mobile Navigation */}
                             {isMenuOpen && (
-                                <div className="md:hidden relative py-4 space-y-4 border-t border-gray-700 mt-3">
-                                    {
-
+                                <div className="md:hidden relative flex flex-col gap-4   mt-4 p-3  rounded-lg shadow-lg">
+  {
                                         !roleAuth && user?.role === userRoles?.[1] &&
                                         <Link href="/buyer"
-                                            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition">
-                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12h18M3 6h18M3 18h18" /> </svg>
+                                            className="font-medium hover:text-gray-300 cursor-pointer"
+                                        >
                                             Dashboard
                                         </Link>
 
                                     }
                                     {
-
                                         !sellerRoleAuth && user?.role === userRoles?.[2] &&
                                         <Link href="/seller"
-                                            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition">
-                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12h18M3 6h18M3 18h18" /> </svg>
+                                            className="font-medium hover:text-gray-300 cursor-pointer"
+
+                                        >
                                             Dashboard
                                         </Link>
 
                                     }
+                                    {
+                                        !adminRoleAuth && user?.role === userRoles?.[0] &&
+                                        <Link href="/admin"
+                                            className="font-medium hover:text-gray-300 cursor-pointer"
+
+                                        >
+                                            Dashboard
+                                        </Link>
+
+                                    }
+                                    {/* Sort Dropdown */}
                                     <div className="relative">
-                                        <div className="flex rounded-lg bg-white/10">
+                                        <button
+
+                                            className=" border-gray-700  absolute right-4 top-3 text-gray-200 hover:text-white rounded-lg"
+
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className={`h-4 w-4 transition-transform ${openSortAction ? "rotate-180" : "rotate-0"}`}
+                                                viewBox="0 0 20 20"
+                                                fill="currentColor"
+                                            >
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                    clipRule="evenodd"
+                                                />
+                                            </svg>
+                                        </button>
+                                        <select
+                                            value={sortOption}
+                                            onChange={handleSort}
+                                            onClick={() => setOpenSortAction((prev) => !prev)}
+                                            className="py-2 pl-3 w-full  pr-10 rounded-lg bg-gray-800 border  border-gray-700 hover:border-cyan-400 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent cursor-pointer transition-all duration-200 appearance-none"
+
+                                        >
+                                            <option value="sort" disabled>
+                                                Sort By
+                                            </option>
+                                            <option value="priceLowHigh">Price: Low to High</option>
+                                            <option value="priceHighLow">Price: High to Low</option>
+                                            <option value="newest">Newest</option>
+                                        </select>
+
+                                    </div>
+
+                                    {/* Categories Dropdown */}
+                                    <div className="relative">
+                                        <button
+                                            onClick={() => setCategorisOpen(!categorisOpen)}
+                                            className="w-full flex justify-between items-center py-2 px-3 rounded-md bg-gray-800 border border-gray-700 text-sm text-white focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <span>Categories</span>
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className={`h-4 w-4 transform transition-transform ${categorisOpen ? "rotate-180" : ""}`}
+                                                viewBox="0 0 20 20"
+                                                fill="currentColor"
+                                            >
+                                                <path fillRule="evenodd" d="M5.3 7.3a1 1 0 011.4 0L10 10.6l3.3-3.3a1 1 0 111.4 1.4l-4 4a1 1 0 01-1.4 0l-4-4a1 1 0 010-1.4z" clipRule="evenodd" />
+                                            </svg>
+                                        </button>
+                                        {categorisOpen && (
+                                            <div className="absolute left-0 mt-2 w-full rounded-md shadow-md bg-gray-800 border border-gray-700 z-50">
+                                                <CategoryComponent />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                     {/* User Actions */}
+                                        <div className="relative">
+                                            <button
+                                                className="flex items-center justify-center absolute right-2 top-3 text-gray-200 hover:text-white rounded-lg"
+
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className={`h-4 w-4 transition-transform ${userActionOpen ? "rotate-180" : "rotate-0"}`}
+                                                    viewBox="0 0 20 20"
+                                                    fill="currentColor"
+                                                >
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                        clipRule="evenodd"
+                                                    />
+                                                </svg>
+                                            </button>
+
+                                            <select
+                                                id="userActions"
+                                                name="userActions"
+                                                value={user?.email?.split('@')[0]}
+                                                onChange={handleSitting}
+                                                onClick={() => setUserActionOpen((prev) => !prev)}
+                                                className="py-2 pl-3 pr-8 rounded-lg w-full bg-gray-800 border border-gray-700 text-white hover:border-cyan-400  focus:ring-2 focus:ring-cyan-500 focus:border-transparent cursor-pointer transition-all duration-200 appearance-none"
+                                            >
+                                                <option
+                                                    className="text-gray-400"
+                                                    value={user?.email?.split('@')[0]}
+                                                    disabled
+                                                    hidden
+                                                >
+                                                    {user ? user.email?.split('@')[0] : "Account"}
+                                                </option>
+                                                <option value="sign-up">Sign Up</option>
+                                                <option className={`${!user ? "hidden" : " bg-red-500"}`} value="log-out">
+                                                    Log Out
+                                                </option>
+                                                <option className={`${!user ? "hidden" : ""}`} value="profile">
+                                                    Profile
+                                                </option>
+                                                <option value="login">Login</option>
+                                            </select>
+                                        </div>
+
+                                    {/* Search Section */}
+                                    <div className="relative">
+                                        <div className="flex items-center rounded-md bg-gray-800 border border-gray-700 focus-within:ring-2 focus-within:ring-blue-500">
                                             <input
                                                 type="text"
                                                 onChange={handleSearch}
                                                 value={searchInput}
                                                 placeholder="Search products..."
-                                                className="w-full py-2 px-4 bg-transparent text-white placeholder-gray-300 focus:outline-none"
+                                                className="w-full py-2 px-4 bg-transparent text-sm text-white placeholder-gray-400 focus:outline-none"
                                             />
-                                            <button className="px-3 text-gray-300">
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className="h-5 w-5"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                                    />
-                                                </svg>
-                                            </button>
                                         </div>
                                         <SearchComponent
                                             product={searchResult}
@@ -452,115 +546,8 @@ const BuyerNavbarComponent = ({ user }: { user: UserInterface }) => {
                                             setIsProductSearched={setIsProductSearched}
                                         />
                                     </div>
-
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <div className="relative">
-                                            <select
-                                                value={sortOption}
-                                                onChange={handleSort}
-                                                className="w-full py-2 pl-3 pr-8 rounded-lg bg-gray-800 border border-gray-700 text-white appearance-none"
-                                            >
-                                                <option value="" disabled>
-                                                    Sort By
-                                                </option>
-                                                <option value="priceLowHigh">Price: Low to High</option>
-                                                <option value="priceHighLow">Price: High to Low</option>
-                                                <option value="newest">Newest</option>
-                                            </select>
-                                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-                                                <svg
-                                                    className="h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </div>
-                                        </div>
-
-                                        <div className="relative">
-                                            <button
-                                                onClick={() => setCategorisOpen(!categorisOpen)}
-                                                className="w-full flex justify-between items-center py-2 px-3 rounded-lg bg-gray-800 border border-gray-700 text-white"
-                                            >
-                                                <span>Categories</span>
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className={`h-4 w-4 transition-transform ${categorisOpen ? "rotate-180" : ""
-                                                        }`}
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                            {categorisOpen && (
-                                                <div className="absolute left-0 mt-2 w-full rounded-lg shadow-lg bg-gray-800 border border-gray-700 z-50">
-                                                    <CategoryComponent />
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        <div className=" flex justify-start flex-wrap-reverse col-span-2 space-x-20 ">
-                                            <div className="relative ">
-                                                <select
-                                                    id="userActionsMobile"
-                                                    name="userActions"
-                                                    value={sortOption}
-                                                    onChange={handleSitting}
-                                                    className="w-full py-2 pl-3 pr-8 rounded-lg bg-gray-800 border border-gray-700 text-white appearance-none"
-                                                >
-                                                    <option className="text-gray-400" value="" disabled hidden>
-                                                        {isLogedin ? isLogedin.email : "Account"}
-                                                    </option>
-                                                    <option value="login">
-                                                        Login
-                                                    </option>
-                                                    <option value="sign-up">
-                                                        Sign Up
-                                                    </option>
-                                                    <option className={`${!user ? "hidden" : ""}`} value="log-out">
-                                                        Log Out
-                                                    </option>
-                                                    <option className={`${!user ? "hidden" : ""}`} value="profile">
-                                                        Profile
-                                                    </option>
-                                                    <option className='' value="contact">
-                                                        Contact Us
-                                                    </option>
-
-                                                </select>
-                                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-
-                                                    <svg
-                                                        className="h-4 w-4"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
-                                                    >
-                                                        <path
-                                                            fillRule="evenodd"
-                                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <OrdersIconComponent />
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
+
                             )}
                         </div>
                     )}

@@ -74,15 +74,28 @@ const LoginComponent = () => {
         } catch (err: unknown) {
             setLoading(false); // Stop loading
             if (err instanceof AxiosError) {
+                const message =
+                    err.response?.data?.error ||
+                    "Something went wrong. Please try again later.";
                 if (err.status === 500) {
                     setNetworkError(true)
                 }
+
                 // if email not verified
 
                 if (err.response) {
-                    setError(err.response.data.error);
+                    setError(message)
+
+                    setTimeout(() => {
+
+                        setError(undefined)
+                    }, 3000)
+
                 } else {
                     setError('An unknown error occurred.');
+                    setTimeout(() => {
+                        setError(undefined)
+                    }, 3000)
                 }
                 if (err.code === "ERR_NETWORK") {
                     setLoading(true)
@@ -111,6 +124,12 @@ const LoginComponent = () => {
                         <h1 className="text-4xl font-extrabold text-orange-200">Welcome Back</h1>
                         <p className="text-gray-300 mt-2">Log in to manage your account and explore new features</p>
                     </div>
+                    {error && (
+                        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 max-w-sm w-[90%] bg-red-500 text-white text-sm px-4 py-2 rounded shadow-md z-50 text-center break-words">
+                            {error.split(' at ')[0]}
+                        </div>
+                    )}
+
                     <h2 className="text-3xl font-bold text-white text-center mb-8">Login</h2>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
@@ -171,11 +190,7 @@ const LoginComponent = () => {
                             >
                                 {loading ? 'Submitting...' : 'Login'}
                             </button>
-                            {error && (
-                                <p className="text-red-600 font-light flex justify-center items-center mt-4">
-                                    {error.split(' at ')[0]}
-                                </p>
-                            )}
+
                         </div>
                     </form>
                     <div className='flex items-center justify-center flex-col'>

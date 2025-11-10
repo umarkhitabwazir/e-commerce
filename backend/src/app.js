@@ -4,8 +4,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors"
 import { ApiError } from "./utils/apiError.js";
-import { adminRouter } from "./routes/seller.routes.js";
-import { superAdminRouter } from "./routes/superAdmin.routes.js";
+import { sellerRouter } from "./routes/seller.routes.js";
 import { productRouter } from "./routes/product.routes.js";
 import {  sortingRouters } from "./routes/sorting.routes.js";
 import {  orderRouters } from "./routes/order.routes.js";
@@ -17,6 +16,7 @@ import favoritRouter from "./routes/favorate.routes.js";
 import sellerRequestRoutes from "./routes/storeRequests.routes.js";
 import { contactUsRouter } from "./routes/contactUs.route.js";
 import webhookRouter from "./routes/pyment/webhook.routes.js";
+import { adminRoutes } from "./routes/adminRoutes/admin.routes.js";
 const app = express()
 app.use(
   cors({
@@ -35,9 +35,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/api/v2",
-  superAdminRouter, 
-  adminRouter,
-   userRouter,
+  adminRoutes,
+     userRouter,
    productRouter,
    sortingRouters,
    orderRouters,
@@ -48,7 +47,8 @@ app.use("/api/v2",
    favoritRouter,
    sellerRequestRoutes,
    contactUsRouter,
-   webhookRouter
+   webhookRouter,
+   sellerRouter,
 
 
   )

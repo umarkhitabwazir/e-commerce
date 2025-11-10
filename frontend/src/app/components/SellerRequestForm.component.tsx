@@ -1,14 +1,16 @@
 'use client'
 import { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export default function SellerRequestFormComponent() {
   const [formData, setFormData] = useState({
     storeName: "",
     ownerName: "",
     email: "",
+    phone:"",
     description: "",
   });
+  const [error,setError]=useState('')
   const API_URL = process.env.NEXT_PUBLIC_API_URL
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -17,8 +19,18 @@ export default function SellerRequestFormComponent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await axios.post(`${API_URL}/seller-request`, formData);
-    alert("Your request has been submitted! Our team will review it.");
+    setError('')
+  try {
+      await axios.post(`${API_URL}/seller-request`, formData);
+      alert("Your request has been submitted! Our team will review it.");
+  } catch (error:unknown) {
+    if(error instanceof AxiosError){
+setError(error.response?.data.error)
+setTimeout(()=>(
+  setError('')
+),4000)
+    }
+  }
   };
 
   return (
@@ -29,6 +41,13 @@ export default function SellerRequestFormComponent() {
       <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
         Request to Open a Store
       </h2>
+      {
+        error &&
+        <div className="flex justify-center items-center">
+
+          <p className="text-red-500 font-light">error:{error}</p>
+        </div>
+      }
 
       <div className="w-auto max-w-lg mx-auto">
 
@@ -79,6 +98,25 @@ export default function SellerRequestFormComponent() {
             onChange={handleChange}
             required
           />
+            <p className="text-xs text-gray-500 mt-1">
+    Note: The provided email will be used to create your account.
+  </p>
+        </div>
+        <div className="mb-5">
+          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+            Contact Pone
+          </label>
+          <input
+            type="phone"
+            id="emaiphone"
+            name="phone"
+            className="w-full px-4 py-3 text-gray-800 border focus:bg-transparent border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+           placeholder="03XX XXXXXXX"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+          />
+ 
         </div>
 
         <div className="mb-6">
@@ -98,7 +136,7 @@ export default function SellerRequestFormComponent() {
 
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-medium py-3 rounded-lg shadow-md hover:opacity-90 transition duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-medium py-3 rounded-lg shadow-md hover:opacity-90 transition duration-300 transform "
         >
           Submit Request
         </button>

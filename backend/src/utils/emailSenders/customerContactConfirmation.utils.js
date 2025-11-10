@@ -1,16 +1,7 @@
-import nodemailer from "nodemailer";
+import { transporter } from "../../config/emailTransporter.confilg.js";
 import { customerContactConfirmationTemp } from "../../emailTemplate/customerContactConfirmationTemp.js";
 
 
-const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-    logger: true,
-    debug: true,
-});
 
 
 export const sendcustomerConfirmations = async (name,email) => {

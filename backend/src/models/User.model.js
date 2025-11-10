@@ -13,7 +13,7 @@ const userSchema = new Schema(
             required: [true, "username is required"],
             lowercase: true,
             trim: true,
-            index: true
+            
         },
         email: {
             type: String,
@@ -56,7 +56,13 @@ const userSchema = new Schema(
         isVerified: {
             type: Boolean,
             default: false
-        }
+        },
+        status: {
+  type: String,
+  enum: ["pending", "approved", "blocked", "suspended"],
+  default: "pending",
+}
+
 
     }, { timestamps: true }
 )
@@ -81,4 +87,5 @@ userSchema.methods.generateRefreshToken = async function () {
         process.env.JWT_REFRESH_TOKEN_SECRET,
         { expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRES_IN })
 }
-export const User = mongoose.model("User", userSchema)
+export const User = mongoose.models.User || mongoose.model("User", userSchema)
+

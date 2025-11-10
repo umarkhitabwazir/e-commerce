@@ -5,7 +5,7 @@ import React from 'react';
 
 const SideWhatsappIconComponent = () => {
     const pathname=usePathname();
-    const roleRoutes = ["/seller"];
+    const roleRoutes = ["/seller","/admin"];
     const isRoleRoute = roleRoutes.some(route => pathname.startsWith(route));
     if(isRoleRoute){
         return null;

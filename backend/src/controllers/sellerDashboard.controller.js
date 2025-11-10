@@ -11,7 +11,7 @@ import { Category } from "../models/Category.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { User } from "../models/User.model.js";
 import { Cart } from "../models/Cart.model.js"
-import {sellerRole} from "../config/roles.config.js"
+import { sellerRole } from "../config/roles.config.js"
 import { Address } from "../models/address.model.js";
 
 dotenv.config({
@@ -156,13 +156,13 @@ const sendEmail = async (email, image, title, price, subject) => {
 };
 
 
-const adminProducts = asyncHandler(async (req, res) => {
+const sellerProducts = asyncHandler(async (req, res) => {
     const user = req.user
     if (!user) {
         throw new ApiError(401, false, "user not loged in!", false)
     }
-    
-    
+
+
 
     if (sellerRole !== user.role) {
         throw new ApiError(401, false, "you can't access secure route", false)
@@ -188,7 +188,7 @@ let createProductsWithCategory = asyncHandler(async (req, res) => {
         let user = await User.findById(userId)
 
 
-    
+
 
         if (sellerRole !== user.role) {
             throw new ApiError(400, "only admin can create products")
@@ -250,7 +250,7 @@ let updateProductWithCategory = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(400, "user not logged in")
     }
-    if (sellerRole !== user.role ) {
+    if (sellerRole !== user.role) {
         throw new ApiError(400, "only admin can update products")
     }
     if (!categoryName ||
@@ -266,7 +266,7 @@ let updateProductWithCategory = asyncHandler(async (req, res) => {
     }
 
     let category = await Category.findOne({ categoryName: categoryName })
-    
+
     if (!category) {
         category = await Category.create({
             categoryName,
@@ -333,7 +333,7 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(400, "user not login")
     }
-    if (sellerRole!== user.role) {
+    if (sellerRole !== user.role) {
         throw new ApiError(400, "only admin can delete products")
     }
     let productId = req.params.productid
@@ -383,7 +383,7 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
 
     res.status(200).json(new ApiResponse(200, product, "Product deleted successfully"))
 })
-const getOrdersByAdminProducts = asyncHandler(async (req, res) => {
+const getOrdersBySellerProducts = asyncHandler(async (req, res) => {
     try {
         const user = req.user?._id;
         if (!user) {
@@ -391,31 +391,48 @@ const getOrdersByAdminProducts = asyncHandler(async (req, res) => {
         }
 
 
-        const adminProducts = await Product.find({ user: user })
+        const sellerProducts = await Product.find({ user: user })
 
-
+        if (sellerProducts.length === 0) {
+            return res
+                .status(404)
+                .json(new ApiResponse(404, [], "Seller has no products"));
+        }
         const getAllOrdered = await Order.find()
             .populate("userId", "username email phone")
             .populate("products.productId", "title price image")
-const addresses=await Address.find()
-const ordersWithAddresses = getAllOrdered.map(order => {
-    const orderAddress = addresses.find(address => address.user.toString() === order.userId._id.toString());
-    return {
-        ...order.toObject(),
-        address: orderAddress || null
-    };
-});
+
+        const addresses = await Address.find()
+        const ordersWithAddresses = getAllOrdered.map(order => {
+            const orderAddress = addresses.find(address => address.user === order.userId?._id);
+            return {
+                ...order.toObject(),
+                address: orderAddress || null
+            };
+        });
 
         // Extract product IDs of admin's products
-        const adminProductIds = adminProducts.map((product) => product._id);
-        // Filter orders containing admin's products
-        const filterAdminProducts = ordersWithAddresses.filter((order) =>
-            order.products.map((p) => adminProductIds.includes(new mongoose.Types.ObjectId(p.productId?._id)))
-        );
+        const sellerProductIds = sellerProducts.map(p => p._id.toString());
+
+        const filterSellerProducts = ordersWithAddresses
+            .map(order => {
+                // keep only the products that belong to this seller
+                const sellerItems = order.products.filter(p =>
+                    sellerProductIds.includes(p.productId._id.toString())
+                );
+
+                if (sellerItems.length === 0) return null;
+
+                return {
+                    ...order,
+                    products: sellerItems
+                };
+            })
+            .filter(Boolean);
 
 
 
-        res.status(200).json(new ApiResponse(200, filterAdminProducts));
+        res.status(200).json(new ApiResponse(200, filterSellerProducts));
     } catch (error) {
         console.error("getOrderedProducts Error:", error);
         res.status(500).json(new ApiResponse(500, null, "Internal Server Error"));
@@ -431,7 +448,7 @@ const orderConfirmed = asyncHandler(async (req, res) => {
     if (!orderId) {
         throw new ApiError(401, false, "order id not provided", false)
     }
-    
+
     if (sellerRole !== user.role) {
         throw new ApiError(401, false, "you can't access secure route", false)
 
@@ -457,7 +474,7 @@ const paymentConfirmed = asyncHandler(async (req, res) => {
     if (!orderId) {
         throw new ApiError(401, false, "order id not provided", false)
     }
-    
+
     if (sellerRole !== user.role) {
         throw new ApiError(401, false, "you can't access secure route", false)
 
@@ -481,7 +498,7 @@ const orderShipping = asyncHandler(async (req, res) => {
     if (!orderId) {
         throw new ApiError(401, false, "order id not provided", false)
     }
-  
+
     if (sellerRole !== user.role) {
         throw new ApiError(401, false, "you can't access secure route", false)
 
@@ -506,7 +523,7 @@ const orderReadyForPickUp = asyncHandler(async (req, res) => {
     if (!orderId) {
         throw new ApiError(401, false, "order id not provided", false)
     }
-   
+
     if (sellerRole !== user.role) {
         throw new ApiError(401, false, "you can't access secure route", false)
 
@@ -531,7 +548,7 @@ const orderDelivered = asyncHandler(async (req, res) => {
     if (!orderId) {
         throw new ApiError(401, false, "order id not provided", false)
     }
-    
+
     if (sellerRole !== user.role) {
         throw new ApiError(401, false, "you can't access secure route", false)
 
@@ -564,7 +581,7 @@ const orderPickedByCounter = asyncHandler(async (req, res) => {
     if (!orderId) {
         throw new ApiError(401, false, "order id not provided", false)
     }
-   
+
     if (sellerRole !== user.role) {
         throw new ApiError(401, false, "you can't access secure route", false)
 
@@ -585,11 +602,11 @@ const orderPickedByCounter = asyncHandler(async (req, res) => {
 
 export {
 
-    adminProducts,
+    sellerProducts,
     createProductsWithCategory,
     updateProductWithCategory,
     deleteProductWithCategory,
-    getOrdersByAdminProducts,
+    getOrdersBySellerProducts,
     orderConfirmed,
     paymentConfirmed,
     orderShipping,

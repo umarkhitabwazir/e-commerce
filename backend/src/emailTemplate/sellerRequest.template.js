@@ -3,9 +3,11 @@ const sellerRequestTemp = (
   OwnerName,
   ContactEmail,
   SubmissionDate,
-  ReferenceID
+  ReferenceID,
+  phone
 ) => {
   const websiteUrl = process.env.WEBSITE_URL
+  const sopportEmail=process.env.SUPORT_TEAM_EMAIL
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -39,7 +41,7 @@ const sellerRequestTemp = (
 </head>
 <body style="background-color: #f5f7fa; padding: 20px 0;">
   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto;">
-              <img src="https://saadicollection.shop/logo.jpg" alt="saadiCollection.shop Logo" class="logo" />
+              <img src="${websiteUrl}/logo.jpg" alt="saadiCollection.shop Logo" class="logo" />
 
     <tr>
       <td align="center" style="padding: 30px 0 20px;">
@@ -76,6 +78,7 @@ const sellerRequestTemp = (
                 <tr><td style="padding:8px 0; color:#64748b;">Store Name:</td><td style="font-weight:500; color:#1e293b;">${StoreName}</td></tr>
                 <tr><td style="padding:8px 0; color:#64748b;">Owner Name:</td><td style="font-weight:500; color:#1e293b;">${OwnerName}</td></tr>
                 <tr><td style="padding:8px 0; color:#64748b;">Contact Email:</td><td style="font-weight:500; color:#1e293b;">${ContactEmail}</td></tr>
+                <tr><td style="padding:8px 0; color:#64748b;">Contact Phone:</td><td style="font-weight:500; color:#1e293b;">${phone}</td></tr>
                 <tr><td style="padding:8px 0; color:#64748b;">Submission Date:</td><td style="font-weight:500; color:#1e293b;">${new Date(SubmissionDate).toLocaleString()}</td></tr>
                 <tr><td style="padding:8px 0; color:#64748b;">Reference ID:</td><td style="font-weight:500; color:#1e293b;">${ReferenceID}</td></tr>
               </table>
@@ -85,7 +88,7 @@ const sellerRequestTemp = (
                 <a href=${websiteUrl} style="background:linear-gradient(to right,#2563eb,#3b82f6); color:#fff; padding:12px 28px; border-radius:6px; text-decoration:none; font-weight:600; box-shadow:0 4px 10px rgba(37,99,235,.25);">Visit Seller Center</a>
               </div>
 
-              <p style="margin-top:20px; font-size:14px; color:#64748b; text-align:center;">Have questions? Contact our support at <a href="mailto:umairkhitab0308@gmail.com" style="color:#3b82f6; text-decoration:none;">umairkhitab0308@gmail.com</a></p>
+              <p style="margin-top:20px; font-size:14px; color:#64748b; text-align:center;">Have questions? Contact our support at <a href="mailto:${sopportEmail}" style="color:#3b82f6; text-decoration:none;">${sopportEmail}</a></p>
             </td>
           </tr>
         </table>

@@ -4,6 +4,10 @@ export interface OrderProduct {
   title:string,
   image:string,
   price:number,
+      user?:{
+        username:string,
+        email:string
+    }
 },
   quantity: number;
 }
@@ -11,6 +15,8 @@ export interface OrderProduct {
 export interface OrderInterface {
   _id: string;
   products: OrderProduct[];
+  userId?: { username: string; email: string },
+  paymentMethod?:string,
   isDelivered: boolean;
   isPaid: boolean;
   totalPrice: number;

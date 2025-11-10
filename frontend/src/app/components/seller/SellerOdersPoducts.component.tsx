@@ -28,7 +28,7 @@ const SellerOrdersComponent = () => {
   }, [fetchData])
   const fetchAdminOderspoducts = async () => {
     try {
-      const response = await axios.get(`${API_URL}/admin/get-ordered-products`, { withCredentials: true })
+      const response = await axios.get(`${API_URL}/seller/get-ordered-products`, { withCredentials: true })
       const data = await response.data.data
       setAdminOrders(data)
     } catch (error: unknown) {

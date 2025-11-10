@@ -5,8 +5,17 @@ const sellerRequestSchema = new Schema({
   ownerName: String,
   email: String,
   description: String,
-  status: { type: String, default: "pending" },
+  phone: {
+    type: String,
+    required: [true, "phone is required"],
+    trim: true,
+  },
+  status: {
+    type: String,
+    enum: ["pending", "approved", 'rejected'],
+    default: "pending",
+  },
 });
 
 const SellerRequest = mongoose.model("SellerRequest", sellerRequestSchema);
-export default  SellerRequest
+export default SellerRequest

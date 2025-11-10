@@ -1,17 +1,9 @@
-import nodemailer from "nodemailer";
+import { transporter } from "../../config/emailTransporter.confilg.js";
 import { orderConfirmationTemp } from "../../emailTemplate/orderPlaced.template.js";
 import { ApiError } from "../apiError.js";
 
 
-const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-    logger: true,
-    debug: true,
-});
+
 
 
 export const sendEmailOrderPlaced = async (order,orderedProduct,email, userName) => {

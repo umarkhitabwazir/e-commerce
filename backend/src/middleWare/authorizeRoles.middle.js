@@ -8,7 +8,6 @@ const  authorizeRoles = (...roles) => {
               throw new ApiError(401, "Access denied. No user found.");
           }
           const role=roles.includes(req.user.role)
-         
           if (!role) {
               throw new ApiError(403, "Access denied.");
           }

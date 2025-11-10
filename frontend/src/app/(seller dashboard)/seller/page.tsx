@@ -1,10 +1,10 @@
-import SellerProductComponent from '@/app/components/seller/SellerProduct.component'
+import SellerHomePageComponent from '@/app/components/seller/SellerHomePage.component'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-     <SellerProductComponent/>
+     <SellerHomePageComponent/>
     </div>
   )
 }

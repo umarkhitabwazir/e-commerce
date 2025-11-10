@@ -13,6 +13,7 @@ const sellerAuth = <P extends adminAuthProps>(AdminComponent: React.ComponentTyp
         const trackPath = usePathname();
         const secureRoute = ["/seller"];
         const roleAuth = secureRoute.some(route => trackPath.startsWith(route));
+        const Roles = process.env.NEXT_PUBLIC_ROLES?.split(',') || []
         const router = useRouter()
 
         useEffect(() => {
@@ -22,14 +23,35 @@ const sellerAuth = <P extends adminAuthProps>(AdminComponent: React.ComponentTyp
                         withCredentials: true,
                     });
                     const user = response.data?.data;
-
-                    if (!user) {
-                        router.push("/login");
-                    }
+                   
                     if (roleAuth) {
                         const userRole = response.data.data.role;
-                        const allowedRoles = ["seller"];
-                        if (!allowedRoles.includes(userRole)) {
+                        const allowedRoles = Roles[2]
+
+                        if (userRole === allowedRoles) {
+                            switch (user.status) {
+                                case "pending":
+                                 return   router.push(`/seller/status/${user.status}`);
+
+
+                                case "suspended":
+                                   return router.push(`/seller/status/${user.status}`);
+
+
+                                case "blocked":
+                                  return  router.push(`/seller/status/${user.status}`);
+
+
+                                case "approved":
+                                    break;
+
+                                default:
+                                  return  router.push(`/seller/status/${user.status}`);
+
+                            }
+
+                        }
+                        if (userRole !== allowedRoles) {
                             router.push("/");
                             return;
                         }
@@ -39,7 +61,6 @@ const sellerAuth = <P extends adminAuthProps>(AdminComponent: React.ComponentTyp
 
                 } catch (error: unknown) {
                     if (error instanceof AxiosError) {
-
                         return null
                     }
                 }

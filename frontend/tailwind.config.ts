@@ -15,11 +15,7 @@ export default {
         'sky':'#2bb0ec',
         'address-form-bg':"#10999d"
       },
-          backgroundImage: {
-        'seller-form-bg': "url('/seller-req-bg.jpg')",
-        
-        
-      },
+    
     },
   },
   plugins: [],
