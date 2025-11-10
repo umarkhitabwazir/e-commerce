@@ -27,7 +27,8 @@ const ManageBuyersComponent = () => {
     }
   };
 
-  const handleBlock = async (id: string) => {
+  const handleBlock = async (id: string  ) => {
+    if (!id) return
     try {
       await axios.put(
         `${API_URL}/admin/block-buyer/${id}`,
@@ -161,9 +162,11 @@ const ManageBuyersComponent = () => {
                 <p className="text-sm mt-1 capitalize text-gray-300">
                   Status: {buyer?.status}
                 </p>
+                {
+                  buyer?._id &&
                 <div className="flex flex-wrap  gap-2 mt-3">
                   <button
-                    onClick={() => handleBlock(buyer?._id!)}
+                    onClick={() => buyer._id && handleBlock(buyer._id)}
                     className={`flex-1 px-3 py-1 rounded text-sm ${buyer?.status === "approved"
                         ? "bg-gray-600 cursor-not-allowed"
                         : "bg-green-500 hover:bg-green-400"
@@ -173,7 +176,7 @@ const ManageBuyersComponent = () => {
                     Approve
                   </button>
                   <button
-                    onClick={() => handleBlock(buyer?._id!)}
+                    onClick={() =>{buyer?._id && handleBlock(buyer._id)}}
                     className={`flex-1 px-3 py-1 rounded text-sm ${buyer?.status === "blocked"
                         ? "bg-gray-600 cursor-not-allowed"
                         : "bg-yellow-500 hover:bg-yellow-600"
@@ -183,12 +186,13 @@ const ManageBuyersComponent = () => {
                     Block
                   </button>
                   <button
-                    onClick={() => handleDelete(buyer?._id!)}
+                    onClick={() =>{buyer?._id && handleDelete(buyer._id)}}
                     className="flex-1 px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-sm"
                   >
                     Delete
                   </button>
                 </div>
+                }
               </div>
             ))}
           </div>
