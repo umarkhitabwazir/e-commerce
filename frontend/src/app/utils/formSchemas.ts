@@ -5,7 +5,10 @@ import { z } from "zod";
 const SignupSchema = z.object({
     username: z.string().min(3, 'Username must be at least 3 characters long'),
     email: z.string().email('Invalid email address'),
-    phone: z.string().regex(/^\d{10,15}$/, 'Phone number must be between 10 and 15 digits'),
+      phone: z
+    .string()
+    .transform((val) => val.replace(/\D/g, ""))
+    .refine((val) => /^\d{11}$/.test(val), { message: "Phone number must be exactly 11 digits" }),
     password: z.string().min(6, 'Password must be at least 6 characters long'),
 
 });

@@ -16,14 +16,25 @@ const PaymentComponent = () => {
   const [loading, setLoading] = useState(false)
   const paymentMethods = [
     { id: "JazzCash", label: "JazzCash" },
-    { id: "credit", label: "Credit Card" },
+    { id: "easyPaisa", label: "easyPaisa" },
     { id: "cod", label: "Cash on Delivery" }
   ]
+  const [transactionId, setTransactionId] = useState("");
+
+
+
 
   const [error, setError] = useState<string | undefined>(undefined);
   const router = useRouter()
 
+  const handleTransactionIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setTransactionId(value);
 
+    const isValid = /^[A-Za-z0-9]{11,20}$/.test(value);
+
+    setError(isValid ? "" : "Invalid transaction ID format");
+  };
 
   const handlePaymentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setError(undefined)
@@ -33,6 +44,11 @@ const PaymentComponent = () => {
 
   const handleProceed = async () => {
     setLoading(true)
+    if (selectedPayment !== "Cash on Delivery" && !transactionId) {
+      setLoading(false)
+      return setError("transactionId  is required")
+
+    }
     if (selectedPayment) {
       try {
 
@@ -54,6 +70,7 @@ const PaymentComponent = () => {
         await axios.post(`${API_URL}/create-order`, {
           "products": decoded.productIdsAndQtyArr,
           "paymentMethod": paymentMethod,
+          "transactionId": transactionId
         }, { withCredentials: true });
 
         return router.push(`/buyer/orders?decoded=${btoa(JSON.stringify(decoded))}`)
@@ -93,42 +110,91 @@ const PaymentComponent = () => {
           {paymentMethods.map((method) => (
             <div
               key={method.id}
-              className={`
+            >
+
+              <div
+                className={`
           flex items-center p-4 rounded-lg border transition-all duration-200 cursor-pointer
           ${selectedPayment === method.label
-                  ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-100'
-                  : 'border-gray-200 hover:border-blue-300'}
+                    ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-100'
+                    : 'border-gray-200 hover:border-blue-300'}
         `}
-              onClick={() => document.getElementById(method.id)?.click()}
-            >
-              <input
-                type="radio"
-                id={method.id}
-                disabled={method.id !== 'cod'}
-                name="payment"
-                value={method.label}
-                className="mr-3 w-5 h-5 text-blue-600 cursor-pointer"
-                onChange={handlePaymentChange}
-                checked={selectedPayment === method.label}
-              />
-              <label
-                htmlFor={method.id}
-                className="text-gray-700 font-medium cursor-pointer flex-1"
+                onClick={() => document.getElementById(method.id)?.click()}
               >
-                {method.label}
-              </label>
-              {method.id !== "cod" &&
-                <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full ml-2">
-                  Payment gateway integration is currently in progress.
-                </span>
-              }
-              {method.id === "cod" && (
+                <input
+                  type="radio"
+                  id={method.id}
+                  name="payment"
+                  value={method.label}
+                  className="mr-3 w-5 h-5 text-blue-600 cursor-pointer"
+                  onChange={handlePaymentChange}
+                  checked={selectedPayment === method.label}
+                />
+                <label
+                  htmlFor={method.id}
+                  className="text-gray-700 font-medium cursor-pointer flex-1"
+                >
+                  {method.label}
+                </label>
+
                 <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full ml-2">
                   No fee
                 </span>
-              )}
+
+              </div>
+              <div>
+                {selectedPayment === "JazzCash" && selectedPayment === method.label && (
+                  <div
+                    onClick={() => window.location.href = "jazzcash://pay?number=03281250745"}
+                    className="flex flex-wrap flex-col  p-2 border cursor-pointer rounded-b-lg bg-gray-50">
+
+                    <div className='flex gap-2 flex-wrap'>
+                      <p className="text-sm font-medium text-gray-700">JazzCash:</p>
+                      <span className="text-sm text-gray-900">{process.env.NEXT_PUBLIC_JAZZCASH_NUMBER}</span>
+                    </div>
+
+                    <div className='flex gap-2 flex-wrap'>
+                      <p className="text-sm font-medium text-gray-700">Holder Name:</p>
+                      <span className="text-sm text-gray-900">{process.env.NEXT_PUBLIC_JAZZCASH_HOLDER_NAME}</span>
+                    </div>
+
+                  </div>
+                )}
+                {selectedPayment === "easyPaisa" && selectedPayment === method.label && (
+                  <div
+                    onClick={() => window.location.href = "easypaisa://pay?number=03281250745"}
+                    className="flex flex-col flex-wrap  gap-2 p-2 border cursor-pointer rounded-b-lg bg-gray-50">
+
+                    <div className='flex gap-2 flex-wrap'>
+
+                      <p className="text-sm font-medium text-gray-700">EasyPaisa:</p>
+                      <span className="text-sm text-gray-900">{process.env.NEXT_PUBLIC_EASYPAISA_NUMBER}</span>
+                    </div>
+                    <div className='flex gap-2 flex-wrap'>
+
+                      <p className="text-sm font-medium text-gray-700">Holder Name</p>
+                      <span className="text-sm text-gray-900">{process.env.NEXT_PUBLIC_EASYPAISA_HOLDER_NAME}</span>
+                    </div>
+
+                  </div>
+                )}
+
+              </div>
             </div>
           ))}
+          {
+            selectedPayment !== "Cash on Delivery" &&
+            <div>
+              <input
+                value={transactionId}
+                onChange={handleTransactionIdChange}
+                type="text"
+                placeholder={`Enter ${selectedPayment} transaction ID`}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              />
+
+            </div>
+          }
         </div>
         {error && (
           <p className="text-red-500 text-center mb-4">{error}</p>

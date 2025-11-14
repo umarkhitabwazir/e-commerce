@@ -17,6 +17,8 @@ export interface OrderInterface {
   products: OrderProduct[];
   userId?: { username: string; email: string },
   paymentMethod?:string,
+  transactionId:string,
+  refund:boolean,
   isDelivered: boolean;
   isPaid: boolean;
   totalPrice: number;

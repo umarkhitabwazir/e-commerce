@@ -5,6 +5,14 @@ type adminOrdersInterface = {
     isDelivered: boolean;
     isPaid: boolean;
     paymentMethod: string;
+      paymentData:{
+   paymentPlatform:string,
+    accountUsername:string,
+    accountNumber:string,
+    userId:string,
+  },
+    transactionId:string,
+    refund:boolean
     products: [{
         productId: {
             image: string;

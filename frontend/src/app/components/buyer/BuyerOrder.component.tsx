@@ -11,6 +11,7 @@ import { OrderInterface } from "../../utils/orderInterface";
 import buyerAuth from "../../auths/buyerAuth";
 import GetUserCartComponent from "./BuyerUserCart.component";
 import FavouriteProductsComponent from "./FavorateProducts.component";
+import CancelOrderComponent from "./CancelOrder.component";
 
 
 
@@ -22,6 +23,7 @@ const BuyerOrderComponent = () => {
 
   const [pendingOders, setPendingOrders] = useState<OrderInterface[]>([]);
   const [deleveredOders, setDeleveredOders] = useState<OrderInterface[]>([]);
+  const [cancelOrders,setCancelOrders]=useState<OrderInterface[]>([])
   const [products, setProducts] = useState<ProductInterface[]>([]);
   const [activeTab, setActiveTab] = useState('pending');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -34,6 +36,7 @@ const BuyerOrderComponent = () => {
 
   const tabs = [
     { id: 'pending', label: 'Pending Orders' },
+    { id: 'canceled', label: 'Canceled Orders' },
     { id: 'delivered', label: 'Order History' },
     { id: 'favorites', label: 'Favorite Products' },
     { id: 'cart', label: 'Cart Products' },
@@ -66,7 +69,9 @@ const BuyerOrderComponent = () => {
       const data = res.data.data
       const fetchedPendingOrders: OrderInterface[] = data.filter((order: OrderInterface) => !order.isDelivered);
       const fetchedDeleveredOrders: OrderInterface[] = data.filter((order: OrderInterface) => order.isDelivered);
+      const fetchCancelOrders:OrderInterface[]= fetchedPendingOrders.filter((order: OrderInterface) => order.cancelled);
       const fetchedPendingOrdersAcceptedcancelled = fetchedPendingOrders.filter((order: OrderInterface) => !order.cancelled);
+      setCancelOrders(fetchCancelOrders)
       setPendingOrders(fetchedPendingOrdersAcceptedcancelled);
       setDeleveredOders(fetchedDeleveredOrders);
 
@@ -187,6 +192,12 @@ const BuyerOrderComponent = () => {
                 <PendingOrderComponent
                   fetchOrders={fetchOrders}
                   pendingOders={pendingOders}
+                  products={products} />
+
+              )}
+              {activeTab === 'canceled' && (
+                <CancelOrderComponent
+                  cancelOrders={cancelOrders}
                   products={products} />
 
               )}

@@ -5,10 +5,11 @@ import { useParams, useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
 import Image from "next/image";
 import { OrderInterface } from "@/app/utils/orderInterface";
+import superAdminAuth from "@/app/auths/superAdminAuth";
 
 
 
-export default function ViewSingleOrderComponent() {
+const ViewSingleOrderComponent=()=> {
   const { id } = useParams();
   const router = useRouter();
   const [order, setOrder] = useState<OrderInterface | null>(null);
@@ -131,3 +132,4 @@ export default function ViewSingleOrderComponent() {
 
   );
 }
+export default superAdminAuth(ViewSingleOrderComponent)

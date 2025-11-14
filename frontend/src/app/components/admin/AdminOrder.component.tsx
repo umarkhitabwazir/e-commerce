@@ -4,10 +4,11 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { useRouter } from "next/navigation"
 import { OrderInterface } from "@/app/utils/orderInterface"
+import superAdminAuth from "@/app/auths/superAdminAuth"
 
 
 
-export default function AdminOrderComponent() {
+const AdminOrderComponent= () =>{
   const [orders, setOrders] = useState<OrderInterface[]>([])
   const [loading, setLoading] = useState(true)
   const API_URL = process.env.NEXT_PUBLIC_API_URL
@@ -51,6 +52,7 @@ export default function AdminOrderComponent() {
                 <th className="border p-2 text-left">Order ID</th>
                 <th className="border p-2 text-left">Buyer</th>
                 <th className="border p-2 text-left">Payment</th>
+                <th className="border p-2 text-left">TransactionId</th>
                 <th className="border p-2 text-left">Total</th>
                 <th className="border p-2 text-left">Status</th>
                 <th className="border p-2 text-left">Date</th>
@@ -59,7 +61,7 @@ export default function AdminOrderComponent() {
             </thead>
             <tbody>
               {orders.map((order) => (
-                <tr key={order._id} className="border-b hover:bg-gray-50">
+                <tr key={order._id} className="border-b ">
                   <td className="border p-2 truncate text-gray-700">
                     {order._id}
                   </td>
@@ -71,6 +73,9 @@ export default function AdminOrderComponent() {
                   </td>
                   <td className="border p-2 capitalize text-gray-700">
                     {order.paymentMethod || "N/A"}
+                  </td>
+                  <td className="border p-2 capitalize text-gray-700">
+                    {order.transactionId|| "N/A"}
                   </td>
                   <td className="border p-2 font-semibold text-gray-800">
                     ${order.totalPrice.toFixed(2)}
@@ -108,3 +113,5 @@ export default function AdminOrderComponent() {
     </div>
   )
 }
+
+export default superAdminAuth(AdminOrderComponent)

@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import axios from "axios";
 import Image from "next/image";
 import { ProductInterface } from "@/app/utils/productsInterface";
+import superAdminAuth from "@/app/auths/superAdminAuth";
 
 
 interface Seller {
@@ -14,7 +15,7 @@ interface Seller {
   isVerified: boolean;
 }
 
-export default function SingleSellerDetailsComponent() {
+const SingleSellerDetailsComponent=()=> {
   const { id } = useParams();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -54,7 +55,7 @@ export default function SingleSellerDetailsComponent() {
         <div className="bg-white p-4 rounded-xl shadow mb-6">
           <h2 className="text-lg font-semibold text-gray-800">{seller.username}</h2>
           <p className="text-sm text-gray-500">{seller.email}</p>
-          <p className="text-sm text-gray-600 mt-2">Store: {seller.storeName}</p>
+          <p className="text-sm text-gray-600 mt-2">Store: {seller.storeName || "N/A"}</p>
           <p className="text-sm mt-1">
             Verified: <span className={seller.isVerified ? "text-green-600" : "text-red-600"}>
               {seller.isVerified ? "Yes" : "No"}
@@ -111,3 +112,5 @@ export default function SingleSellerDetailsComponent() {
     </div>
   );
 }
+
+export default superAdminAuth(SingleSellerDetailsComponent)

@@ -132,6 +132,12 @@ return;
                       {order.isPaid ? 'Paid' : 'Pending'}
                     </span>
                   </p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    transactionId:{' '}
+                    <span className={`font-medium text-green-500 `}>
+                      {order.transactionId}
+                    </span>
+                  </p>
 
                   <p className="text-sm text-gray-600 mb-4">
                     Total Price:{' '}

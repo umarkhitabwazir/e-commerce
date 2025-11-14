@@ -100,7 +100,7 @@ console.log("data",data)
                                 {...register('phone')}
                                 className={`w-full p-3 placeholder:text-orange-200 text-white bg-transparent border rounded-lg focus:outline-none ${errors.username ? 'border-red-500' : 'border-gray-300'
                                     }`}
-                                placeholder="Enter your phone number"
+                               placeholder="03XXXXXXXXX"
                             />
                             {errors.phone && (
                                 <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>

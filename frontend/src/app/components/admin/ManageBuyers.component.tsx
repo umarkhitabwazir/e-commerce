@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
 import { UserInterface } from "@/app/utils/user.interface";
+import superAdminAuth from "@/app/auths/superAdminAuth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -27,7 +28,7 @@ const ManageBuyersComponent = () => {
     }
   };
 
-  const handleBlock = async (id: string  ) => {
+  const handleBlock = async (id: string) => {
     if (!id) return
     try {
       await axios.put(
@@ -54,11 +55,11 @@ const ManageBuyersComponent = () => {
         withCredentials: true,
       });
       setBuyers((prev) => prev.filter((b) => b?._id !== id));
-    } catch (err:unknown) {
-          if(err instanceof AxiosError){
-    
-            setError(err.response?.data.error)
-          }
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+
+        setError(err.response?.data.error)
+      }
     }
   };
 
@@ -74,22 +75,26 @@ const ManageBuyersComponent = () => {
           b?._id === id ? { ...b, status: "approved" } : b
         )
       );
-    } catch (err:unknown) {
-          if(err instanceof AxiosError){
-    
-            setError(err.response?.data.error)
-          }
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+
+        setError(err.response?.data.error)
+      }
     }
   }
   useEffect(() => {
     fetchBuyers();
   }, []);
 
-  if (loading) return <p className="text-gray-400">Loading buyers...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+  if (loading) return (<div className="flex justify-center items-center">
+    <p className="text-gray-400">Loading buyers...</p>;
+  </div>)
+  if (error) return (<div className="flex justify-center items-center">
+
+    <p className="text-red-500">{error}</p>;
+  </div>)
 
   return (
-    // <div className="p-4 sm:p-6 bg-gray-900 text-white min-h-screen shadow-lg">
     <div className="p-4 sm:p-6 min-h-screen bg-gradient-to-b from-blue-400 to-blue-700">
 
       <h1 className="text-xl font-semibold mb-4">Manage Buyers</h1>
@@ -119,8 +124,8 @@ const ManageBuyersComponent = () => {
                         <button
                           onClick={() => handleApproveStatus(buyer._id!)}
                           className={`px-3 py-1 rounded text-sm ${buyer?.status === "approved"
-                              ? "bg-gray-600 cursor-not-allowed"
-                              : "bg-green-500 hover:bg-green-400"
+                            ? "bg-gray-600 cursor-not-allowed"
+                            : "bg-green-500 hover:bg-green-400"
                             }`}
                           disabled={buyer?.status === "approved"}
                         >
@@ -129,8 +134,8 @@ const ManageBuyersComponent = () => {
                         <button
                           onClick={() => handleBlock(buyer._id!)}
                           className={`px-3 py-1 rounded text-sm ${buyer?.status === "blocked"
-                              ? "bg-gray-600 cursor-not-allowed"
-                              : "bg-yellow-500 hover:bg-yellow-600"
+                            ? "bg-gray-600 cursor-not-allowed"
+                            : "bg-yellow-500 hover:bg-yellow-600"
                             }`}
                           disabled={buyer?.status === "blocked"}
                         >
@@ -162,42 +167,40 @@ const ManageBuyersComponent = () => {
                 <p className="text-sm mt-1 capitalize text-gray-300">
                   Status: {buyer?.status}
                 </p>
-            return (
-  <>
-    {buyer?._id && (
-      <div className="flex flex-wrap gap-2 mt-3">
-        <button
-          onClick={() => buyer._id && handleBlock(buyer._id)}
-          className={`flex-1 px-3 py-1 rounded text-sm ${
-            buyer?.status === "approved"
-              ? "bg-gray-600 cursor-not-allowed"
-              : "bg-green-500 hover:bg-green-400"
-          }`}
-          disabled={buyer.status === "blocked"}
-        >
-          Approve
-        </button>
-        <button
-          onClick={() => buyer._id && handleBlock(buyer._id)}
-          className={`flex-1 px-3 py-1 rounded text-sm ${
-            buyer.status === "blocked"
-              ? "bg-gray-600 cursor-not-allowed"
-              : "bg-yellow-500 hover:bg-yellow-600"
-          }`}
-          disabled={buyer.status === "blocked"}
-        >
-          Block
-        </button>
-        <button
-          onClick={() => buyer._id && handleDelete(buyer._id)}
-          className="flex-1 px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-sm"
-        >
-          Delete
-        </button>
-      </div>
-    )}
-  </>
-)
+
+                <>
+                  {buyer?._id && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      <button
+                        onClick={() => buyer._id && handleBlock(buyer._id)}
+                        className={`flex-1 px-3 py-1 rounded text-sm ${buyer?.status === "approved"
+                            ? "bg-gray-600 cursor-not-allowed"
+                            : "bg-green-500 hover:bg-green-400"
+                          }`}
+                        disabled={buyer.status === "blocked"}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => buyer._id && handleBlock(buyer._id)}
+                        className={`flex-1 px-3 py-1 rounded text-sm ${buyer.status === "blocked"
+                            ? "bg-gray-600 cursor-not-allowed"
+                            : "bg-yellow-500 hover:bg-yellow-600"
+                          }`}
+                        disabled={buyer.status === "blocked"}
+                      >
+                        Block
+                      </button>
+                      <button
+                        onClick={() => buyer._id && handleDelete(buyer._id)}
+                        className="flex-1 px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-sm"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </>
+
 
               </div>
             ))}
@@ -209,4 +212,4 @@ const ManageBuyersComponent = () => {
   );
 };
 
-export default ManageBuyersComponent;
+export default superAdminAuth(ManageBuyersComponent);

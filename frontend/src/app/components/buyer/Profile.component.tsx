@@ -4,6 +4,7 @@ import buyerAuth from "../../auths/buyerAuth";
 import UserProfileForm from "./UserProfileForm.component";
 import { UserInterface } from "../../utils/user.interface";
 import AddressComponent from "./Address.component";
+import UserPaymentForm from "./UserPaymentForm.component";
 
 
 interface ProfileComponentProps {
@@ -113,7 +114,10 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user: initialUser }
                     <div >
                         <AddressComponent />
                     </div>
-
+{/* payment info  */}
+<div>
+    <UserPaymentForm/>
+</div>
                   
                 </div>
                 <div>

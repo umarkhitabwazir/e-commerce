@@ -27,16 +27,19 @@ const orderSchema = new Schema({
         required: false,
         trim: true,
     },
-    paymentResult: {
-        id: { type: String },
-        status: { type: String },
-        update_time: { type: String },
-        email_address: { type: String },
+   transactionId: {
+        type: String,
+        trim: true,
+
     },
     taxPrice: {
         type: Number,
         required: [true, "taxPrice is required"],
         trim: true,
+    },
+    refund:{
+        type:Boolean,
+        default:false
     },
     shippingPrice: {
         type: Number,

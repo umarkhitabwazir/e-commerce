@@ -8,7 +8,8 @@ import {
   createProductsWithCategory,
   updateProductWithCategory, orderShipping,
   paymentConfirmed, deleteProductWithCategory,
-  getOrdersBySellerProducts
+  getOrdersBySellerProducts,
+  refund
 } from "../controllers/sellerDashboard.controller.js";
 import { upload } from "../middleWare/multer.middle.js";
 
@@ -78,5 +79,9 @@ sellerRouter.route("/orderPickedByCounte/:orderId")
   .patch(authMiddleware,
     authorizeRoles('seller'),
     orderPickedByCounter)
+sellerRouter.route("/refund/:orderId")
+  .patch(authMiddleware,
+    authorizeRoles('seller'),
+    refund)
 
 export { sellerRouter }

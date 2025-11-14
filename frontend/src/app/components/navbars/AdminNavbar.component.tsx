@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import useStickyScroll from "../UseStickyScroll.component";
 import { logOut } from "@/app/utils/LogOut";
+import Image from "next/image";
 
 const links = [
   { name: "Dashboard", href: "/admin" },
@@ -19,18 +20,36 @@ export default function AdminNavbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const isSticky = useStickyScroll()
-  const router=useRouter()
+  const router = useRouter()
   return (
     <nav
       className={`${isSticky
-        ? "fixed top-0 bg-gray-100 bg-opacity-70 backdrop-blur-lg shadow-lg"
+        ? "fixed top-0 bg-gray-700 bg-opacity-70 backdrop-blur-lg shadow-lg"
         : "relative bg-white"} text-white transition-all duration-300 w-full z-50 p-2`}
 
     >
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        <span onClick={()=>router.push('/admin')} className="text-sm hover:text-blue-600 cursor-pointer select-none md:text-base font-semibold text-gray-700 ">
-          Saadi <span className="text-blue-600">Admin</span>
-        </span>
+        <div onClick={() => router.push('/admin')} className="text-xl flex select-none flex-col rounded-xl justify-center items-center  cursor-pointer font-bold tracking-tight">
+          <div >
+            <Image
+              src="/logo.jpg"
+              alt="Logo"
+              width={70}
+              height={70}
+              className="w-[70px] h-[70px] object-center border border-cyan-500 hover:border-cyan-300 rounded-full  "
+            />
+
+          </div>
+
+          <div className="overflow-hidden whitespace-nowrap">
+            <div className="inline-block animate-marquee text-black  hover:text-cyan-400 text-[15px] font-semibold tracking-wide">
+              SAADI<span className="">collection</span>
+              <span className="text-[10px] ml-0.5">.shop</span>
+              <span className="text-cyan-500 text-[11px] font-medium ml-0.5">admin</span>
+
+            </div>
+          </div>
+        </div>
 
 
 
@@ -72,8 +91,8 @@ export default function AdminNavbar() {
               <Link
                 href={link.href}
                 className={`${pathname === link.href
-                    ? "text-blue-600 font-medium"
-                    : "text-gray-600 hover:text-blue-600"
+                  ? "text-blue-600 font-medium"
+                  : "text-gray-600 hover:text-blue-600"
                   } select-none`}
               >
                 {link.name}
@@ -83,11 +102,11 @@ export default function AdminNavbar() {
         </ul>
 
         <button
-        onClick={async()=>{
-          await logOut()
-          return router.push('/login')
-        }}
-         className="hidden md:block text-red-600 select-none hover:text-red-700 font-medium">
+          onClick={async () => {
+            await logOut()
+            return router.push('/login')
+          }}
+          className="hidden md:block text-red-600 select-none hover:text-red-700 font-medium">
           Logout
         </button>
       </div>
@@ -124,12 +143,12 @@ export default function AdminNavbar() {
                 className="flex-1 flex flex-col items-center justify-center p-3 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 border border-transparent hover:border-red-100 transition-all duration-200 font-medium"
               >
                 <span
-                onClick={async()=>{
-                  await logOut()
-          return router.push('/login')
+                  onClick={async () => {
+                    await logOut()
+                    return router.push('/login')
 
-                }}
-                 className="text-sm text-center leading-tight">Logout</span>
+                  }}
+                  className="text-sm text-center leading-tight">Logout</span>
               </button>
             </li>
           </ul>

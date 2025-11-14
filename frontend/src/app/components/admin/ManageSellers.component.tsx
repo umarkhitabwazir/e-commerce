@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import superAdminAuth from "@/app/auths/superAdminAuth";
 
 interface Seller {
   _id: string;
@@ -12,7 +13,7 @@ interface Seller {
   status: string;
 }
 
-export default function ManageSellers() {
+const ManageSellers=() =>{
   const [sellers, setSellers] = useState<Seller[]>([]);
   const [loading, setLoading] = useState(false);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -132,3 +133,4 @@ export default function ManageSellers() {
     </div>
   );
 }
+export default superAdminAuth(ManageSellers)

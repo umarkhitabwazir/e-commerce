@@ -30,23 +30,27 @@ const SellerNavbarComponent = () => {
         >
           <div className="container md:flex md:justify-between md:items-center mx-auto px-4">
             <div className="flex flex-row flex-wrap items-center justify-between gap-4">
-              {/* Branding */}
               <div className="flex items-center select-none">
+              {/* logo */}
                 <div onClick={() => router.push('/seller')} className="text-xl flex select-none flex-col justify-center items-center hover:text-cyan-400 cursor-pointer font-bold tracking-tight">
                   <div>
                     <Image
                       src="/logo.jpg"
                       alt="Logo"
-                      width={40}
-                      height={40}
-                      className="w-[40px] h-[40px] object-center rounded-full border border-gray-200 shadow transition-transform duration-300 hover:scale-105"
+                      width={70}
+                      height={70}
+                      className="w-[70px] h-[70px] object-center rounded-full border border-cyan-500 hover:border-cyan-300 "
                     />
 
                   </div>
-                  <div>
+                 <div className="overflow-hidden whitespace-nowrap">
+            <div className="inline-block animate-marquee  text-[15px] font-semibold tracking-wide">
+              SAADI<span className="">collection</span>
+              <span className="text-[10px] ml-0.5 text-cyan-500">.shop</span>
 
-                    SAADI<span className="text-cyan-400 text-sm">seller</span>
-                  </div>
+            </div>
+          </div>
+
                 </div>
               </div>
               {/* mobile menu button */}

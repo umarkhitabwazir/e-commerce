@@ -13,6 +13,10 @@ import { User } from "../models/User.model.js";
 import { Cart } from "../models/Cart.model.js"
 import { sellerRole } from "../config/roles.config.js"
 import { Address } from "../models/address.model.js";
+import { sendEmailRefundConfirmation } from "../utils/emailSenders/sendRefundConfirmation.utils.js";
+import { UserPayment } from "../models/UserPayment.model.js";
+import { sendEmailOrderConfirmed } from "../utils/emailSenders/orderConfirmEmailSender.utils.js";
+
 
 dotenv.config({
     path: ".env"
@@ -313,7 +317,6 @@ let updateProductWithCategory = asyncHandler(async (req, res) => {
 
 
         let cloudImgPath = `ecommerce/products-img/${publicId}`
-        // let result = await uploadOnCloudinary.uploader.destroy(cloudImgPath)
         let result = await cloudinary.uploader.destroy(cloudImgPath)
 
         if (result.result !== "ok") {
@@ -403,18 +406,21 @@ const getOrdersBySellerProducts = asyncHandler(async (req, res) => {
             .populate("products.productId", "title price image")
 
         const addresses = await Address.find()
-        const ordersWithAddresses = getAllOrdered.map(order => {
-            const orderAddress = addresses.find(address => address.user === order.userId?._id);
+            const getAllUserPayment=await UserPayment.find()
+
+        const ordersWithDetails = getAllOrdered.map(order => {
+            const orderAddress = addresses.find(address => address.user.toString() === order.userId?._id.toString());
+            const payment = getAllUserPayment.find(payment => payment.userId.toString() === order.userId?._id.toString());
             return {
                 ...order.toObject(),
-                address: orderAddress || null
+                address: orderAddress || null,
+                paymentData:payment
             };
         });
-
         // Extract product IDs of admin's products
         const sellerProductIds = sellerProducts.map(p => p._id.toString());
 
-        const filterSellerProducts = ordersWithAddresses
+        const filterSellerProducts = ordersWithDetails
             .map(order => {
                 // keep only the products that belong to this seller
                 const sellerItems = order.products.filter(p =>
@@ -429,7 +435,6 @@ const getOrdersBySellerProducts = asyncHandler(async (req, res) => {
                 };
             })
             .filter(Boolean);
-
 
 
         res.status(200).json(new ApiResponse(200, filterSellerProducts));
@@ -454,15 +459,17 @@ const orderConfirmed = asyncHandler(async (req, res) => {
 
     }
     const order = await Order.findById(orderId)
+    .populate("userId", "username email phone")
     if (!order) {
         throw new ApiError(404, false, "no order founded", false)
 
     }
-
-
     const orderconfirm = order.confirmed
     order.confirmed = !orderconfirm
     await order.save()
+
+    sendEmailOrderConfirmed(order)
+
     res.status(200).json(new ApiResponse(200, null, "order confirmed", true))
 })
 const paymentConfirmed = asyncHandler(async (req, res) => {
@@ -599,6 +606,40 @@ const orderPickedByCounter = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, null, "order Picked By counter", true))
 })
 
+const refund=asyncHandler(async(req,res)=>{
+const user = req.user
+    const { orderId } = req.params
+    if (!user) {
+        throw ApiError(401, false, "user not loged in!", false)
+    }
+    if (!orderId) {
+        throw new ApiError(401, false, "order id not provided", false)
+    }
+     if (sellerRole !== user.role) {
+        throw new ApiError(401, false, "you can't access secure route", false)
+
+    }
+const order = await Order.findById(orderId)
+  .populate("userId", "username email") 
+  .populate("products.productId", "title image price");
+    if (!order) {
+        throw new ApiError(404, false, "no order founded", false)
+  
+    }
+   const refund= order.refund
+   order.refund=!refund
+   await order.save()
+    const refundedProducts = order.products.map(p => p.productId);
+  const email = order.userId.email;
+  const userName = order.userId.username || "Customer";
+  
+await sendEmailRefundConfirmation(order,refundedProducts,email,userName)
+  
+
+    res.status(200).json(new ApiResponse(200, null, "payment refunded", true))
+
+})
+
 
 export {
 
@@ -612,6 +653,7 @@ export {
     orderShipping,
     orderReadyForPickUp,
     orderDelivered,
-    orderPickedByCounter
+    orderPickedByCounter,
+    refund
 
 }

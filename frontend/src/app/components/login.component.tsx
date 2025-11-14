@@ -60,7 +60,7 @@ const LoginComponent = () => {
             setLoading(false); // Stop loading
             if (response.data.data.isVerified) {
                 if (userRole === "buyer") {
-                    router.push(`${trackedPath || "/buyer"}?${updatedSearchParams} `);
+                    router.push(`${trackedPath || "/"}?${updatedSearchParams} `);
                 }
                 if (userRole === "super-admin") {
                     router.push("/admin");

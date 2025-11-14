@@ -30,7 +30,7 @@ const SearchComponent = ({
     const isVisible = !isProductSearched && !loading;
 
     return (
-        <div className={`${!isVisible ? 'hidden' : 'block'} absolute w-full z-50 mt-1`}>
+        <div className={`${!isVisible ? 'hidden' : 'block'} absolute w-full z-40 mt-1`}>
             <div className="bg-white rounded-lg shadow-xl overflow-hidden border border-gray-200 max-h-64 overflow-y-auto">
                 {product?.length === 0 ? (
                     <div className="px-4 py-3 text-gray-500 text-center">

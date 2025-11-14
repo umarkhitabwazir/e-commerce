@@ -17,6 +17,7 @@ import sellerRequestRoutes from "./routes/storeRequests.routes.js";
 import { contactUsRouter } from "./routes/contactUs.route.js";
 import webhookRouter from "./routes/pyment/webhook.routes.js";
 import { adminRoutes } from "./routes/adminRoutes/admin.routes.js";
+import userPaymentRouter from "./routes/userPayment.route.js";
 const app = express()
 app.use(
   cors({
@@ -49,6 +50,7 @@ app.use("/api/v2",
    contactUsRouter,
    webhookRouter,
    sellerRouter,
+   userPaymentRouter
 
 
   )
