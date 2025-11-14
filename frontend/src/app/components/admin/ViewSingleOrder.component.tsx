@@ -70,6 +70,7 @@ const ViewSingleOrderComponent=()=> {
         <p><strong>Buyer:</strong> {order.userId?.username}</p>
         <p><strong>Email:</strong> {order.userId?.email}</p>
         <p><strong>Payment Method:</strong> {order.paymentMethod}</p>
+        <p><strong>Transaction ID:</strong> {order.transactionId}</p>
       </div>
     </div>
 
