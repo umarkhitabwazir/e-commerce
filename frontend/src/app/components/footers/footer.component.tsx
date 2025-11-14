@@ -128,7 +128,7 @@ const Footer = () => {
 
               <div className="grid grid-cols-4 sm:grid-cols-6 gap-3 justify-start mt-2">
                 {([
-                  ["https://wa.me/923165548374", <FaWhatsapp key="wa" />],
+                  ["https://wa.me/923409751709", <FaWhatsapp key="wa" />],
                   ["https://t.me/SaadiCollection", <FaTelegramPlane key="tg" />],
                   ["https://youtube.com/@saadicollection.4469", <FaYoutube key="yt" />],
                   ["https://facebook.com/profile.php?id=61579311066499", <FaFacebookF key="fb" />],

@@ -24,12 +24,13 @@ export default function AdminNavbar() {
   return (
     <nav
       className={`${isSticky
-        ? "fixed top-0 bg-gray-700 bg-opacity-70 backdrop-blur-lg shadow-lg"
+        ? "fixed top-0 bg-amber-200 bg-opacity-70 backdrop-blur-lg shadow-lg"
         : "relative bg-white"} text-white transition-all duration-300 w-full z-50 p-2`}
 
     >
-      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        <div onClick={() => router.push('/admin')} className="text-xl flex select-none flex-col rounded-xl justify-center items-center  cursor-pointer font-bold tracking-tight">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
+        <div onClick={() => router.push('/admin')} 
+        className="text-xl flex flex-wrap select-none flex-col text-black hover:text-cyan-400   rounded-xl justify-center items-center  cursor-pointer font-bold tracking-tight">
           <div >
             <Image
               src="/logo.jpg"
@@ -42,10 +43,9 @@ export default function AdminNavbar() {
           </div>
 
           <div className="overflow-hidden whitespace-nowrap">
-            <div className="inline-block animate-marquee text-black  hover:text-cyan-400 text-[15px] font-semibold tracking-wide">
+            <div className="inline-block animate-marquee   text-[15px] font-semibold tracking-wide">
               SAADI<span className="">collection</span>
-              <span className="text-[10px] ml-0.5">.shop</span>
-              <span className="text-cyan-500 text-[11px] font-medium ml-0.5">admin</span>
+             <span className="text-cyan-500 text-[11px] font-medium ml-0.5">.shop</span>
 
             </div>
           </div>

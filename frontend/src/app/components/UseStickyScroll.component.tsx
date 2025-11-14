@@ -1,3 +1,4 @@
+"use client"
 import { useState, useEffect, useCallback } from "react";
 
 const useStickyScroll = () => {
@@ -5,7 +6,7 @@ const useStickyScroll = () => {
 
   const handleScroll = useCallback(() => {
     const scrollTop = window.scrollY;
-    setIsFixed(scrollTop > 200);
+    setIsFixed(scrollTop > 90);
   }, []);
 
   useEffect(() => {
