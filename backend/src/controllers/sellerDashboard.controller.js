@@ -349,7 +349,7 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
     }
 
     const existOrder = await Order.findOne({ "products.productId": productId });
-    if (existOrder) {
+    if (existOrder.isDelivered===false) {
         throw new ApiError(400, "Cannot delete product as it is part of an existing order");
     }
     await Cart.updateMany(
